@@ -26,6 +26,11 @@ BEFORE_FINANCING_LINE = "PL-SUB-PBFT"
 CONTINUING_OPERATIONS_LINE = "PL-SUB-CONT"
 DISCONTINUED = "Discontinued Operations"
 
+# Why a GL group has no report line; the Mapping Control report explains each one
+NOT_MAPPED = "Not Mapped"
+NO_MATCHING_CONDITION = "No Matching Condition"
+DISABLED_LINE = "Disabled Line"
+
 
 class Condition(NamedTuple):
 	column: str  # GL Entry column the condition reads, or "party" for party type + party
@@ -51,7 +56,7 @@ def compute(
 	finance_book: str | None = None,
 	mapping_date=None,
 ):
-	"""Return the statement lines, unmapped accounts and the reconciliation to the ledger."""
+	"""Return the statement lines, unmapped accounts, conflicting mappings and the reconciliation to the ledger."""
 	return compute_periods(company, [(from_date, to_date)], cost_center, finance_book, mapping_date)[0]
 
 
@@ -121,17 +126,26 @@ def compute_periods(
 
 
 def _statement(result, groups, lines, ordered_lines, mappings, categories, policy):
-	line_amounts, line_accounts, unmapped = {}, {}, {}
+	line_amounts, line_accounts, unmapped, conflicts = {}, {}, {}, {}
 	ledger_profit_or_loss = 0.0
 	for group in groups:
 		ledger_profit_or_loss += flt(group.amount)
-		mapping = resolve_mapping(group, mappings.get(group.account, []))
+		candidates = mappings.get(group.account, [])
+		mapping = resolve_mapping(group, candidates)
 		line = lines.get(mapping.report_line) if mapping else None
 		if not line or line.disabled:
-			unmapped[group.account] = flt(unmapped.get(group.account)) + flt(group.amount)
+			if mapping:
+				key = (group.account, DISABLED_LINE, mapping.report_line)
+			else:
+				key = (group.account, NO_MATCHING_CONDITION if candidates else NOT_MAPPED, None)
+			unmapped[key] = flt(unmapped.get(key)) + flt(group.amount)
 			continue
 		line_amounts[line.name] = flt(line_amounts.get(line.name)) + flt(group.amount)
 		line_accounts.setdefault(line.name, set()).add(group.account)
+		tied = tied_mappings(group, candidates, mapping)
+		if tied:
+			key = (group.account, mapping.priority, tuple(sorted(m.name for m in (mapping, *tied))))
+			conflicts[key] = flt(conflicts.get(key)) + flt(group.amount)
 
 	amounts = evaluate_lines(lines.values(), line_amounts, categories)
 	hidden = _hidden_lines(lines.values(), amounts, categories, policy)
@@ -154,9 +168,13 @@ def _statement(result, groups, lines, ordered_lines, mappings, categories, polic
 			for line in ordered_lines
 		],
 		unmapped=[
-			frappe._dict(account=account, amount=amount)
-			for account, amount in sorted(unmapped.items())
+			frappe._dict(account=account, reason=reason, report_line=report_line, amount=amount)
+			for (account, reason, report_line), amount in sorted(unmapped.items(), key=lambda i: i[0][:2])
 			if flt(amount)
+		],
+		conflicts=[
+			frappe._dict(account=account, priority=priority, mappings=list(names), amount=amount)
+			for (account, priority, names), amount in sorted(conflicts.items())
 		],
 		profit_or_loss=profit_or_loss,
 		ledger_profit_or_loss=ledger_profit_or_loss,
@@ -209,6 +227,22 @@ def resolve_mapping(group, candidates: list[Mapping]) -> Mapping | None:
 	return None
 
 
+def tied_mappings(group, candidates: list[Mapping], chosen: Mapping) -> list[Mapping]:
+	"""Other conditional mappings that match the group at the chosen priority but name another
+	line. Which of them wins then depends on the order rows come from the database."""
+	if chosen.condition is None:
+		return []
+	return [
+		mapping
+		for mapping in candidates
+		if mapping is not chosen
+		and mapping.condition is not None
+		and mapping.priority == chosen.priority
+		and mapping.report_line != chosen.report_line
+		and _matches(group, mapping.condition)
+	]
+
+
 def effective_category(line, policy) -> str:
 	"""The category a line is presented in, after the main business activity choices."""
 	if line.category == "Investing" and line.follows_operating and policy.main_business_investing:
@@ -253,6 +287,17 @@ def _matches(group, condition: Condition) -> bool:
 	if condition.column == "party":
 		return (group.party_type, group.party) in condition.values
 	return group.get(condition.column) in condition.values
+
+
+def check_read_access(company: str):
+	"""Refuse users who may not see the company's PSAK ID data (User Permission on Company)."""
+	if frappe.db.exists("PSAK ID Company Policy", company) and not frappe.has_permission(
+		"PSAK ID Company Policy", "read", doc=company
+	):
+		frappe.throw(
+			_("You are not allowed to see the statements of {0}.").format(company),
+			frappe.PermissionError,
+		)
 
 
 def _get_policy(company):
