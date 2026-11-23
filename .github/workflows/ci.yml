@@ -138,6 +138,8 @@ jobs:
           cd apps/frappe_psak_id
           if ! git diff --exit-code -I '^"(POT-Creation-Date|PO-Revision-Date): ' -- frappe_psak_id/locale \
             || [ -n "$(git status --porcelain --untracked-files=all -- frappe_psak_id/locale)" ]; then
+            git --no-pager diff -- frappe_psak_id/locale
+            git status --porcelain --untracked-files=all -- frappe_psak_id/locale
             echo "::error::Translation files are stale. Run 'bench generate-pot-file --app frappe_psak_id' and 'bench update-po-files --app frappe_psak_id', then commit frappe_psak_id/locale."
             exit 1
           fi
