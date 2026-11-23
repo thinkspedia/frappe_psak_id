@@ -11,7 +11,12 @@ import frappe
 from frappe import _
 from frappe.utils import add_days, add_months, add_years, escape_html, flt, formatdate, get_last_day, getdate
 
-from frappe_psak_id.psak_id.statement import PROFIT_OR_LOSS_LINE, StatementError, compute_periods
+from frappe_psak_id.psak_id.statement import (
+	PROFIT_OR_LOSS_LINE,
+	StatementError,
+	check_read_access,
+	compute_periods,
+)
 
 UNITS = {"Full": 1, "Thousands": 1_000, "Millions": 1_000_000}
 PERIOD_MONTHS = {"Monthly": 1, "Quarterly": 3, "Yearly": 12}
@@ -72,13 +77,7 @@ def _validate(filters) -> list:
 		filters.unit = filters.unit if filters.unit in UNITS else "Full"
 	filters.language = filters.language if filters.language in ("Indonesian", "English") else "Both"
 
-	if frappe.db.exists("PSAK ID Company Policy", filters.company) and not frappe.has_permission(
-		"PSAK ID Company Policy", "read", doc=filters.company
-	):
-		frappe.throw(
-			_("You are not allowed to see the statements of {0}.").format(filters.company),
-			frappe.PermissionError,
-		)
+	check_read_access(filters.company)
 
 	periods = get_periods(filters.from_date, filters.to_date, filters.periodicity)
 	if len(periods) > MAX_PERIODS:

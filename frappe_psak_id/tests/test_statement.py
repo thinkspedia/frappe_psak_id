@@ -1,6 +1,7 @@
 import frappe
 
 from frappe_psak_id.psak_id.statement import (
+	NOT_MAPPED,
 	Condition,
 	Mapping,
 	StatementError,
@@ -9,6 +10,7 @@ from frappe_psak_id.psak_id.statement import (
 	evaluate_lines,
 	presentation_order,
 	resolve_mapping,
+	tied_mappings,
 )
 from frappe_psak_id.tests.utils import (
 	IntegrationTestCase,
@@ -38,6 +40,19 @@ class TestResolveAndEvaluate(IntegrationTestCase):
 		first = Mapping("M1", "PL-OP-REV", 2, Condition("project", frozenset({"P"})))
 		second = Mapping("M2", "PL-OP-OTH", 1, Condition("project", frozenset({"P"})))
 		self.assertEqual(resolve_mapping(frappe._dict(project="P"), [first, second]), second)
+
+	def test_matching_conditions_at_one_priority_naming_other_lines_are_tied(self):
+		by_cost_center = Mapping("M1", "PL-OP-OTH", 5, Condition("cost_center", frozenset({"Ops"})))
+		by_project = Mapping("M2", "PL-INV-INC", 5, Condition("project", frozenset({"P"})))
+		same_line = Mapping("M3", "PL-OP-OTH", 5, Condition("project", frozenset({"P"})))
+		lower = Mapping("M4", "PL-FIN-OTH", 6, Condition("project", frozenset({"P"})))
+		group = frappe._dict(cost_center="Ops", project="P")
+		candidates = [by_cost_center, by_project, same_line, lower]
+		chosen = resolve_mapping(group, candidates)
+		self.assertEqual(chosen, by_cost_center)
+		self.assertEqual(tied_mappings(group, candidates, chosen), [by_project])
+		group.project = "Q"
+		self.assertEqual(tied_mappings(group, candidates, chosen), [])
 
 	def test_subtotals_follow_formulas_and_categories(self):
 		line = lambda code, line_type="Line", formula=None: frappe._dict(  # noqa: E731
@@ -190,7 +205,10 @@ class TestCompute(IntegrationTestCase):
 		self._post("2027-02-11", self.admin, 200_000)
 
 		result = compute(COMPANY, "2027-02-01", "2027-02-28")
-		self.assertEqual(result.unmapped, [frappe._dict(account=self.admin, amount=-200_000)])
+		self.assertEqual(
+			result.unmapped,
+			[frappe._dict(account=self.admin, reason=NOT_MAPPED, report_line=None, amount=-200_000)],
+		)
 		self.assertEqual(result.profit_or_loss, 500_000)
 		self.assertEqual(result.ledger_profit_or_loss, 300_000)
 		self.assertEqual(result.ledger_difference, 200_000)
@@ -288,7 +306,10 @@ class TestCompute(IntegrationTestCase):
 
 		as_posted = compute(COMPANY, "2027-11-01", "2027-11-30")
 		restated = compute(COMPANY, "2027-11-01", "2027-11-30", mapping_date="2027-12-31")
-		self.assertEqual(as_posted.unmapped, [frappe._dict(account=self.admin, amount=-4_000)])
+		self.assertEqual(
+			as_posted.unmapped,
+			[frappe._dict(account=self.admin, reason=NOT_MAPPED, report_line=None, amount=-4_000)],
+		)
 		self.assertEqual(restated.unmapped, [])
 		self.assertEqual(self._lines(restated)["PL-OP-GA"].amount, -4_000)
 
