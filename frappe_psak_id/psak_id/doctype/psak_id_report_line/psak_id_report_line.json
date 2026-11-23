@@ -1,0 +1,269 @@
+{
+ "actions": [],
+ "allow_bulk_edit": 1,
+ "allow_rename": 1,
+ "autoname": "field:line_code",
+ "creation": "2026-11-23 21:05:44.656238",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "line_code",
+  "statement",
+  "line_type",
+  "category",
+  "column_break_type",
+  "sequence",
+  "parent_psak_id_report_line",
+  "is_group",
+  "section_labels",
+  "label_id",
+  "column_break_labels",
+  "label_en",
+  "section_rules",
+  "subtotal_formula",
+  "is_other_items",
+  "follows_operating",
+  "column_break_rules",
+  "psak201_line",
+  "mandatory",
+  "disabled",
+  "lft",
+  "rgt",
+  "old_parent"
+ ],
+ "fields": [
+  {
+   "description": "Short unique code, for example PL-OP-REV. Subtotal formulas refer to lines by this code.",
+   "fieldname": "line_code",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Line Code",
+   "reqd": 1,
+   "unique": 1
+  },
+  {
+   "default": "Profit or Loss",
+   "fieldname": "statement",
+   "fieldtype": "Select",
+   "in_standard_filter": 1,
+   "label": "Statement",
+   "options": "Profit or Loss",
+   "reqd": 1
+  },
+  {
+   "default": "Line",
+   "description": "Line: accounts are mapped to it. Subtotal: calculated from the formula. Heading: a title without amount.",
+   "fieldname": "line_type",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Line Type",
+   "options": "Heading\nLine\nSubtotal",
+   "reqd": 1
+  },
+  {
+   "depends_on": "eval:doc.line_type=='Line'",
+   "fieldname": "category",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Category",
+   "mandatory_depends_on": "eval:doc.line_type=='Line'",
+   "options": "\nOperating\nInvesting\nFinancing\nIncome Tax\nDiscontinued Operations"
+  },
+  {
+   "fieldname": "column_break_type",
+   "fieldtype": "Column Break"
+  },
+  {
+   "description": "Lines are printed in ascending sequence.",
+   "fieldname": "sequence",
+   "fieldtype": "Int",
+   "in_list_view": 1,
+   "label": "Sequence",
+   "reqd": 1
+  },
+  {
+   "fieldname": "parent_psak_id_report_line",
+   "fieldtype": "Link",
+   "ignore_user_permissions": 1,
+   "label": "Parent Line",
+   "options": "PSAK ID Report Line"
+  },
+  {
+   "default": "0",
+   "fieldname": "is_group",
+   "fieldtype": "Check",
+   "label": "Is Group"
+  },
+  {
+   "fieldname": "section_labels",
+   "fieldtype": "Section Break",
+   "label": "Labels"
+  },
+  {
+   "fieldname": "label_id",
+   "fieldtype": "Data",
+   "label": "Label (Indonesian)",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_labels",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "label_en",
+   "fieldtype": "Data",
+   "label": "Label (English)",
+   "reqd": 1
+  },
+  {
+   "fieldname": "section_rules",
+   "fieldtype": "Section Break",
+   "label": "Presentation Rules"
+  },
+  {
+   "depends_on": "eval:doc.line_type=='Subtotal'",
+   "description": "Terms separated by spaces, each starting with + or -: a line code (+PL-OP-REV) or a whole category (+CAT:Operating).",
+   "fieldname": "subtotal_formula",
+   "fieldtype": "Small Text",
+   "label": "Subtotal Formula",
+   "mandatory_depends_on": "eval:doc.line_type=='Subtotal'"
+  },
+  {
+   "default": "0",
+   "depends_on": "eval:doc.line_type=='Line'",
+   "description": "An Other Items line above the company threshold must be explained before review.",
+   "fieldname": "is_other_items",
+   "fieldtype": "Check",
+   "label": "Other Items Line"
+  },
+  {
+   "default": "0",
+   "depends_on": "eval:doc.line_type=='Line' && ['Investing','Financing'].includes(doc.category)",
+   "description": "Shown in Operating when the company's policy marks investing or customer financing as a main business activity.",
+   "fieldname": "follows_operating",
+   "fieldtype": "Check",
+   "label": "Follows Operating for Main Business"
+  },
+  {
+   "fieldname": "column_break_rules",
+   "fieldtype": "Column Break"
+  },
+  {
+   "description": "Line under the previous standard. Used for the transition reconciliation in the first PSAK 118 year.",
+   "fieldname": "psak201_line",
+   "fieldtype": "Data",
+   "label": "PSAK 201 Line"
+  },
+  {
+   "default": "0",
+   "description": "Required by PSAK 118. Cannot be disabled or deleted.",
+   "fieldname": "mandatory",
+   "fieldtype": "Check",
+   "label": "Mandatory",
+   "read_only": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "disabled",
+   "fieldtype": "Check",
+   "label": "Disabled"
+  },
+  {
+   "fieldname": "lft",
+   "fieldtype": "Int",
+   "hidden": 1,
+   "label": "Left",
+   "no_copy": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "rgt",
+   "fieldtype": "Int",
+   "hidden": 1,
+   "label": "Right",
+   "no_copy": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "old_parent",
+   "fieldtype": "Link",
+   "hidden": 1,
+   "label": "Old Parent",
+   "options": "PSAK ID Report Line"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "is_tree": 1,
+ "link_display_mode": "Search",
+ "links": [],
+ "modified": "2026-11-23 21:05:44.656238",
+ "modified_by": "Administrator",
+ "module": "PSAK ID",
+ "name": "PSAK ID Report Line",
+ "naming_rule": "By fieldname",
+ "nsm_parent_field": "parent_psak_id_report_line",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "PSAK ID - Accounting - Head",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "PSAK ID - Accounting - Staff"
+  },
+  {
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "PSAK ID - CFO"
+  },
+  {
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "PSAK ID - Auditor"
+  }
+ ],
+ "row_format": "Dynamic",
+ "rows_threshold_for_grid_search": 20,
+ "search_fields": "label_id,label_en",
+ "show_title_field_in_link": 1,
+ "sort_field": "sequence",
+ "sort_order": "ASC",
+ "states": [],
+ "title_field": "label_en",
+ "track_changes": 1
+}

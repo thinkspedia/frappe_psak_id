@@ -6,6 +6,7 @@ All notable changes to PSAK ID are listed here. The project follows [Semantic Ve
 
 ### Added
 
+- PSAK ID Report Line: tree of statement lines with Indonesian and English labels, PSAK 118 category, sequence, subtotal formula (`+PL-OP-REV -PL-OP-COS +CAT:Operating`), Other Items flag, follows-Operating flag and PSAK 201 line. The standard PSAK 118 statement of profit or loss is inserted on install; the three required subtotals cannot be disabled, deleted or redefined, formulas are checked for unknown lines and loops, and a line used in a formula cannot be deleted.
 - Four PSAK ID roles (Accounting - Staff, Accounting - Head, CFO, Auditor) shipped as fixtures.
 - PSAK ID Company Policy: one per company, with the reporting framework, PSAK 118 adoption date, main business activities, expense presentation, Other Items threshold, default unit and letter head that later statements use.
 - Instructions for AI coding assistants (`AGENTS.md`, `CLAUDE.md`, `docs/agents/`, shared slash commands) and pointer stubs to the maintainers' PRDs, UAT docs and Memory Bank.

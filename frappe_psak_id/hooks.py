@@ -102,7 +102,9 @@ fixtures = [
 # ------------
 
 # before_install = "frappe_psak_id.install.before_install"
-# after_install = "frappe_psak_id.install.after_install"
+# WHY: ship the standard PSAK 118 profit or loss lines once; later edits by the user are kept,
+# so they are inserted on install instead of being synced as fixtures on every migrate
+after_install = "frappe_psak_id.install.after_install"
 # after_migrate = "frappe_psak_id.install.after_migrate"
 
 # Uninstallation
