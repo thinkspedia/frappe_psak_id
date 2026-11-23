@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PSAK ID VERSION\n"
 "Report-Msgid-Bugs-To: helpdesk@thinkspedia.com\n"
-"POT-Creation-Date: 2026-11-23 16:04+0000\n"
+"POT-Creation-Date: 2026-11-23 17:20+0000\n"
 "PO-Revision-Date: 2026-11-23 12:08+0000\n"
 "Last-Translator: helpdesk@thinkspedia.com\n"
 "Language: zh\n"
@@ -503,6 +503,11 @@ msgstr ""
 msgid "PSAK 118 statements are available only for companies reporting under SAK Indonesia."
 msgstr ""
 
+#: frappe_psak_id/psak_id/statement.py:198
+#, python-brace-format
+msgid "PSAK 118 statements are only prepared for companies reporting under SAK Indonesia; {0} uses {1}."
+msgstr ""
+
 #. Label of the psak201_line (Data) field in DocType 'PSAK ID Report Line'
 #: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.json:158
 msgid "PSAK 201 Line"
@@ -751,6 +756,10 @@ msgstr ""
 msgid "The mapping applies to statements whose period ends on or after this date."
 msgstr ""
 
+#: frappe_psak_id/psak_id/statement.py:51
+msgid "The period starts after it ends."
+msgstr ""
+
 #: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.py:64
 msgid "The share of profit of associates and joint ventures is always Investing, even when investing is a main business activity."
 msgstr ""
@@ -837,6 +846,11 @@ msgstr ""
 #: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.py:130
 #, python-brace-format
 msgid "{0} already maps this account with the same condition, priority and start date. Edit that mapping or use another priority."
+msgstr ""
+
+#: frappe_psak_id/psak_id/statement.py:191
+#, python-brace-format
+msgid "{0} has no PSAK ID Company Policy yet. Create one before preparing PSAK 118 statements."
 msgstr ""
 
 #: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.py:31
