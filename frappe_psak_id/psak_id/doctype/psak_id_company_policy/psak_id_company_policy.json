@@ -1,0 +1,269 @@
+{
+ "actions": [],
+ "allow_bulk_edit": 1,
+ "allow_rename": 1,
+ "autoname": "field:company",
+ "creation": "2026-11-23 20:47:40.605272",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "company",
+  "reporting_framework",
+  "column_break_framework",
+  "adoption_date",
+  "currency",
+  "section_main_business",
+  "main_business_investing",
+  "main_business_financing",
+  "column_break_main_business",
+  "financing_all_operating",
+  "fx_in_operating",
+  "section_presentation",
+  "expense_presentation",
+  "default_unit",
+  "column_break_presentation",
+  "show_category_headings",
+  "letter_head",
+  "section_other_items",
+  "other_items_threshold_percent",
+  "column_break_other_items",
+  "other_items_threshold_amount",
+  "section_audit",
+  "audit_required",
+  "audit_criteria"
+ ],
+ "fields": [
+  {
+   "description": "One policy per company. PSAK ID statements can only be prepared for companies that have a policy.",
+   "fieldname": "company",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Company",
+   "options": "Company",
+   "reqd": 1,
+   "unique": 1
+  },
+  {
+   "default": "SAK Indonesia",
+   "description": "PSAK 118 statements are available only for companies reporting under SAK Indonesia.",
+   "fieldname": "reporting_framework",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Reporting Framework",
+   "options": "SAK Indonesia\nSAK EP\nSAK EMKM\nSAK Syariah",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_framework",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "2027-01-01",
+   "description": "First day PSAK 118 applies. Statements in that year show the prior year restated for comparison.",
+   "fieldname": "adoption_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "Adoption Date",
+   "reqd": 1
+  },
+  {
+   "fetch_from": "company.default_currency",
+   "fieldname": "currency",
+   "fieldtype": "Link",
+   "hidden": 1,
+   "label": "Currency",
+   "options": "Currency",
+   "read_only": 1
+  },
+  {
+   "collapsible": 1,
+   "description": "Tick only if investing or providing financing to customers is a main business activity of the company.",
+   "fieldname": "section_main_business",
+   "fieldtype": "Section Break",
+   "label": "Main Business Activities"
+  },
+  {
+   "default": "0",
+   "description": "Investment income and expenses marked to follow Operating are shown in the Operating category.",
+   "fieldname": "main_business_investing",
+   "fieldtype": "Check",
+   "label": "Main Business: Investing"
+  },
+  {
+   "default": "0",
+   "description": "Financing income and expenses marked to follow Operating are shown in the Operating category.",
+   "fieldname": "main_business_financing",
+   "fieldtype": "Check",
+   "label": "Main Business: Customer Financing"
+  },
+  {
+   "fieldname": "column_break_main_business",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "0",
+   "depends_on": "eval:doc.main_business_financing",
+   "description": "Shows all expenses from financing liabilities in Operating. The subtotal Profit or Loss before Financing and Income Taxes is then not presented.",
+   "fieldname": "financing_all_operating",
+   "fieldtype": "Check",
+   "label": "All Financing Expenses in Operating"
+  },
+  {
+   "default": "0",
+   "description": "Tick when splitting exchange differences by their source would take undue cost or effort. The statement notes this policy.",
+   "fieldname": "fx_in_operating",
+   "fieldtype": "Check",
+   "label": "Foreign Exchange Differences in Operating"
+  },
+  {
+   "fieldname": "section_presentation",
+   "fieldtype": "Section Break",
+   "label": "Presentation"
+  },
+  {
+   "default": "By Function",
+   "description": "By Function or Mixed adds a note with expenses by nature.",
+   "fieldname": "expense_presentation",
+   "fieldtype": "Select",
+   "label": "Expense Presentation",
+   "options": "By Function\nBy Nature\nMixed",
+   "reqd": 1
+  },
+  {
+   "default": "Full",
+   "description": "Unit used by default on new statements and exports.",
+   "fieldname": "default_unit",
+   "fieldtype": "Select",
+   "label": "Default Unit",
+   "options": "Full\nThousands\nMillions",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_presentation",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "0",
+   "description": "Prints a heading for each category (Operating, Investing, ...). Off by default: the subtotals already separate the categories.",
+   "fieldname": "show_category_headings",
+   "fieldtype": "Check",
+   "label": "Show Category Headings"
+  },
+  {
+   "description": "Letter head printed on the first page of PDF statements.",
+   "fieldname": "letter_head",
+   "fieldtype": "Link",
+   "label": "Letter Head",
+   "options": "Letter Head"
+  },
+  {
+   "description": "An Other Items line above the threshold must be explained in a note before the statement can be sent for review. When both are set, the smaller one applies.",
+   "fieldname": "section_other_items",
+   "fieldtype": "Section Break",
+   "label": "Other Items Threshold"
+  },
+  {
+   "fieldname": "other_items_threshold_percent",
+   "fieldtype": "Percent",
+   "label": "Threshold (% of Revenue)"
+  },
+  {
+   "fieldname": "column_break_other_items",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "other_items_threshold_amount",
+   "fieldtype": "Currency",
+   "label": "Threshold (Amount)",
+   "options": "currency"
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "section_audit",
+   "fieldtype": "Section Break",
+   "label": "Audit"
+  },
+  {
+   "default": "0",
+   "description": "For information. Used by the compliance calendar in a later release.",
+   "fieldname": "audit_required",
+   "fieldtype": "Check",
+   "label": "Audit Required"
+  },
+  {
+   "depends_on": "eval:doc.audit_required",
+   "description": "Which criteria of Article 68 of the Company Law the company meets.",
+   "fieldname": "audit_criteria",
+   "fieldtype": "Small Text",
+   "label": "Audit Criteria"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "link_display_mode": "Search",
+ "links": [],
+ "modified": "2026-11-23 20:47:40.605272",
+ "modified_by": "Administrator",
+ "module": "PSAK ID",
+ "name": "PSAK ID Company Policy",
+ "naming_rule": "By fieldname",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "PSAK ID - Accounting - Head",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "PSAK ID - Accounting - Staff"
+  },
+  {
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "PSAK ID - CFO"
+  },
+  {
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "PSAK ID - Auditor"
+  }
+ ],
+ "row_format": "Dynamic",
+ "rows_threshold_for_grid_search": 20,
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "company",
+ "track_changes": 1
+}
