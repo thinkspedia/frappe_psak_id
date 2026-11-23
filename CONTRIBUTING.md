@@ -6,6 +6,7 @@ Thanks for helping. Bug reports, fixes, account-mapping templates and translatio
 
 - For anything larger than a small fix, open an issue first so we can agree on the approach.
 - Security problems: see [SECURITY.md](SECURITY.md), not a public issue.
+- Using an AI coding assistant? It reads [AGENTS.md](AGENTS.md) (Claude Code: `CLAUDE.md`), which carries the same rules plus the maintainers' PRD and Memory Bank workflow.
 
 ## Development setup
 
