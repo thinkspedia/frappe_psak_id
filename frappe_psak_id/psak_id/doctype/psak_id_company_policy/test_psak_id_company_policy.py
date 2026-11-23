@@ -5,9 +5,11 @@ import frappe
 
 from frappe_psak_id.tests.utils import IntegrationTestCase, make_company
 
-# The tests create their own company; loading ERPNext's Company and Letter Head test records
-# would only slow the run down.
+# The tests create their own company. ERPNext's Company and Letter Head test records are skipped:
+# they fail on a site where ERPNext's setup wizard never ran. Frappe v16 reads the first name,
+# v15 the second.
 IGNORE_TEST_RECORD_DEPENDENCIES = ["Company", "Letter Head"]
+test_ignore = IGNORE_TEST_RECORD_DEPENDENCIES
 
 PSAK_ID_ROLES = (
 	"PSAK ID - Accounting - Staff",
