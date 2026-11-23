@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PSAK ID VERSION\n"
 "Report-Msgid-Bugs-To: helpdesk@thinkspedia.com\n"
-"POT-Creation-Date: 2026-11-23 17:20+0000\n"
+"POT-Creation-Date: 2026-11-23 23:00+0000\n"
 "PO-Revision-Date: 2026-11-23 12:08+0000\n"
 "Last-Translator: helpdesk@thinkspedia.com\n"
 "Language: id\n"
@@ -143,6 +143,11 @@ msgstr "Pilih sifat beban. Beban operasi juga diungkapkan per sifat (penyusutan,
 msgid "Choose the party type of the condition."
 msgstr "Pilih tipe pihak untuk kondisi ini."
 
+#: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.py:65
+#, python-brace-format
+msgid "Choose the {0} of the statement."
+msgstr "Pilih {0} laporan."
+
 #: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.py:87
 #, python-brace-format
 msgid "Choose the {0} the condition applies to."
@@ -158,8 +163,18 @@ msgstr "Klasifikasi"
 #. Label of the company (Link) field in DocType 'PSAK ID Company Policy'
 #: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.json:38
 #: frappe_psak_id/psak_id/doctype/psak_id_company_policy/psak_id_company_policy.json:43
+#: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.js:10
+#: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.py:60
 msgid "Company"
 msgstr "Perusahaan"
+
+#: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.js:76
+msgid "Company Default"
+msgstr "Default Perusahaan"
+
+#: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.js:48
+msgid "Comparative"
+msgstr "Komparatif"
 
 #. Label of the section_condition (Section Break) field in DocType 'PSAK ID
 #. Account Mapping'
@@ -188,6 +203,7 @@ msgstr "Nilai Kondisi"
 #. Option for the 'Condition Type' (Select) field in DocType 'PSAK ID Account
 #. Mapping'
 #: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.json:107
+#: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.js:58
 msgid "Cost Center"
 msgstr "Pusat Biaya"
 
@@ -212,6 +228,10 @@ msgstr "Satuan Default"
 msgid "Depreciation"
 msgstr "Penyusutan"
 
+#: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.py:240
+msgid "Difference to ERPNext"
+msgstr "Selisih ke ERPNext"
+
 #. Label of the disabled (Check) field in DocType 'PSAK ID Report Line'
 #: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.json:172
 msgid "Disabled"
@@ -227,6 +247,10 @@ msgstr "Operasi yang Dihentikan"
 #: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.json:154
 msgid "Employee Benefits"
 msgstr "Imbalan Kerja"
+
+#: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.js:89
+msgid "English"
+msgstr "Inggris"
 
 #. Label of the expense_nature (Select) field in DocType 'PSAK ID Account
 #. Mapping'
@@ -254,6 +278,10 @@ msgstr "PPh final bukan pajak penghasilan menurut PSAK 212. Petakan ke kategori 
 #: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.json:158
 msgid "Final income tax (PPh final) is not income tax under PSAK 212. Map it to the category of the income it is levied on."
 msgstr "PPh final bukan pajak penghasilan menurut PSAK 212. Petakan ke kategori penghasilan yang dikenai pajak tersebut."
+
+#: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.js:67
+msgid "Finance Book"
+msgstr "Buku Keuangan"
 
 #. Option for the 'Category' (Select) field in DocType 'PSAK ID Report Line'
 #: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.json:73
@@ -290,9 +318,15 @@ msgstr "Sebagai informasi. Dipakai kalender kepatuhan pada rilis berikutnya."
 msgid "Foreign Exchange Differences in Operating"
 msgstr "Selisih Kurs di Operasi"
 
+#: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.js:18
+#: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.py:61
+msgid "From Date"
+msgstr "Dari Tanggal"
+
 #. Option for the 'Default Unit' (Select) field in DocType 'PSAK ID Company
 #. Policy'
 #: frappe_psak_id/psak_id/doctype/psak_id_company_policy/psak_id_company_policy.json:140
+#: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.js:77
 msgid "Full"
 msgstr "Penuh"
 
@@ -311,6 +345,14 @@ msgstr "Rugi Penurunan Nilai (Pemulihan)"
 #: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.json:73
 msgid "Income Tax"
 msgstr "Pajak Penghasilan"
+
+#: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.js:88
+msgid "Indonesian"
+msgstr "Indonesia"
+
+#: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.js:87
+msgid "Indonesian and English"
+msgstr "Indonesia dan Inggris"
 
 #. Option for the 'Expense Nature' (Select) field in DocType 'PSAK ID Account
 #. Mapping'
@@ -368,6 +410,7 @@ msgstr "Kop surat yang dicetak di halaman pertama laporan PDF."
 
 #. Option for the 'Line Type' (Select) field in DocType 'PSAK ID Report Line'
 #: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.json:62
+#: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.py:104
 msgid "Line"
 msgstr "Pos"
 
@@ -375,6 +418,10 @@ msgstr "Pos"
 #: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.json:41
 msgid "Line Code"
 msgstr "Kode Pos"
+
+#: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.js:84
+msgid "Line Labels"
+msgstr "Label Pos"
 
 #. Label of the line_type (Select) field in DocType 'PSAK ID Report Line'
 #: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.json:61
@@ -429,6 +476,7 @@ msgstr "Petakan akun ke pos laba rugi, bukan ke judul atau subtotal. {0} adalah 
 #. Option for the 'Default Unit' (Select) field in DocType 'PSAK ID Company
 #. Policy'
 #: frappe_psak_id/psak_id/doctype/psak_id_company_policy/psak_id_company_policy.json:140
+#: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.js:79
 msgid "Millions"
 msgstr "Jutaan"
 
@@ -438,11 +486,23 @@ msgstr "Jutaan"
 msgid "Mixed"
 msgstr "Campuran"
 
+#: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.js:39
+msgid "Monthly"
+msgstr "Bulanan"
+
 #. Description of the 'Expense Nature' (Select) field in DocType 'PSAK ID
 #. Account Mapping'
 #: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.json:150
 msgid "Needed for operating expenses: the note on expenses by nature is built from it."
 msgstr "Wajib untuk beban operasi: catatan beban per sifat disusun dari field ini."
+
+#: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.py:233
+msgid "Net Profit in ERPNext Profit and Loss"
+msgstr "Laba Bersih di Laba Rugi ERPNext"
+
+#: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.js:51
+msgid "None"
+msgstr "Tidak Ada"
 
 #. Label of the notes (Small Text) field in DocType 'PSAK ID Account Mapping'
 #: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.json:171
@@ -468,6 +528,10 @@ msgstr "Hanya pos Investasi atau Pendanaan yang bisa ikut Operasi."
 #, python-brace-format
 msgid "Only income and expense accounts appear in the statement of profit or loss; {0} is {1}."
 msgstr "Hanya akun pendapatan dan beban yang tampil di laporan laba rugi; {0} adalah {1}."
+
+#: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.js:129
+msgid "Open General Ledger"
+msgstr "Buka Buku Besar"
 
 #. Option for the 'Category' (Select) field in DocType 'PSAK ID Report Line'
 #: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.json:73
@@ -497,13 +561,18 @@ msgstr "Pos Lain-lain"
 msgid "Other Items Threshold"
 msgstr "Ambang Pos Lain-lain"
 
+#. Name of a report
+#: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.json:22
+msgid "PSAK 118 Profit or Loss"
+msgstr "Laba Rugi PSAK 118"
+
 #. Description of the 'Reporting Framework' (Select) field in DocType 'PSAK ID
 #. Company Policy'
 #: frappe_psak_id/psak_id/doctype/psak_id_company_policy/psak_id_company_policy.json:50
 msgid "PSAK 118 statements are available only for companies reporting under SAK Indonesia."
 msgstr "Laporan PSAK 118 hanya tersedia untuk perusahaan yang melapor dengan SAK Indonesia."
 
-#: frappe_psak_id/psak_id/statement.py:198
+#: frappe_psak_id/psak_id/statement.py:280
 #, python-brace-format
 msgid "PSAK 118 statements are only prepared for companies reporting under SAK Indonesia; {0} uses {1}."
 msgstr "Laporan PSAK 118 hanya disusun untuk perusahaan yang melapor dengan SAK Indonesia; {0} memakai {1}."
@@ -573,6 +642,10 @@ msgstr "Pihak"
 msgid "Party Type"
 msgstr "Tipe Pihak"
 
+#: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.js:36
+msgid "Periodicity"
+msgstr "Periodisitas"
+
 #. Label of the section_presentation (Section Break) field in DocType 'PSAK ID
 #. Company Policy'
 #: frappe_psak_id/psak_id/doctype/psak_id_company_policy/psak_id_company_policy.json:123
@@ -591,6 +664,10 @@ msgstr "Aturan Penyajian"
 msgid "Prints a heading for each category (Operating, Investing, ...). Off by default: the subtotals already separate the categories."
 msgstr "Mencetak judul untuk setiap kategori (Operasi, Investasi, ...). Tidak aktif secara default: subtotal sudah memisahkan kategori."
 
+#: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.js:53
+msgid "Prior Year, Restated"
+msgstr "Tahun Lalu, Disajikan Kembali"
+
 #. Label of the priority (Int) field in DocType 'PSAK ID Account Mapping'
 #: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.json:94
 msgid "Priority"
@@ -601,11 +678,19 @@ msgstr "Prioritas"
 msgid "Profit or Loss"
 msgstr "Laba Rugi"
 
+#: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.py:226
+msgid "Profit or Loss (PSAK 118)"
+msgstr "Laba (Rugi) (PSAK 118)"
+
 #. Option for the 'Condition Type' (Select) field in DocType 'PSAK ID Account
 #. Mapping'
 #: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.json:107
 msgid "Project"
 msgstr "Proyek"
+
+#: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.js:40
+msgid "Quarterly"
+msgstr "Kuartalan"
 
 #. Option for the 'Expense Nature' (Select) field in DocType 'PSAK ID Account
 #. Mapping'
@@ -673,6 +758,10 @@ msgstr ""
 #: frappe_psak_id/psak_id/doctype/psak_id_company_policy/psak_id_company_policy.json:55
 msgid "SAK Syariah"
 msgstr ""
+
+#: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.js:52
+msgid "Same Period Last Year"
+msgstr "Periode yang Sama Tahun Lalu"
 
 #: frappe_psak_id/psak_id/report_lines.py:66
 #, python-brace-format
@@ -756,13 +845,23 @@ msgstr "Ambang Pos Lain-lain tidak boleh negatif."
 msgid "The mapping applies to statements whose period ends on or after this date."
 msgstr "Pemetaan berlaku untuk laporan yang periodenya berakhir pada atau setelah tanggal ini."
 
-#: frappe_psak_id/psak_id/statement.py:51
+#: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.py:67
+#: frappe_psak_id/psak_id/statement.py:74
 msgid "The period starts after it ends."
 msgstr "Periode dimulai setelah tanggal akhirnya."
+
+#: frappe_psak_id/psak_id/statement.py:76
+msgid "The periods of a statement must not overlap."
+msgstr "Periode-periode laporan tidak boleh tumpang tindih."
 
 #: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.py:64
 msgid "The share of profit of associates and joint ventures is always Investing, even when investing is a main business activity."
 msgstr "Bagian laba entitas asosiasi dan ventura bersama selalu Investasi, termasuk bila investasi adalah aktivitas utama."
+
+#: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.py:87
+#, python-brace-format
+msgid "The statement would have {0} period columns. Choose a shorter range or a longer periodicity."
+msgstr "Laporan akan memiliki {0} kolom periode. Pilih rentang yang lebih pendek atau periodisitas yang lebih panjang."
 
 #: frappe_psak_id/psak_id/report_lines.py:40
 msgid "The subtotal formula is empty."
@@ -781,6 +880,7 @@ msgstr "Rumus subtotal saling merujuk dalam lingkaran: {0}."
 #. Option for the 'Default Unit' (Select) field in DocType 'PSAK ID Company
 #. Policy'
 #: frappe_psak_id/psak_id/doctype/psak_id_company_policy/psak_id_company_policy.json:140
+#: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.js:78
 msgid "Thousands"
 msgstr "Ribuan"
 
@@ -808,6 +908,27 @@ msgstr "Centang hanya bila investasi atau pemberian pembiayaan kepada pelanggan 
 #: frappe_psak_id/psak_id/doctype/psak_id_company_policy/psak_id_company_policy.json:115
 msgid "Tick when splitting exchange differences by their source would take undue cost or effort. The statement notes this policy."
 msgstr "Centang bila memisahkan selisih kurs menurut sumbernya membutuhkan biaya atau upaya berlebihan. Laporan mencantumkan kebijakan ini."
+
+#: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.js:27
+#: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.py:62
+msgid "To Date"
+msgstr "Sampai Tanggal"
+
+#: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.py:134
+msgid "Total"
+msgstr "Total"
+
+#: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.py:139
+msgid "Total (Restated)"
+msgstr "Total (Disajikan Kembali)"
+
+#: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.py:139
+msgid "Total Prior Year"
+msgstr "Total Tahun Lalu"
+
+#: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.js:73
+msgid "Unit"
+msgstr "Satuan"
 
 #. Description of the 'Default Unit' (Select) field in DocType 'PSAK ID Company
 #. Policy'
@@ -843,12 +964,36 @@ msgstr "Kriteria Pasal 68 UU Perseroan Terbatas yang dipenuhi perusahaan."
 msgid "Why the account is classified this way, for the auditor."
 msgstr "Alasan klasifikasi akun ini, untuk auditor."
 
+#: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.js:41
+msgid "Yearly"
+msgstr "Tahunan"
+
+#: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.py:79
+#, python-brace-format
+msgid "You are not allowed to see the statements of {0}."
+msgstr "Anda tidak diizinkan melihat laporan {0}."
+
+#: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.py:128
+#, python-brace-format
+msgid "{0} (Restated)"
+msgstr "{0} (Disajikan Kembali)"
+
+#: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.py:261
+#, python-brace-format
+msgid "{0} accounts with a balance are not mapped to a PSAK 118 line ({1}). They are left out of the statement, so it does not match ERPNext's Profit and Loss yet. Map them in PSAK ID Account Mapping."
+msgstr "{0} akun bersaldo belum dipetakan ke pos PSAK 118 ({1}). Akun tersebut tidak masuk laporan, sehingga laporan belum cocok dengan Laba Rugi ERPNext. Petakan di PSAK ID Account Mapping."
+
 #: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.py:130
 #, python-brace-format
 msgid "{0} already maps this account with the same condition, priority and start date. Edit that mapping or use another priority."
 msgstr "{0} sudah memetakan akun ini dengan kondisi, prioritas, dan tanggal mulai yang sama. Ubah pemetaan tersebut atau gunakan prioritas lain."
 
-#: frappe_psak_id/psak_id/statement.py:191
+#: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.py:259
+#, python-brace-format
+msgid "{0} and {1} more"
+msgstr "{0} dan {1} lainnya"
+
+#: frappe_psak_id/psak_id/statement.py:273
 #, python-brace-format
 msgid "{0} has no PSAK ID Company Policy yet. Create one before preparing PSAK 118 statements."
 msgstr "{0} belum punya Kebijakan PSAK Perusahaan. Buat dulu sebelum menyusun laporan PSAK 118."

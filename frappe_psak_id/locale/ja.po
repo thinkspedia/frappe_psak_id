@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PSAK ID VERSION\n"
 "Report-Msgid-Bugs-To: helpdesk@thinkspedia.com\n"
-"POT-Creation-Date: 2026-11-23 17:20+0000\n"
+"POT-Creation-Date: 2026-11-23 23:00+0000\n"
 "PO-Revision-Date: 2026-11-23 12:08+0000\n"
 "Last-Translator: helpdesk@thinkspedia.com\n"
 "Language: ja\n"
@@ -143,6 +143,11 @@ msgstr ""
 msgid "Choose the party type of the condition."
 msgstr ""
 
+#: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.py:65
+#, python-brace-format
+msgid "Choose the {0} of the statement."
+msgstr ""
+
 #: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.py:87
 #, python-brace-format
 msgid "Choose the {0} the condition applies to."
@@ -158,7 +163,17 @@ msgstr ""
 #. Label of the company (Link) field in DocType 'PSAK ID Company Policy'
 #: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.json:38
 #: frappe_psak_id/psak_id/doctype/psak_id_company_policy/psak_id_company_policy.json:43
+#: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.js:10
+#: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.py:60
 msgid "Company"
+msgstr ""
+
+#: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.js:76
+msgid "Company Default"
+msgstr ""
+
+#: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.js:48
+msgid "Comparative"
 msgstr ""
 
 #. Label of the section_condition (Section Break) field in DocType 'PSAK ID
@@ -188,6 +203,7 @@ msgstr ""
 #. Option for the 'Condition Type' (Select) field in DocType 'PSAK ID Account
 #. Mapping'
 #: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.json:107
+#: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.js:58
 msgid "Cost Center"
 msgstr ""
 
@@ -212,6 +228,10 @@ msgstr ""
 msgid "Depreciation"
 msgstr ""
 
+#: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.py:240
+msgid "Difference to ERPNext"
+msgstr ""
+
 #. Label of the disabled (Check) field in DocType 'PSAK ID Report Line'
 #: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.json:172
 msgid "Disabled"
@@ -226,6 +246,10 @@ msgstr ""
 #. Mapping'
 #: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.json:154
 msgid "Employee Benefits"
+msgstr ""
+
+#: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.js:89
+msgid "English"
 msgstr ""
 
 #. Label of the expense_nature (Select) field in DocType 'PSAK ID Account
@@ -253,6 +277,10 @@ msgstr ""
 #. Mapping'
 #: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.json:158
 msgid "Final income tax (PPh final) is not income tax under PSAK 212. Map it to the category of the income it is levied on."
+msgstr ""
+
+#: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.js:67
+msgid "Finance Book"
 msgstr ""
 
 #. Option for the 'Category' (Select) field in DocType 'PSAK ID Report Line'
@@ -290,9 +318,15 @@ msgstr ""
 msgid "Foreign Exchange Differences in Operating"
 msgstr ""
 
+#: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.js:18
+#: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.py:61
+msgid "From Date"
+msgstr ""
+
 #. Option for the 'Default Unit' (Select) field in DocType 'PSAK ID Company
 #. Policy'
 #: frappe_psak_id/psak_id/doctype/psak_id_company_policy/psak_id_company_policy.json:140
+#: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.js:77
 msgid "Full"
 msgstr ""
 
@@ -310,6 +344,14 @@ msgstr ""
 #. Option for the 'Category' (Select) field in DocType 'PSAK ID Report Line'
 #: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.json:73
 msgid "Income Tax"
+msgstr ""
+
+#: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.js:88
+msgid "Indonesian"
+msgstr ""
+
+#: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.js:87
+msgid "Indonesian and English"
 msgstr ""
 
 #. Option for the 'Expense Nature' (Select) field in DocType 'PSAK ID Account
@@ -368,12 +410,17 @@ msgstr ""
 
 #. Option for the 'Line Type' (Select) field in DocType 'PSAK ID Report Line'
 #: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.json:62
+#: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.py:104
 msgid "Line"
 msgstr ""
 
 #. Label of the line_code (Data) field in DocType 'PSAK ID Report Line'
 #: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.json:41
 msgid "Line Code"
+msgstr ""
+
+#: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.js:84
+msgid "Line Labels"
 msgstr ""
 
 #. Label of the line_type (Select) field in DocType 'PSAK ID Report Line'
@@ -429,6 +476,7 @@ msgstr ""
 #. Option for the 'Default Unit' (Select) field in DocType 'PSAK ID Company
 #. Policy'
 #: frappe_psak_id/psak_id/doctype/psak_id_company_policy/psak_id_company_policy.json:140
+#: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.js:79
 msgid "Millions"
 msgstr ""
 
@@ -438,10 +486,22 @@ msgstr ""
 msgid "Mixed"
 msgstr ""
 
+#: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.js:39
+msgid "Monthly"
+msgstr ""
+
 #. Description of the 'Expense Nature' (Select) field in DocType 'PSAK ID
 #. Account Mapping'
 #: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.json:150
 msgid "Needed for operating expenses: the note on expenses by nature is built from it."
+msgstr ""
+
+#: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.py:233
+msgid "Net Profit in ERPNext Profit and Loss"
+msgstr ""
+
+#: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.js:51
+msgid "None"
 msgstr ""
 
 #. Label of the notes (Small Text) field in DocType 'PSAK ID Account Mapping'
@@ -467,6 +527,10 @@ msgstr ""
 #: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.py:35
 #, python-brace-format
 msgid "Only income and expense accounts appear in the statement of profit or loss; {0} is {1}."
+msgstr ""
+
+#: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.js:129
+msgid "Open General Ledger"
 msgstr ""
 
 #. Option for the 'Category' (Select) field in DocType 'PSAK ID Report Line'
@@ -497,13 +561,18 @@ msgstr ""
 msgid "Other Items Threshold"
 msgstr ""
 
+#. Name of a report
+#: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.json:22
+msgid "PSAK 118 Profit or Loss"
+msgstr ""
+
 #. Description of the 'Reporting Framework' (Select) field in DocType 'PSAK ID
 #. Company Policy'
 #: frappe_psak_id/psak_id/doctype/psak_id_company_policy/psak_id_company_policy.json:50
 msgid "PSAK 118 statements are available only for companies reporting under SAK Indonesia."
 msgstr ""
 
-#: frappe_psak_id/psak_id/statement.py:198
+#: frappe_psak_id/psak_id/statement.py:280
 #, python-brace-format
 msgid "PSAK 118 statements are only prepared for companies reporting under SAK Indonesia; {0} uses {1}."
 msgstr ""
@@ -573,6 +642,10 @@ msgstr ""
 msgid "Party Type"
 msgstr ""
 
+#: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.js:36
+msgid "Periodicity"
+msgstr ""
+
 #. Label of the section_presentation (Section Break) field in DocType 'PSAK ID
 #. Company Policy'
 #: frappe_psak_id/psak_id/doctype/psak_id_company_policy/psak_id_company_policy.json:123
@@ -591,6 +664,10 @@ msgstr ""
 msgid "Prints a heading for each category (Operating, Investing, ...). Off by default: the subtotals already separate the categories."
 msgstr ""
 
+#: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.js:53
+msgid "Prior Year, Restated"
+msgstr ""
+
 #. Label of the priority (Int) field in DocType 'PSAK ID Account Mapping'
 #: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.json:94
 msgid "Priority"
@@ -601,10 +678,18 @@ msgstr ""
 msgid "Profit or Loss"
 msgstr ""
 
+#: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.py:226
+msgid "Profit or Loss (PSAK 118)"
+msgstr ""
+
 #. Option for the 'Condition Type' (Select) field in DocType 'PSAK ID Account
 #. Mapping'
 #: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.json:107
 msgid "Project"
+msgstr ""
+
+#: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.js:40
+msgid "Quarterly"
 msgstr ""
 
 #. Option for the 'Expense Nature' (Select) field in DocType 'PSAK ID Account
@@ -672,6 +757,10 @@ msgstr ""
 #. Company Policy'
 #: frappe_psak_id/psak_id/doctype/psak_id_company_policy/psak_id_company_policy.json:55
 msgid "SAK Syariah"
+msgstr ""
+
+#: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.js:52
+msgid "Same Period Last Year"
 msgstr ""
 
 #: frappe_psak_id/psak_id/report_lines.py:66
@@ -756,12 +845,22 @@ msgstr ""
 msgid "The mapping applies to statements whose period ends on or after this date."
 msgstr ""
 
-#: frappe_psak_id/psak_id/statement.py:51
+#: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.py:67
+#: frappe_psak_id/psak_id/statement.py:74
 msgid "The period starts after it ends."
+msgstr ""
+
+#: frappe_psak_id/psak_id/statement.py:76
+msgid "The periods of a statement must not overlap."
 msgstr ""
 
 #: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.py:64
 msgid "The share of profit of associates and joint ventures is always Investing, even when investing is a main business activity."
+msgstr ""
+
+#: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.py:87
+#, python-brace-format
+msgid "The statement would have {0} period columns. Choose a shorter range or a longer periodicity."
 msgstr ""
 
 #: frappe_psak_id/psak_id/report_lines.py:40
@@ -781,6 +880,7 @@ msgstr ""
 #. Option for the 'Default Unit' (Select) field in DocType 'PSAK ID Company
 #. Policy'
 #: frappe_psak_id/psak_id/doctype/psak_id_company_policy/psak_id_company_policy.json:140
+#: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.js:78
 msgid "Thousands"
 msgstr ""
 
@@ -807,6 +907,27 @@ msgstr ""
 #. in DocType 'PSAK ID Company Policy'
 #: frappe_psak_id/psak_id/doctype/psak_id_company_policy/psak_id_company_policy.json:115
 msgid "Tick when splitting exchange differences by their source would take undue cost or effort. The statement notes this policy."
+msgstr ""
+
+#: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.js:27
+#: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.py:62
+msgid "To Date"
+msgstr ""
+
+#: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.py:134
+msgid "Total"
+msgstr ""
+
+#: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.py:139
+msgid "Total (Restated)"
+msgstr ""
+
+#: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.py:139
+msgid "Total Prior Year"
+msgstr ""
+
+#: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.js:73
+msgid "Unit"
 msgstr ""
 
 #. Description of the 'Default Unit' (Select) field in DocType 'PSAK ID Company
@@ -843,12 +964,36 @@ msgstr ""
 msgid "Why the account is classified this way, for the auditor."
 msgstr ""
 
+#: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.js:41
+msgid "Yearly"
+msgstr ""
+
+#: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.py:79
+#, python-brace-format
+msgid "You are not allowed to see the statements of {0}."
+msgstr ""
+
+#: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.py:128
+#, python-brace-format
+msgid "{0} (Restated)"
+msgstr ""
+
+#: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.py:261
+#, python-brace-format
+msgid "{0} accounts with a balance are not mapped to a PSAK 118 line ({1}). They are left out of the statement, so it does not match ERPNext's Profit and Loss yet. Map them in PSAK ID Account Mapping."
+msgstr ""
+
 #: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.py:130
 #, python-brace-format
 msgid "{0} already maps this account with the same condition, priority and start date. Edit that mapping or use another priority."
 msgstr ""
 
-#: frappe_psak_id/psak_id/statement.py:191
+#: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.py:259
+#, python-brace-format
+msgid "{0} and {1} more"
+msgstr ""
+
+#: frappe_psak_id/psak_id/statement.py:273
 #, python-brace-format
 msgid "{0} has no PSAK ID Company Policy yet. Create one before preparing PSAK 118 statements."
 msgstr ""

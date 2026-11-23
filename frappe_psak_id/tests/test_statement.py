@@ -5,7 +5,9 @@ from frappe_psak_id.psak_id.statement import (
 	Mapping,
 	StatementError,
 	compute,
+	compute_periods,
 	evaluate_lines,
+	presentation_order,
 	resolve_mapping,
 )
 from frappe_psak_id.tests.utils import (
@@ -55,6 +57,23 @@ class TestResolveAndEvaluate(IntegrationTestCase):
 			{"REV": "Operating", "COS": "Operating", "INV": "Investing"},
 		)
 		self.assertEqual((amounts["GP"], amounts["OP"], amounts["PBFT"]), (40.0, 40.0, 47.0))
+
+	def test_line_moved_to_operating_is_presented_above_the_operating_subtotal(self):
+		line = lambda code, category=None, line_type="Line", formula=None: frappe._dict(  # noqa: E731
+			name=code, category=category, line_type=line_type, subtotal_formula=formula
+		)
+		lines = [
+			line("REV", "Operating"),
+			line("OP", line_type="Subtotal", formula="+CAT:Operating"),
+			line("ASSOC", "Investing"),
+			line("INV", "Investing"),
+			line("PBFT", line_type="Subtotal", formula="+OP +CAT:Investing"),
+		]
+		categories = {"REV": "Operating", "ASSOC": "Investing", "INV": "Operating"}
+		self.assertEqual(
+			[line.name for line in presentation_order(lines, categories)],
+			["REV", "INV", "OP", "ASSOC", "PBFT"],
+		)
 
 
 class TestCompute(IntegrationTestCase):
@@ -232,6 +251,46 @@ class TestCompute(IntegrationTestCase):
 		result = compute(COMPANY, "2027-08-01", "2027-08-31")
 		self.assertEqual(result.profit_or_loss, 70_000)
 		self._assert_ledger_is_erpnext(result)
+
+	def test_periods_come_from_one_pass_and_add_up_to_the_whole_range(self):
+		self._post("2027-09-10", self.sales, -10_000)
+		self._post("2027-10-10", self.sales, -20_000)
+		self._post("2027-10-20", self.salary, 5_000)
+
+		september, october = compute_periods(
+			COMPANY, [("2027-09-01", "2027-09-30"), ("2027-10-01", "2027-10-31")]
+		)
+		whole = compute(COMPANY, "2027-09-01", "2027-10-31")
+		self.assertEqual(september.profit_or_loss, 10_000)
+		self.assertEqual(october.profit_or_loss, 15_000)
+		self.assertEqual(whole.profit_or_loss, september.profit_or_loss + october.profit_or_loss)
+		for result in (september, october):
+			self._assert_ledger_is_erpnext(result)
+
+	def test_overlapping_periods_are_refused(self):
+		with self.assertRaises(StatementError):
+			compute_periods(COMPANY, [("2027-01-01", "2027-01-31"), ("2027-01-31", "2027-02-28")])
+
+	def test_mapping_date_classifies_an_earlier_period_with_later_mappings(self):
+		self._post("2027-11-10", self.admin, 4_000)
+		reclassified = frappe.get_doc(
+			{
+				"doctype": "PSAK ID Account Mapping",
+				"company": COMPANY,
+				"account": self.admin,
+				"report_line": "PL-OP-GA",
+				"valid_from": "2027-12-01",
+				"priority": 10,
+				"expense_nature": "Other",
+			}
+		).insert()
+		self.addCleanup(reclassified.delete)
+
+		as_posted = compute(COMPANY, "2027-11-01", "2027-11-30")
+		restated = compute(COMPANY, "2027-11-01", "2027-11-30", mapping_date="2027-12-31")
+		self.assertEqual(as_posted.unmapped, [frappe._dict(account=self.admin, amount=-4_000)])
+		self.assertEqual(restated.unmapped, [])
+		self.assertEqual(self._lines(restated)["PL-OP-GA"].amount, -4_000)
 
 	def test_company_without_policy_is_refused(self):
 		frappe.db.delete("PSAK ID Company Policy", {"company": COMPANY})
