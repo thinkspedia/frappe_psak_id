@@ -50,8 +50,10 @@ tags
 .DS_Store
 Thumbs.db
 
-# AI assistant local state
-.claude/
+# AI assistant local state (the shared slash commands are committed)
+.claude/*
+!.claude/commands/
+CLAUDE.local.md
 .playwright-mcp/
 
 # Compiled translations (bench compile-po-to-mo writes them to sites/assets)
