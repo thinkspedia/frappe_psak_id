@@ -53,3 +53,6 @@ Thumbs.db
 # AI assistant local state
 .claude/
 .playwright-mcp/
+
+# Compiled translations (bench compile-po-to-mo writes them to sites/assets)
+*.mo
