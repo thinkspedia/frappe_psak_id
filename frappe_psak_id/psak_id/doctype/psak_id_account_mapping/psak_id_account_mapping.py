@@ -23,6 +23,8 @@ class PSAKIDAccountMapping(Document):
 		account = frappe.db.get_value(
 			"Account", self.account, ["company", "root_type", "is_group"], as_dict=True
 		)
+		if not account:
+			frappe.throw(_("Account {0} does not exist.").format(self.account), frappe.LinkValidationError)
 		if account.company != self.company:
 			frappe.throw(_("Account {0} does not belong to {1}.").format(self.account, self.company))
 		if account.is_group:
@@ -42,6 +44,10 @@ class PSAKIDAccountMapping(Document):
 			["line_type", "statement", "disabled", "category"],
 			as_dict=True,
 		)
+		if not line:
+			frappe.throw(
+				_("Report line {0} does not exist.").format(self.report_line), frappe.LinkValidationError
+			)
 		if line.line_type != "Line" or line.statement != "Profit or Loss":
 			frappe.throw(
 				_(

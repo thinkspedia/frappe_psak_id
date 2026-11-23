@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PSAK ID VERSION\n"
 "Report-Msgid-Bugs-To: helpdesk@thinkspedia.com\n"
-"POT-Creation-Date: 2026-11-23 15:59+0000\n"
+"POT-Creation-Date: 2026-11-23 16:04+0000\n"
 "PO-Revision-Date: 2026-11-23 12:08+0000\n"
 "Last-Translator: helpdesk@thinkspedia.com\n"
 "Language: ar\n"
@@ -27,9 +27,14 @@ msgstr ""
 msgid "Account"
 msgstr ""
 
-#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.py:27
+#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.py:29
 #, python-brace-format
 msgid "Account {0} does not belong to {1}."
+msgstr ""
+
+#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.py:27
+#, python-brace-format
+msgid "Account {0} does not exist."
 msgstr ""
 
 #. Option for the 'Condition Type' (Select) field in DocType 'PSAK ID Account
@@ -126,19 +131,19 @@ msgstr ""
 msgid "Choose the PSAK 118 category of this line."
 msgstr ""
 
-#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.py:68
+#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.py:74
 msgid "Choose the accounting dimension of the condition."
 msgstr ""
 
-#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.py:95
+#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.py:101
 msgid "Choose the expense nature. Operating expenses are also disclosed by nature (depreciation, employee benefits, ...)."
 msgstr ""
 
-#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.py:64
+#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.py:70
 msgid "Choose the party type of the condition."
 msgstr ""
 
-#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.py:81
+#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.py:87
 #, python-brace-format
 msgid "Choose the {0} the condition applies to."
 msgstr ""
@@ -186,7 +191,7 @@ msgstr ""
 msgid "Cost Center"
 msgstr ""
 
-#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.py:86
+#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.py:92
 #, python-brace-format
 msgid "Cost center {0} does not belong to {1}."
 msgstr ""
@@ -240,7 +245,7 @@ msgstr ""
 msgid "Final Tax"
 msgstr ""
 
-#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.py:105
+#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.py:111
 msgid "Final income tax (PPh final) is not income tax under PSAK 212. Map it to the category of the income it is levied on, for example Final tax expense in Operating."
 msgstr ""
 
@@ -416,7 +421,7 @@ msgstr ""
 msgid "Mandatory"
 msgstr ""
 
-#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.py:48
+#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.py:54
 #, python-brace-format
 msgid "Map accounts to a profit or loss line, not to a heading or subtotal. {0} is a {1}."
 msgstr ""
@@ -459,7 +464,7 @@ msgstr ""
 msgid "Only Investing or Financing lines can follow Operating."
 msgstr ""
 
-#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.py:33
+#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.py:35
 #, python-brace-format
 msgid "Only income and expense accounts appear in the statement of profit or loss; {0} is {1}."
 msgstr ""
@@ -608,7 +613,12 @@ msgstr ""
 msgid "Report Line"
 msgstr ""
 
-#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.py:52
+#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.py:49
+#, python-brace-format
+msgid "Report line {0} does not exist."
+msgstr ""
+
+#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.py:58
 #, python-brace-format
 msgid "Report line {0} is disabled."
 msgstr ""
@@ -824,12 +834,12 @@ msgstr ""
 msgid "Why the account is classified this way, for the auditor."
 msgstr ""
 
-#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.py:124
+#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.py:130
 #, python-brace-format
 msgid "{0} already maps this account with the same condition, priority and start date. Edit that mapping or use another priority."
 msgstr ""
 
-#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.py:29
+#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.py:31
 #, python-brace-format
 msgid "{0} is a group account. Map the accounts under it instead."
 msgstr ""

@@ -3,7 +3,7 @@
 
 import frappe
 
-from frappe_psak_id.tests.utils import IntegrationTestCase, get_account, make_company
+from frappe_psak_id.tests.utils import IntegrationTestCase, get_account, make_account, make_company
 
 # The tests build their own company and chart. Test records of the linked doctypes are skipped:
 # ERPNext's fail on a site where its setup wizard never ran, and following DocType links walks
@@ -25,6 +25,9 @@ class TestPSAKIDAccountMapping(IntegrationTestCase):
 		super().setUpClass()
 		cls.company = make_company("_Test PSAK Mapping Company", "_TPM")
 		cls.other_company = make_company("_Test PSAK Other Company", "_TPO")
+		make_account(cls.company, "Interest Income", "Indirect Income")
+		make_account(cls.company, "Interest Expense", "Indirect Expenses")
+		make_account(cls.company, "Tax Expense", "Indirect Expenses")
 
 	def setUp(self):
 		frappe.db.delete("PSAK ID Account Mapping", {"company": self.company})

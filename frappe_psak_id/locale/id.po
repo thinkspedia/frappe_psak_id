@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PSAK ID VERSION\n"
 "Report-Msgid-Bugs-To: helpdesk@thinkspedia.com\n"
-"POT-Creation-Date: 2026-11-23 15:59+0000\n"
+"POT-Creation-Date: 2026-11-23 16:04+0000\n"
 "PO-Revision-Date: 2026-11-23 12:08+0000\n"
 "Last-Translator: helpdesk@thinkspedia.com\n"
 "Language: id\n"
@@ -27,10 +27,15 @@ msgstr "Subtotal tidak boleh merujuk dirinya sendiri."
 msgid "Account"
 msgstr "Akun"
 
-#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.py:27
+#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.py:29
 #, python-brace-format
 msgid "Account {0} does not belong to {1}."
 msgstr "Akun {0} bukan milik {1}."
+
+#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.py:27
+#, python-brace-format
+msgid "Account {0} does not exist."
+msgstr "Akun {0} tidak ada."
 
 #. Option for the 'Condition Type' (Select) field in DocType 'PSAK ID Account
 #. Mapping'
@@ -126,19 +131,19 @@ msgstr "Kategori"
 msgid "Choose the PSAK 118 category of this line."
 msgstr "Pilih kategori PSAK 118 untuk pos ini."
 
-#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.py:68
+#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.py:74
 msgid "Choose the accounting dimension of the condition."
 msgstr "Pilih dimensi akuntansi untuk kondisi ini."
 
-#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.py:95
+#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.py:101
 msgid "Choose the expense nature. Operating expenses are also disclosed by nature (depreciation, employee benefits, ...)."
 msgstr "Pilih sifat beban. Beban operasi juga diungkapkan per sifat (penyusutan, imbalan kerja, ...)."
 
-#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.py:64
+#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.py:70
 msgid "Choose the party type of the condition."
 msgstr "Pilih tipe pihak untuk kondisi ini."
 
-#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.py:81
+#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.py:87
 #, python-brace-format
 msgid "Choose the {0} the condition applies to."
 msgstr "Pilih {0} yang menjadi kondisi."
@@ -186,7 +191,7 @@ msgstr "Nilai Kondisi"
 msgid "Cost Center"
 msgstr "Pusat Biaya"
 
-#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.py:86
+#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.py:92
 #, python-brace-format
 msgid "Cost center {0} does not belong to {1}."
 msgstr "Pusat biaya {0} bukan milik {1}."
@@ -240,7 +245,7 @@ msgstr "Penyajian Beban"
 msgid "Final Tax"
 msgstr "Pajak Final"
 
-#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.py:105
+#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.py:111
 msgid "Final income tax (PPh final) is not income tax under PSAK 212. Map it to the category of the income it is levied on, for example Final tax expense in Operating."
 msgstr "PPh final bukan pajak penghasilan menurut PSAK 212. Petakan ke kategori penghasilan yang dikenai pajak tersebut, misalnya Beban pajak final di Operasi."
 
@@ -416,7 +421,7 @@ msgstr "Aktivitas Utama: Investasi"
 msgid "Mandatory"
 msgstr "Wajib"
 
-#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.py:48
+#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.py:54
 #, python-brace-format
 msgid "Map accounts to a profit or loss line, not to a heading or subtotal. {0} is a {1}."
 msgstr "Petakan akun ke pos laba rugi, bukan ke judul atau subtotal. {0} adalah {1}."
@@ -459,7 +464,7 @@ msgstr "Satu kebijakan per perusahaan. Laporan PSAK ID hanya bisa disusun untuk 
 msgid "Only Investing or Financing lines can follow Operating."
 msgstr "Hanya pos Investasi atau Pendanaan yang bisa ikut Operasi."
 
-#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.py:33
+#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.py:35
 #, python-brace-format
 msgid "Only income and expense accounts appear in the statement of profit or loss; {0} is {1}."
 msgstr "Hanya akun pendapatan dan beban yang tampil di laporan laba rugi; {0} adalah {1}."
@@ -608,7 +613,12 @@ msgstr "Bahan Baku dan Barang"
 msgid "Report Line"
 msgstr "Pos Laporan"
 
-#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.py:52
+#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.py:49
+#, python-brace-format
+msgid "Report line {0} does not exist."
+msgstr "Pos laporan {0} tidak ada."
+
+#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.py:58
 #, python-brace-format
 msgid "Report line {0} is disabled."
 msgstr "Pos laporan {0} nonaktif."
@@ -824,12 +834,12 @@ msgstr "Kriteria Pasal 68 UU Perseroan Terbatas yang dipenuhi perusahaan."
 msgid "Why the account is classified this way, for the auditor."
 msgstr "Alasan klasifikasi akun ini, untuk auditor."
 
-#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.py:124
+#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.py:130
 #, python-brace-format
 msgid "{0} already maps this account with the same condition, priority and start date. Edit that mapping or use another priority."
 msgstr "{0} sudah memetakan akun ini dengan kondisi, prioritas, dan tanggal mulai yang sama. Ubah pemetaan tersebut atau gunakan prioritas lain."
 
-#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.py:29
+#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.py:31
 #, python-brace-format
 msgid "{0} is a group account. Map the accounts under it instead."
 msgstr "{0} adalah akun grup. Petakan akun-akun di bawahnya."
