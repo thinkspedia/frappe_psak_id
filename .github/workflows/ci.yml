@@ -124,3 +124,20 @@ jobs:
           bench --site test_site run-tests --app frappe_psak_id
         env:
           TYPE: server
+
+      # The POT and PO files are committed, like ERPNext's. Regenerate them and fail when the
+      # committed ones are stale, ignoring the timestamps Babel rewrites on every run. Babel's
+      # output differs slightly between versions, so one Frappe version is the reference.
+      - name: Check translation files are up to date
+        if: matrix.frappe == 'version-16'
+        working-directory: /home/runner/frappe-bench
+        run: |
+          bench generate-pot-file --app frappe_psak_id
+          bench update-po-files --app frappe_psak_id
+          bench compile-po-to-mo --app frappe_psak_id --force
+          cd apps/frappe_psak_id
+          if ! git diff --exit-code -I '^"(POT-Creation-Date|PO-Revision-Date): ' -- frappe_psak_id/locale \
+            || [ -n "$(git status --porcelain --untracked-files=all -- frappe_psak_id/locale)" ]; then
+            echo "::error::Translation files are stale. Run 'bench generate-pot-file --app frappe_psak_id' and 'bench update-po-files --app frappe_psak_id', then commit frappe_psak_id/locale."
+            exit 1
+          fi

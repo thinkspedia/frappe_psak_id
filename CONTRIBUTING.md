@@ -37,6 +37,24 @@ bench --site dev.localhost run-tests --app frappe_psak_id
 - Add or update tests with the change, bump `__version__` in `frappe_psak_id/__init__.py` per [Semantic Versioning](https://semver.org/), and keep pull requests small and focused on one thing.
 - Commit messages follow [Conventional Commits](https://www.conventionalcommits.org/) (`feat:`, `fix:`, `docs:` …).
 
+## Translations
+
+PSAK ID uses gettext, like Frappe and ERPNext. Strings are written in English in the code and wrapped in `_()` (Python, Jinja) or `__()` (JavaScript); DocType labels are picked up automatically. Translations live in `frappe_psak_id/locale/`: `main.pot` is the template, and there is one PO file per supported language (`id`, `zh`, `ja`, `ar`).
+
+After adding or changing a translatable string:
+
+```bash
+bench generate-pot-file --app frappe_psak_id   # refresh main.pot from the code
+bench update-po-files --app frappe_psak_id     # add the new strings to every PO file
+```
+
+Fill in the new `msgstr` entries (at least Indonesian) and commit `frappe_psak_id/locale/`. CI fails when the committed files are stale. Check a translation on your site with `bench compile-po-to-mo --app frappe_psak_id --force` and a user set to that language.
+
+- Never concatenate translated fragments; use placeholders, e.g. `_("Mapped {0} of {1} accounts").format(done, total)`.
+- Accounting terms follow the official PSAK wording for Indonesian; keep them consistent across the app.
+- Arabic is right-to-left: use CSS logical properties (`margin-inline-start`, not `margin-left`).
+- To add a language, run `bench create-po-file <code> --app frappe_psak_id`, add it to `SUPPORTED_LOCALES` in `frappe_psak_id/tests/test_translations.py` and to the README.
+
 ## Releasing
 
 For maintainers:

@@ -43,6 +43,10 @@ PSAK ID adds the PSAK 118 presentation on top of ERPNext's General Ledger. It on
 
 ERPNext is required.
 
+## Languages
+
+English (source), Indonesian (`id`), Simplified Chinese (`zh`), Japanese (`ja`) and Arabic (`ar`, right-to-left). PSAK ID follows each user's language in Desk. A language must be enabled in **Language** on your site before users can pick it.
+
 ## Installation
 
 ```bash
