@@ -1,0 +1,71 @@
+name: Linters
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  linter:
+    name: 'Frappe Linter'
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.14'
+          cache: pip
+      - uses: pre-commit/action@v3.0.0
+
+      - name: Download Semgrep rules
+        run: git clone --depth 1 https://github.com/frappe/semgrep-rules.git frappe-semgrep-rules
+
+      - name: Run Semgrep rules
+        run: |
+          pip install semgrep
+          semgrep ci --config ./frappe-semgrep-rules/rules --config r/python.lang.correctness
+
+      # The rules frappe/marketplace scans every release with. A Critical or Major
+      # finding would hold a release back from the marketplace, so catch it here.
+      - name: Run Frappe Marketplace Semgrep rules
+        run: |
+          rules="$RUNNER_TEMP/marketplace"
+          git clone -q --depth 1 --filter=blob:none --sparse https://github.com/frappe/marketplace "$rules"
+          git -C "$rules" sparse-checkout set validation/semgrep-rules
+          semgrep scan --config "$rules/validation/semgrep-rules" --json --quiet \
+            --exclude frappe-semgrep-rules --output "$RUNNER_TEMP/marketplace-semgrep.json" .
+          python3 .github/scripts/marketplace_semgrep_gate.py < "$RUNNER_TEMP/marketplace-semgrep.json"
+
+  deps-vulnerable-check:
+    name: 'Vulnerable Dependency Check'
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.14'
+
+      - uses: actions/checkout@v6
+
+      - name: Cache pip
+        uses: actions/cache@v5
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/*requirements.txt', '**/pyproject.toml', '**/setup.py') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+            ${{ runner.os }}-
+
+      - name: Install and run pip-audit
+        run: |
+          pip install pip-audit
+          cd ${GITHUB_WORKSPACE}
+          pip-audit --desc on .
