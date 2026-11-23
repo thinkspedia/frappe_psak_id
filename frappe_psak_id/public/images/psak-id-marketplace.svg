@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+	<title>PSAK ID</title>
+	<defs>
+		<linearGradient id="psak-id-mp-bg" x1="0" y1="0" x2="0" y2="1">
+			<stop offset="0" stop-color="#136173"/>
+			<stop offset="1" stop-color="#0B3A47"/>
+		</linearGradient>
+	</defs>
+	<rect width="512" height="512" fill="url(#psak-id-mp-bg)"/>
+	<g transform="translate(-27 -6)">
+		<!-- Report sheet with a folded corner -->
+		<path fill="#FFFFFF" d="M120 112a24 24 0 0 1 24-24h160l64 64v240a24 24 0 0 1-24 24H144a24 24 0 0 1-24-24z"/>
+		<path fill="#CFE3E6" d="M304 88v40a24 24 0 0 0 24 24h40z"/>
+		<rect x="152" y="132" width="104" height="18" rx="9" fill="#B8CDD2"/>
+		<!-- The PSAK 118 categories: operating, investing, financing -->
+		<rect x="152" y="190" width="184" height="38" rx="12" fill="#0F4C5C"/>
+		<rect x="152" y="250" width="132" height="38" rx="12" fill="#1C8C8A"/>
+		<rect x="152" y="310" width="92" height="38" rx="12" fill="#4FBFA8"/>
+		<!-- "118" badge, drawn as strokes so it needs no font -->
+		<rect x="250" y="318" width="196" height="112" rx="56" fill="#F2A93B" stroke="#0B3A47" stroke-width="12"/>
+		<g fill="none" stroke="#0B3A47" stroke-width="15" stroke-linecap="round" stroke-linejoin="round">
+			<path d="M290 356l14-10v66"/>
+			<path d="M334 356l14-10v66"/>
+			<circle cx="398" cy="363" r="15"/>
+			<circle cx="398" cy="397" r="18"/>
+		</g>
+	</g>
+</svg>

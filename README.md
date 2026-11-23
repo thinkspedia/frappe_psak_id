@@ -1,5 +1,7 @@
 <div align="center">
 
+<img src="frappe_psak_id/public/images/psak-id-logo.svg" alt="PSAK ID logo" width="96">
+
 # PSAK ID
 
 **Indonesian financial statement presentation (PSAK 118) for ERPNext.**

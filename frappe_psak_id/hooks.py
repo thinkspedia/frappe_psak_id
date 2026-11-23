@@ -11,14 +11,19 @@ app_license = "agpl-3.0"
 # The statements are built from ERPNext's General Ledger, Accounts and fiscal years
 required_apps = ["erpnext"]
 
-# Each item in the list will be shown as an app in the apps page
+# No app_logo_url: the last installed app's value replaces the Desk navbar logo on every page,
+# and PSAK ID is an add-on to ERPNext, not the site's brand. The apps screen tile below carries
+# the logo instead.
+
+# Each item in the list will be shown as an app in the apps page. Enabled once the PSAK ID
+# workspace exists, with a has_permission check for the accounting roles.
 # add_to_apps_screen = [
 # 	{
 # 		"name": "frappe_psak_id",
-# 		"logo": "/assets/frappe_psak_id/logo.png",
+# 		"logo": "/assets/frappe_psak_id/images/psak-id-logo.svg",
 # 		"title": "PSAK ID",
 # 		"route": "/desk/psak-id",
-# 		"has_permission": "frappe_psak_id.api.permission.has_app_permission"
+# 		"has_permission": "frappe_psak_id.permissions.has_app_permission"
 # 	}
 # ]
 
