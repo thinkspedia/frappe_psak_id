@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PSAK ID VERSION\n"
 "Report-Msgid-Bugs-To: helpdesk@thinkspedia.com\n"
-"POT-Creation-Date: 2026-11-23 15:38+0000\n"
-"PO-Revision-Date: 2026-11-23 15:38+0000\n"
+"POT-Creation-Date: 2026-11-23 16:04+0000\n"
+"PO-Revision-Date: 2026-11-23 16:04+0000\n"
 "Last-Translator: helpdesk@thinkspedia.com\n"
 "Language-Team: helpdesk@thinkspedia.com\n"
 "MIME-Version: 1.0\n"
@@ -18,6 +18,30 @@ msgstr ""
 
 #: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.py:83
 msgid "A subtotal cannot refer to itself."
+msgstr ""
+
+#. Label of the account (Link) field in DocType 'PSAK ID Account Mapping'
+#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.json:49
+msgid "Account"
+msgstr ""
+
+#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.py:29
+#, python-brace-format
+msgid "Account {0} does not belong to {1}."
+msgstr ""
+
+#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.py:27
+#, python-brace-format
+msgid "Account {0} does not exist."
+msgstr ""
+
+#. Option for the 'Condition Type' (Select) field in DocType 'PSAK ID Account
+#. Mapping'
+#. Label of the accounting_dimension (Link) field in DocType 'PSAK ID Account
+#. Mapping'
+#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.json:107
+#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.json:113
+msgid "Accounting Dimension"
 msgstr ""
 
 #. Label of the adoption_date (Date) field in DocType 'PSAK ID Company Policy'
@@ -35,6 +59,12 @@ msgstr ""
 msgid "All Financing Expenses in Operating can only be ticked when customer financing is a main business activity of the company. Tick Main Business: Customer Financing first."
 msgstr ""
 
+#. Option for the 'Expense Nature' (Select) field in DocType 'PSAK ID Account
+#. Mapping'
+#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.json:154
+msgid "Amortisation"
+msgstr ""
+
 #. Description of the 'Other Items Line' (Check) field in DocType 'PSAK ID
 #. Report Line'
 #: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.json:137
@@ -45,6 +75,12 @@ msgstr ""
 #. 'PSAK ID Company Policy'
 #: frappe_psak_id/psak_id/doctype/psak_id_company_policy/psak_id_company_policy.json:162
 msgid "An Other Items line above the threshold must be explained in a note before the statement can be sent for review. When both are set, the smaller one applies."
+msgstr ""
+
+#. Description of the 'Account' (Link) field in DocType 'PSAK ID Account
+#. Mapping'
+#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.json:44
+msgid "An income or expense account of the company (not a group)."
 msgstr ""
 
 #. Label of the section_audit (Section Break) field in DocType 'PSAK ID Company
@@ -83,7 +119,9 @@ msgstr ""
 msgid "By Nature"
 msgstr ""
 
+#. Label of the category (Data) field in DocType 'PSAK ID Account Mapping'
 #. Label of the category (Select) field in DocType 'PSAK ID Report Line'
+#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.json:78
 #: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.json:71
 msgid "Category"
 msgstr ""
@@ -92,9 +130,69 @@ msgstr ""
 msgid "Choose the PSAK 118 category of this line."
 msgstr ""
 
+#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.py:74
+msgid "Choose the accounting dimension of the condition."
+msgstr ""
+
+#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.py:101
+msgid "Choose the expense nature. Operating expenses are also disclosed by nature (depreciation, employee benefits, ...)."
+msgstr ""
+
+#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.py:70
+msgid "Choose the party type of the condition."
+msgstr ""
+
+#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.py:87
+#, python-brace-format
+msgid "Choose the {0} the condition applies to."
+msgstr ""
+
+#. Label of the section_classification (Section Break) field in DocType 'PSAK
+#. ID Account Mapping'
+#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.json:146
+msgid "Classification"
+msgstr ""
+
+#. Label of the company (Link) field in DocType 'PSAK ID Account Mapping'
 #. Label of the company (Link) field in DocType 'PSAK ID Company Policy'
+#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.json:38
 #: frappe_psak_id/psak_id/doctype/psak_id_company_policy/psak_id_company_policy.json:43
 msgid "Company"
+msgstr ""
+
+#. Label of the section_condition (Section Break) field in DocType 'PSAK ID
+#. Account Mapping'
+#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.json:101
+msgid "Condition"
+msgstr ""
+
+#. Label of the condition_doctype (Link) field in DocType 'PSAK ID Account
+#. Mapping'
+#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.json:131
+msgid "Condition Document Type"
+msgstr ""
+
+#. Label of the condition_type (Select) field in DocType 'PSAK ID Account
+#. Mapping'
+#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.json:106
+msgid "Condition Type"
+msgstr ""
+
+#. Label of the condition_value (Dynamic Link) field in DocType 'PSAK ID
+#. Account Mapping'
+#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.json:140
+msgid "Condition Value"
+msgstr ""
+
+#. Option for the 'Condition Type' (Select) field in DocType 'PSAK ID Account
+#. Mapping'
+#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.json:107
+msgid "Cost Center"
+msgstr ""
+
+#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.py:92
+#, python-brace-format
+msgid "Cost center {0} does not belong to {1}."
 msgstr ""
 
 #. Label of the currency (Link) field in DocType 'PSAK ID Company Policy'
@@ -107,6 +205,12 @@ msgstr ""
 msgid "Default Unit"
 msgstr ""
 
+#. Option for the 'Expense Nature' (Select) field in DocType 'PSAK ID Account
+#. Mapping'
+#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.json:154
+msgid "Depreciation"
+msgstr ""
+
 #. Label of the disabled (Check) field in DocType 'PSAK ID Report Line'
 #: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.json:172
 msgid "Disabled"
@@ -117,10 +221,37 @@ msgstr ""
 msgid "Discontinued Operations"
 msgstr ""
 
+#. Option for the 'Expense Nature' (Select) field in DocType 'PSAK ID Account
+#. Mapping'
+#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.json:154
+msgid "Employee Benefits"
+msgstr ""
+
+#. Label of the expense_nature (Select) field in DocType 'PSAK ID Account
+#. Mapping'
+#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.json:153
+msgid "Expense Nature"
+msgstr ""
+
 #. Label of the expense_presentation (Select) field in DocType 'PSAK ID Company
 #. Policy'
 #: frappe_psak_id/psak_id/doctype/psak_id_company_policy/psak_id_company_policy.json:130
 msgid "Expense Presentation"
+msgstr ""
+
+#. Label of the is_final_tax (Check) field in DocType 'PSAK ID Account Mapping'
+#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.json:161
+msgid "Final Tax"
+msgstr ""
+
+#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.py:111
+msgid "Final income tax (PPh final) is not income tax under PSAK 212. Map it to the category of the income it is levied on, for example Final tax expense in Operating."
+msgstr ""
+
+#. Description of the 'Final Tax' (Check) field in DocType 'PSAK ID Account
+#. Mapping'
+#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.json:158
+msgid "Final income tax (PPh final) is not income tax under PSAK 212. Map it to the category of the income it is levied on."
 msgstr ""
 
 #. Option for the 'Category' (Select) field in DocType 'PSAK ID Report Line'
@@ -169,9 +300,21 @@ msgstr ""
 msgid "Heading"
 msgstr ""
 
+#. Option for the 'Expense Nature' (Select) field in DocType 'PSAK ID Account
+#. Mapping'
+#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.json:154
+msgid "Impairment Losses (Reversals)"
+msgstr ""
+
 #. Option for the 'Category' (Select) field in DocType 'PSAK ID Report Line'
 #: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.json:73
 msgid "Income Tax"
+msgstr ""
+
+#. Option for the 'Expense Nature' (Select) field in DocType 'PSAK ID Account
+#. Mapping'
+#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.json:154
+msgid "Inventory Write-downs (Reversals)"
 msgstr ""
 
 #. Option for the 'Category' (Select) field in DocType 'PSAK ID Report Line'
@@ -277,6 +420,11 @@ msgstr ""
 msgid "Mandatory"
 msgstr ""
 
+#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.py:54
+#, python-brace-format
+msgid "Map accounts to a profit or loss line, not to a heading or subtotal. {0} is a {1}."
+msgstr ""
+
 #. Option for the 'Default Unit' (Select) field in DocType 'PSAK ID Company
 #. Policy'
 #: frappe_psak_id/psak_id/doctype/psak_id_company_policy/psak_id_company_policy.json:140
@@ -287,6 +435,17 @@ msgstr ""
 #. Company Policy'
 #: frappe_psak_id/psak_id/doctype/psak_id_company_policy/psak_id_company_policy.json:131
 msgid "Mixed"
+msgstr ""
+
+#. Description of the 'Expense Nature' (Select) field in DocType 'PSAK ID
+#. Account Mapping'
+#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.json:150
+msgid "Needed for operating expenses: the note on expenses by nature is built from it."
+msgstr ""
+
+#. Label of the notes (Small Text) field in DocType 'PSAK ID Account Mapping'
+#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.json:171
+msgid "Notes"
 msgstr ""
 
 #. Label of the old_parent (Link) field in DocType 'PSAK ID Report Line'
@@ -304,9 +463,26 @@ msgstr ""
 msgid "Only Investing or Financing lines can follow Operating."
 msgstr ""
 
+#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.py:35
+#, python-brace-format
+msgid "Only income and expense accounts appear in the statement of profit or loss; {0} is {1}."
+msgstr ""
+
 #. Option for the 'Category' (Select) field in DocType 'PSAK ID Report Line'
 #: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.json:73
 msgid "Operating"
+msgstr ""
+
+#. Description of the 'Condition' (Section Break) field in DocType 'PSAK ID
+#. Account Mapping'
+#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.json:98
+msgid "Optional. Use a condition when one account holds amounts of different categories, for example interest income on deposits and on customer financing."
+msgstr ""
+
+#. Option for the 'Expense Nature' (Select) field in DocType 'PSAK ID Account
+#. Mapping'
+#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.json:154
+msgid "Other"
 msgstr ""
 
 #. Label of the is_other_items (Check) field in DocType 'PSAK ID Report Line'
@@ -332,27 +508,36 @@ msgid "PSAK 201 Line"
 msgstr ""
 
 #. Name of a role
+#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.json:205
 #: frappe_psak_id/psak_id/doctype/psak_id_company_policy/psak_id_company_policy.json:233
 #: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.json:231
 msgid "PSAK ID - Accounting - Head"
 msgstr ""
 
 #. Name of a role
+#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.json:215
 #: frappe_psak_id/psak_id/doctype/psak_id_company_policy/psak_id_company_policy.json:243
 #: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.json:241
 msgid "PSAK ID - Accounting - Staff"
 msgstr ""
 
 #. Name of a role
+#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.json:231
 #: frappe_psak_id/psak_id/doctype/psak_id_company_policy/psak_id_company_policy.json:259
 #: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.json:257
 msgid "PSAK ID - Auditor"
 msgstr ""
 
 #. Name of a role
+#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.json:223
 #: frappe_psak_id/psak_id/doctype/psak_id_company_policy/psak_id_company_policy.json:251
 #: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.json:249
 msgid "PSAK ID - CFO"
+msgstr ""
+
+#. Name of a DocType
+#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.json:181
+msgid "PSAK ID Account Mapping"
 msgstr ""
 
 #. Name of a DocType
@@ -369,6 +554,17 @@ msgstr ""
 #. Report Line'
 #: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.json:91
 msgid "Parent Line"
+msgstr ""
+
+#. Option for the 'Condition Type' (Select) field in DocType 'PSAK ID Account
+#. Mapping'
+#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.json:107
+msgid "Party"
+msgstr ""
+
+#. Label of the party_type (Link) field in DocType 'PSAK ID Account Mapping'
+#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.json:120
+msgid "Party Type"
 msgstr ""
 
 #. Label of the section_presentation (Section Break) field in DocType 'PSAK ID
@@ -389,9 +585,41 @@ msgstr ""
 msgid "Prints a heading for each category (Operating, Investing, ...). Off by default: the subtotals already separate the categories."
 msgstr ""
 
+#. Label of the priority (Int) field in DocType 'PSAK ID Account Mapping'
+#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.json:94
+msgid "Priority"
+msgstr ""
+
 #. Option for the 'Statement' (Select) field in DocType 'PSAK ID Report Line'
 #: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.json:51
 msgid "Profit or Loss"
+msgstr ""
+
+#. Option for the 'Condition Type' (Select) field in DocType 'PSAK ID Account
+#. Mapping'
+#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.json:107
+msgid "Project"
+msgstr ""
+
+#. Option for the 'Expense Nature' (Select) field in DocType 'PSAK ID Account
+#. Mapping'
+#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.json:154
+msgid "Raw Materials and Goods"
+msgstr ""
+
+#. Label of the report_line (Link) field in DocType 'PSAK ID Account Mapping'
+#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.json:69
+msgid "Report Line"
+msgstr ""
+
+#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.py:49
+#, python-brace-format
+msgid "Report line {0} does not exist."
+msgstr ""
+
+#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.py:58
+#, python-brace-format
+msgid "Report line {0} is disabled."
 msgstr ""
 
 #. Label of the reporting_framework (Select) field in DocType 'PSAK ID Company
@@ -409,6 +637,11 @@ msgstr ""
 #. Label of the rgt (Int) field in DocType 'PSAK ID Report Line'
 #: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.json:186
 msgid "Right"
+msgstr ""
+
+#. Label of the root_type (Data) field in DocType 'PSAK ID Account Mapping'
+#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.json:57
+msgid "Root Type"
 msgstr ""
 
 #. Option for the 'Reporting Framework' (Select) field in DocType 'PSAK ID
@@ -490,6 +723,7 @@ msgid "Subtotal Formula"
 msgstr ""
 
 #. Name of a role
+#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.json:193
 #: frappe_psak_id/psak_id/doctype/psak_id_company_policy/psak_id_company_policy.json:222
 #: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.json:219
 msgid "System Manager"
@@ -508,6 +742,12 @@ msgstr ""
 
 #: frappe_psak_id/psak_id/doctype/psak_id_company_policy/psak_id_company_policy.py:19
 msgid "The Other Items threshold cannot be negative."
+msgstr ""
+
+#. Description of the 'Valid From' (Date) field in DocType 'PSAK ID Account
+#. Mapping'
+#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.json:82
+msgid "The mapping applies to statements whose period ends on or after this date."
 msgstr ""
 
 #: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.py:64
@@ -570,10 +810,37 @@ msgstr ""
 msgid "Unknown category {0} in the subtotal formula. Use one of: {1}."
 msgstr ""
 
+#. Label of the valid_from (Date) field in DocType 'PSAK ID Account Mapping'
+#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.json:86
+msgid "Valid From"
+msgstr ""
+
+#. Description of the 'Priority' (Int) field in DocType 'PSAK ID Account
+#. Mapping'
+#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.json:91
+msgid "When several mappings of the account match an entry, the lowest number wins. A mapping without a condition is the fallback."
+msgstr ""
+
 #. Description of the 'Audit Criteria' (Small Text) field in DocType 'PSAK ID
 #. Company Policy'
 #: frappe_psak_id/psak_id/doctype/psak_id_company_policy/psak_id_company_policy.json:197
 msgid "Which criteria of Article 68 of the Company Law the company meets."
+msgstr ""
+
+#. Description of the 'Notes' (Small Text) field in DocType 'PSAK ID Account
+#. Mapping'
+#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.json:168
+msgid "Why the account is classified this way, for the auditor."
+msgstr ""
+
+#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.py:130
+#, python-brace-format
+msgid "{0} already maps this account with the same condition, priority and start date. Edit that mapping or use another priority."
+msgstr ""
+
+#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.py:31
+#, python-brace-format
+msgid "{0} is a group account. Map the accounts under it instead."
 msgstr ""
 
 #: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.py:92

@@ -1,0 +1,243 @@
+{
+ "actions": [],
+ "allow_bulk_edit": 1,
+ "allow_rename": 1,
+ "autoname": "PSAK-MAP-.#####",
+ "creation": "2026-11-23 21:23:58.084557",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "company",
+  "account",
+  "root_type",
+  "column_break_account",
+  "report_line",
+  "category",
+  "valid_from",
+  "priority",
+  "section_condition",
+  "condition_type",
+  "accounting_dimension",
+  "party_type",
+  "column_break_condition",
+  "condition_doctype",
+  "condition_value",
+  "section_classification",
+  "expense_nature",
+  "is_final_tax",
+  "column_break_classification",
+  "notes"
+ ],
+ "fields": [
+  {
+   "fieldname": "company",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Company",
+   "options": "Company",
+   "remember_last_selected_value": 1,
+   "reqd": 1
+  },
+  {
+   "description": "An income or expense account of the company (not a group).",
+   "fieldname": "account",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Account",
+   "options": "Account",
+   "reqd": 1
+  },
+  {
+   "fetch_from": "account.root_type",
+   "fieldname": "root_type",
+   "fieldtype": "Data",
+   "label": "Root Type",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_account",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "report_line",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Report Line",
+   "options": "PSAK ID Report Line",
+   "reqd": 1
+  },
+  {
+   "fetch_from": "report_line.category",
+   "fieldname": "category",
+   "fieldtype": "Data",
+   "in_standard_filter": 1,
+   "label": "Category",
+   "read_only": 1
+  },
+  {
+   "description": "The mapping applies to statements whose period ends on or after this date.",
+   "fieldname": "valid_from",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "Valid From",
+   "reqd": 1
+  },
+  {
+   "default": "10",
+   "description": "When several mappings of the account match an entry, the lowest number wins. A mapping without a condition is the fallback.",
+   "fieldname": "priority",
+   "fieldtype": "Int",
+   "label": "Priority",
+   "reqd": 1
+  },
+  {
+   "description": "Optional. Use a condition when one account holds amounts of different categories, for example interest income on deposits and on customer financing.",
+   "fieldname": "section_condition",
+   "fieldtype": "Section Break",
+   "label": "Condition"
+  },
+  {
+   "fieldname": "condition_type",
+   "fieldtype": "Select",
+   "label": "Condition Type",
+   "options": "\nCost Center\nProject\nParty\nAccounting Dimension"
+  },
+  {
+   "depends_on": "eval:doc.condition_type=='Accounting Dimension'",
+   "fieldname": "accounting_dimension",
+   "fieldtype": "Link",
+   "label": "Accounting Dimension",
+   "options": "Accounting Dimension"
+  },
+  {
+   "depends_on": "eval:doc.condition_type=='Party'",
+   "fieldname": "party_type",
+   "fieldtype": "Link",
+   "label": "Party Type",
+   "options": "Party Type"
+  },
+  {
+   "fieldname": "column_break_condition",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "condition_doctype",
+   "fieldtype": "Link",
+   "hidden": 1,
+   "label": "Condition Document Type",
+   "options": "DocType",
+   "read_only": 1
+  },
+  {
+   "depends_on": "eval:doc.condition_type",
+   "fieldname": "condition_value",
+   "fieldtype": "Dynamic Link",
+   "in_list_view": 1,
+   "label": "Condition Value",
+   "options": "condition_doctype"
+  },
+  {
+   "fieldname": "section_classification",
+   "fieldtype": "Section Break",
+   "label": "Classification"
+  },
+  {
+   "depends_on": "eval:doc.root_type=='Expense'",
+   "description": "Needed for operating expenses: the note on expenses by nature is built from it.",
+   "fieldname": "expense_nature",
+   "fieldtype": "Select",
+   "label": "Expense Nature",
+   "options": "\nRaw Materials and Goods\nEmployee Benefits\nDepreciation\nAmortisation\nImpairment Losses (Reversals)\nInventory Write-downs (Reversals)\nOther"
+  },
+  {
+   "default": "0",
+   "description": "Final income tax (PPh final) is not income tax under PSAK 212. Map it to the category of the income it is levied on.",
+   "fieldname": "is_final_tax",
+   "fieldtype": "Check",
+   "label": "Final Tax"
+  },
+  {
+   "fieldname": "column_break_classification",
+   "fieldtype": "Column Break"
+  },
+  {
+   "description": "Why the account is classified this way, for the auditor.",
+   "fieldname": "notes",
+   "fieldtype": "Small Text",
+   "label": "Notes"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "link_display_mode": "Search",
+ "links": [],
+ "modified": "2026-11-23 21:23:58.084557",
+ "modified_by": "Administrator",
+ "module": "PSAK ID",
+ "name": "PSAK ID Account Mapping",
+ "naming_rule": "Expression",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "PSAK ID - Accounting - Head",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "PSAK ID - Accounting - Staff"
+  },
+  {
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "PSAK ID - CFO"
+  },
+  {
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "PSAK ID - Auditor"
+  }
+ ],
+ "row_format": "Dynamic",
+ "rows_threshold_for_grid_search": 20,
+ "search_fields": "account,report_line",
+ "show_title_field_in_link": 1,
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "account",
+ "track_changes": 1
+}

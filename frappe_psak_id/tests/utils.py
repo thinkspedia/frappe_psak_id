@@ -5,7 +5,7 @@ try:
 except ImportError:  # Frappe v15
 	from frappe.tests.utils import FrappeTestCase as IntegrationTestCase
 
-__all__ = ["IntegrationTestCase", "make_company"]
+__all__ = ["IntegrationTestCase", "get_account", "make_account", "make_company"]
 
 
 def make_company(company_name: str, abbr: str) -> str:
@@ -30,3 +30,28 @@ def make_company(company_name: str, abbr: str) -> str:
 			}
 		).insert()
 	return company_name
+
+
+def get_account(company: str, account_name: str) -> str:
+	"""Return the name of an account of ERPNext's standard chart, e.g. ``get_account(c, "Sales")``."""
+	abbr = frappe.get_cached_value("Company", company, "abbr")
+	return f"{account_name} - {abbr}"
+
+
+def make_account(company: str, account_name: str, parent_account_name: str) -> str:
+	"""Return a leaf account under a group of the standard chart, creating it on first use.
+
+	ERPNext's standard chart differs between versions (v15 has no interest or tax expense
+	accounts), so tests create the accounts they need beyond the common ones.
+	"""
+	name = get_account(company, account_name)
+	if not frappe.db.exists("Account", name):
+		frappe.get_doc(
+			{
+				"doctype": "Account",
+				"company": company,
+				"account_name": account_name,
+				"parent_account": get_account(company, parent_account_name),
+			}
+		).insert()
+	return name
