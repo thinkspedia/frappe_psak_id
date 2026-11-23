@@ -7,12 +7,321 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PSAK ID VERSION\n"
 "Report-Msgid-Bugs-To: helpdesk@thinkspedia.com\n"
-"POT-Creation-Date: 2026-11-23 12:08+0000\n"
-"PO-Revision-Date: 2026-11-23 12:08+0000\n"
+"POT-Creation-Date: 2026-11-23 15:19+0000\n"
+"PO-Revision-Date: 2026-11-23 15:19+0000\n"
 "Last-Translator: helpdesk@thinkspedia.com\n"
 "Language-Team: helpdesk@thinkspedia.com\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.18.0\n"
+
+#. Label of the adoption_date (Date) field in DocType 'PSAK ID Company Policy'
+#: frappe_psak_id/psak_id/doctype/psak_id_company_policy/psak_id_company_policy.json:68
+msgid "Adoption Date"
+msgstr ""
+
+#. Label of the financing_all_operating (Check) field in DocType 'PSAK ID
+#. Company Policy'
+#: frappe_psak_id/psak_id/doctype/psak_id_company_policy/psak_id_company_policy.json:111
+msgid "All Financing Expenses in Operating"
+msgstr ""
+
+#: frappe_psak_id/psak_id/doctype/psak_id_company_policy/psak_id_company_policy.py:28
+msgid "All Financing Expenses in Operating can only be ticked when customer financing is a main business activity of the company. Tick Main Business: Customer Financing first."
+msgstr ""
+
+#. Description of the 'Other Items Threshold' (Section Break) field in DocType
+#. 'PSAK ID Company Policy'
+#: frappe_psak_id/psak_id/doctype/psak_id_company_policy/psak_id_company_policy.json:162
+msgid "An Other Items line above the threshold must be explained in a note before the statement can be sent for review. When both are set, the smaller one applies."
+msgstr ""
+
+#. Label of the section_audit (Section Break) field in DocType 'PSAK ID Company
+#. Policy'
+#: frappe_psak_id/psak_id/doctype/psak_id_company_policy/psak_id_company_policy.json:186
+msgid "Audit"
+msgstr ""
+
+#. Label of the audit_criteria (Small Text) field in DocType 'PSAK ID Company
+#. Policy'
+#: frappe_psak_id/psak_id/doctype/psak_id_company_policy/psak_id_company_policy.json:200
+msgid "Audit Criteria"
+msgstr ""
+
+#. Label of the audit_required (Check) field in DocType 'PSAK ID Company
+#. Policy'
+#: frappe_psak_id/psak_id/doctype/psak_id_company_policy/psak_id_company_policy.json:193
+msgid "Audit Required"
+msgstr ""
+
+#. Option for the 'Expense Presentation' (Select) field in DocType 'PSAK ID
+#. Company Policy'
+#: frappe_psak_id/psak_id/doctype/psak_id_company_policy/psak_id_company_policy.json:131
+msgid "By Function"
+msgstr ""
+
+#. Description of the 'Expense Presentation' (Select) field in DocType 'PSAK ID
+#. Company Policy'
+#: frappe_psak_id/psak_id/doctype/psak_id_company_policy/psak_id_company_policy.json:127
+msgid "By Function or Mixed adds a note with expenses by nature."
+msgstr ""
+
+#. Option for the 'Expense Presentation' (Select) field in DocType 'PSAK ID
+#. Company Policy'
+#: frappe_psak_id/psak_id/doctype/psak_id_company_policy/psak_id_company_policy.json:131
+msgid "By Nature"
+msgstr ""
+
+#. Label of the company (Link) field in DocType 'PSAK ID Company Policy'
+#: frappe_psak_id/psak_id/doctype/psak_id_company_policy/psak_id_company_policy.json:43
+msgid "Company"
+msgstr ""
+
+#. Label of the currency (Link) field in DocType 'PSAK ID Company Policy'
+#: frappe_psak_id/psak_id/doctype/psak_id_company_policy/psak_id_company_policy.json:76
+msgid "Currency"
+msgstr ""
+
+#. Label of the default_unit (Select) field in DocType 'PSAK ID Company Policy'
+#: frappe_psak_id/psak_id/doctype/psak_id_company_policy/psak_id_company_policy.json:139
+msgid "Default Unit"
+msgstr ""
+
+#. Label of the expense_presentation (Select) field in DocType 'PSAK ID Company
+#. Policy'
+#: frappe_psak_id/psak_id/doctype/psak_id_company_policy/psak_id_company_policy.json:130
+msgid "Expense Presentation"
+msgstr ""
+
+#. Description of the 'Main Business: Customer Financing' (Check) field in
+#. DocType 'PSAK ID Company Policy'
+#: frappe_psak_id/psak_id/doctype/psak_id_company_policy/psak_id_company_policy.json:96
+msgid "Financing income and expenses marked to follow Operating are shown in the Operating category."
+msgstr ""
+
+#. Description of the 'Adoption Date' (Date) field in DocType 'PSAK ID Company
+#. Policy'
+#: frappe_psak_id/psak_id/doctype/psak_id_company_policy/psak_id_company_policy.json:64
+msgid "First day PSAK 118 applies. Statements in that year show the prior year restated for comparison."
+msgstr ""
+
+#. Description of the 'Audit Required' (Check) field in DocType 'PSAK ID
+#. Company Policy'
+#: frappe_psak_id/psak_id/doctype/psak_id_company_policy/psak_id_company_policy.json:190
+msgid "For information. Used by the compliance calendar in a later release."
+msgstr ""
+
+#. Label of the fx_in_operating (Check) field in DocType 'PSAK ID Company
+#. Policy'
+#: frappe_psak_id/psak_id/doctype/psak_id_company_policy/psak_id_company_policy.json:118
+msgid "Foreign Exchange Differences in Operating"
+msgstr ""
+
+#. Option for the 'Default Unit' (Select) field in DocType 'PSAK ID Company
+#. Policy'
+#: frappe_psak_id/psak_id/doctype/psak_id_company_policy/psak_id_company_policy.json:140
+msgid "Full"
+msgstr ""
+
+#. Description of the 'Main Business: Investing' (Check) field in DocType 'PSAK
+#. ID Company Policy'
+#: frappe_psak_id/psak_id/doctype/psak_id_company_policy/psak_id_company_policy.json:89
+msgid "Investment income and expenses marked to follow Operating are shown in the Operating category."
+msgstr ""
+
+#. Label of the letter_head (Link) field in DocType 'PSAK ID Company Policy'
+#: frappe_psak_id/psak_id/doctype/psak_id_company_policy/psak_id_company_policy.json:158
+msgid "Letter Head"
+msgstr ""
+
+#. Description of the 'Letter Head' (Link) field in DocType 'PSAK ID Company
+#. Policy'
+#: frappe_psak_id/psak_id/doctype/psak_id_company_policy/psak_id_company_policy.json:155
+msgid "Letter head printed on the first page of PDF statements."
+msgstr ""
+
+#. Label of the section_main_business (Section Break) field in DocType 'PSAK ID
+#. Company Policy'
+#: frappe_psak_id/psak_id/doctype/psak_id_company_policy/psak_id_company_policy.json:85
+msgid "Main Business Activities"
+msgstr ""
+
+#. Label of the main_business_financing (Check) field in DocType 'PSAK ID
+#. Company Policy'
+#: frappe_psak_id/psak_id/doctype/psak_id_company_policy/psak_id_company_policy.json:99
+msgid "Main Business: Customer Financing"
+msgstr ""
+
+#. Label of the main_business_investing (Check) field in DocType 'PSAK ID
+#. Company Policy'
+#: frappe_psak_id/psak_id/doctype/psak_id_company_policy/psak_id_company_policy.json:92
+msgid "Main Business: Investing"
+msgstr ""
+
+#. Option for the 'Default Unit' (Select) field in DocType 'PSAK ID Company
+#. Policy'
+#: frappe_psak_id/psak_id/doctype/psak_id_company_policy/psak_id_company_policy.json:140
+msgid "Millions"
+msgstr ""
+
+#. Option for the 'Expense Presentation' (Select) field in DocType 'PSAK ID
+#. Company Policy'
+#: frappe_psak_id/psak_id/doctype/psak_id_company_policy/psak_id_company_policy.json:131
+msgid "Mixed"
+msgstr ""
+
+#. Description of the 'Company' (Link) field in DocType 'PSAK ID Company
+#. Policy'
+#: frappe_psak_id/psak_id/doctype/psak_id_company_policy/psak_id_company_policy.json:38
+msgid "One policy per company. PSAK ID statements can only be prepared for companies that have a policy."
+msgstr ""
+
+#. Label of the section_other_items (Section Break) field in DocType 'PSAK ID
+#. Company Policy'
+#: frappe_psak_id/psak_id/doctype/psak_id_company_policy/psak_id_company_policy.json:165
+msgid "Other Items Threshold"
+msgstr ""
+
+#. Description of the 'Reporting Framework' (Select) field in DocType 'PSAK ID
+#. Company Policy'
+#: frappe_psak_id/psak_id/doctype/psak_id_company_policy/psak_id_company_policy.json:50
+msgid "PSAK 118 statements are available only for companies reporting under SAK Indonesia."
+msgstr ""
+
+#. Name of a role
+#: frappe_psak_id/psak_id/doctype/psak_id_company_policy/psak_id_company_policy.json:233
+msgid "PSAK ID - Accounting - Head"
+msgstr ""
+
+#. Name of a role
+#: frappe_psak_id/psak_id/doctype/psak_id_company_policy/psak_id_company_policy.json:243
+msgid "PSAK ID - Accounting - Staff"
+msgstr ""
+
+#. Name of a role
+#: frappe_psak_id/psak_id/doctype/psak_id_company_policy/psak_id_company_policy.json:259
+msgid "PSAK ID - Auditor"
+msgstr ""
+
+#. Name of a role
+#: frappe_psak_id/psak_id/doctype/psak_id_company_policy/psak_id_company_policy.json:251
+msgid "PSAK ID - CFO"
+msgstr ""
+
+#. Name of a DocType
+#: frappe_psak_id/psak_id/doctype/psak_id_company_policy/psak_id_company_policy.json:210
+msgid "PSAK ID Company Policy"
+msgstr ""
+
+#. Label of the section_presentation (Section Break) field in DocType 'PSAK ID
+#. Company Policy'
+#: frappe_psak_id/psak_id/doctype/psak_id_company_policy/psak_id_company_policy.json:123
+msgid "Presentation"
+msgstr ""
+
+#. Description of the 'Show Category Headings' (Check) field in DocType 'PSAK
+#. ID Company Policy'
+#: frappe_psak_id/psak_id/doctype/psak_id_company_policy/psak_id_company_policy.json:149
+msgid "Prints a heading for each category (Operating, Investing, ...). Off by default: the subtotals already separate the categories."
+msgstr ""
+
+#. Label of the reporting_framework (Select) field in DocType 'PSAK ID Company
+#. Policy'
+#: frappe_psak_id/psak_id/doctype/psak_id_company_policy/psak_id_company_policy.json:54
+msgid "Reporting Framework"
+msgstr ""
+
+#. Option for the 'Reporting Framework' (Select) field in DocType 'PSAK ID
+#. Company Policy'
+#: frappe_psak_id/psak_id/doctype/psak_id_company_policy/psak_id_company_policy.json:55
+msgid "SAK EMKM"
+msgstr ""
+
+#. Option for the 'Reporting Framework' (Select) field in DocType 'PSAK ID
+#. Company Policy'
+#: frappe_psak_id/psak_id/doctype/psak_id_company_policy/psak_id_company_policy.json:55
+msgid "SAK EP"
+msgstr ""
+
+#. Option for the 'Reporting Framework' (Select) field in DocType 'PSAK ID
+#. Company Policy'
+#: frappe_psak_id/psak_id/doctype/psak_id_company_policy/psak_id_company_policy.json:55
+msgid "SAK Indonesia"
+msgstr ""
+
+#. Option for the 'Reporting Framework' (Select) field in DocType 'PSAK ID
+#. Company Policy'
+#: frappe_psak_id/psak_id/doctype/psak_id_company_policy/psak_id_company_policy.json:55
+msgid "SAK Syariah"
+msgstr ""
+
+#. Label of the show_category_headings (Check) field in DocType 'PSAK ID
+#. Company Policy'
+#: frappe_psak_id/psak_id/doctype/psak_id_company_policy/psak_id_company_policy.json:152
+msgid "Show Category Headings"
+msgstr ""
+
+#. Description of the 'All Financing Expenses in Operating' (Check) field in
+#. DocType 'PSAK ID Company Policy'
+#: frappe_psak_id/psak_id/doctype/psak_id_company_policy/psak_id_company_policy.json:108
+msgid "Shows all expenses from financing liabilities in Operating. The subtotal Profit or Loss before Financing and Income Taxes is then not presented."
+msgstr ""
+
+#. Name of a role
+#: frappe_psak_id/psak_id/doctype/psak_id_company_policy/psak_id_company_policy.json:222
+msgid "System Manager"
+msgstr ""
+
+#: frappe_psak_id/psak_id/doctype/psak_id_company_policy/psak_id_company_policy.py:21
+#, python-format
+msgid "The Other Items threshold cannot be more than 100% of revenue."
+msgstr ""
+
+#: frappe_psak_id/psak_id/doctype/psak_id_company_policy/psak_id_company_policy.py:19
+msgid "The Other Items threshold cannot be negative."
+msgstr ""
+
+#. Option for the 'Default Unit' (Select) field in DocType 'PSAK ID Company
+#. Policy'
+#: frappe_psak_id/psak_id/doctype/psak_id_company_policy/psak_id_company_policy.json:140
+msgid "Thousands"
+msgstr ""
+
+#. Label of the other_items_threshold_percent (Percent) field in DocType 'PSAK
+#. ID Company Policy'
+#: frappe_psak_id/psak_id/doctype/psak_id_company_policy/psak_id_company_policy.json:170
+#, python-format
+msgid "Threshold (% of Revenue)"
+msgstr ""
+
+#. Label of the other_items_threshold_amount (Currency) field in DocType 'PSAK
+#. ID Company Policy'
+#: frappe_psak_id/psak_id/doctype/psak_id_company_policy/psak_id_company_policy.json:179
+msgid "Threshold (Amount)"
+msgstr ""
+
+#. Description of the 'Main Business Activities' (Section Break) field in
+#. DocType 'PSAK ID Company Policy'
+#: frappe_psak_id/psak_id/doctype/psak_id_company_policy/psak_id_company_policy.json:82
+msgid "Tick only if investing or providing financing to customers is a main business activity of the company."
+msgstr ""
+
+#. Description of the 'Foreign Exchange Differences in Operating' (Check) field
+#. in DocType 'PSAK ID Company Policy'
+#: frappe_psak_id/psak_id/doctype/psak_id_company_policy/psak_id_company_policy.json:115
+msgid "Tick when splitting exchange differences by their source would take undue cost or effort. The statement notes this policy."
+msgstr ""
+
+#. Description of the 'Default Unit' (Select) field in DocType 'PSAK ID Company
+#. Policy'
+#: frappe_psak_id/psak_id/doctype/psak_id_company_policy/psak_id_company_policy.json:136
+msgid "Unit used by default on new statements and exports."
+msgstr ""
+
+#. Description of the 'Audit Criteria' (Small Text) field in DocType 'PSAK ID
+#. Company Policy'
+#: frappe_psak_id/psak_id/doctype/psak_id_company_policy/psak_id_company_policy.json:197
+msgid "Which criteria of Article 68 of the Company Law the company meets."
+msgstr ""
 

@@ -11,6 +11,15 @@ app_license = "agpl-3.0"
 # The statements are built from ERPNext's General Ledger, Accounts and fiscal years
 required_apps = ["erpnext"]
 
+# Fixtures
+# ------------------
+
+fixtures = [
+	# WHY: the four PSAK ID roles (Staff, Head, CFO, Auditor) gate every PSAK ID doctype and must
+	# exist on install, before an administrator assigns them to users
+	{"dt": "Role", "filters": [["name", "like", "PSAK ID - %"]]},
+]
+
 # No app_logo_url: the last installed app's value replaces the Desk navbar logo on every page,
 # and PSAK ID is an add-on to ERPNext, not the site's brand. The apps screen tile below carries
 # the logo instead.
