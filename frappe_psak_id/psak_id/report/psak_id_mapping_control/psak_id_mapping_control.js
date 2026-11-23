@@ -52,7 +52,9 @@ frappe.query_reports[PSAK_MAPPING_CONTROL] = {
 		if (!data) return default_formatter(value, row, column, data);
 		if (column.fieldname === "severity_label") {
 			const color = data.severity === "Blocking" ? "red" : "orange";
-			return `<span class="indicator-pill ${color}">${frappe.utils.escape_html(value)}</span>`;
+			return `<span class="indicator-pill ${color}">${frappe.utils.escape_html(
+				value
+			)}</span>`;
 		}
 		if (column.fieldname === "fix") {
 			const label = this.fix_label(data);
