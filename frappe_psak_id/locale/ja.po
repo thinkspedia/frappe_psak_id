@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PSAK ID VERSION\n"
 "Report-Msgid-Bugs-To: helpdesk@thinkspedia.com\n"
-"POT-Creation-Date: 2026-11-23 23:39+0000\n"
+"POT-Creation-Date: 2026-11-23 23:51+0000\n"
 "PO-Revision-Date: 2026-11-23 12:08+0000\n"
 "Last-Translator: helpdesk@thinkspedia.com\n"
 "Language: ja\n"
@@ -54,11 +54,11 @@ msgstr ""
 msgid "Accounting Dimension"
 msgstr ""
 
-#: frappe_psak_id/psak_id/report/psak_id_mapping_control/psak_id_mapping_control.js:69
+#: frappe_psak_id/psak_id/report/psak_id_mapping_control/psak_id_mapping_control.js:71
 msgid "Add Fallback Mapping"
 msgstr ""
 
-#: frappe_psak_id/psak_id/report/psak_id_mapping_control/psak_id_mapping_control.js:68
+#: frappe_psak_id/psak_id/report/psak_id_mapping_control/psak_id_mapping_control.js:70
 msgid "Add Mapping"
 msgstr ""
 
@@ -616,14 +616,14 @@ msgstr ""
 msgid "Open General Ledger"
 msgstr ""
 
-#: frappe_psak_id/psak_id/report/psak_id_mapping_control/psak_id_mapping_control.js:70
-#: frappe_psak_id/psak_id/report/psak_id_mapping_control/psak_id_mapping_control.js:71
 #: frappe_psak_id/psak_id/report/psak_id_mapping_control/psak_id_mapping_control.js:72
+#: frappe_psak_id/psak_id/report/psak_id_mapping_control/psak_id_mapping_control.js:73
+#: frappe_psak_id/psak_id/report/psak_id_mapping_control/psak_id_mapping_control.js:74
 msgid "Open Mappings"
 msgstr ""
 
-#: frappe_psak_id/psak_id/report/psak_id_mapping_control/psak_id_mapping_control.js:73
-#: frappe_psak_id/psak_id/report/psak_id_mapping_control/psak_id_mapping_control.js:74
+#: frappe_psak_id/psak_id/report/psak_id_mapping_control/psak_id_mapping_control.js:75
+#: frappe_psak_id/psak_id/report/psak_id_mapping_control/psak_id_mapping_control.js:76
 msgid "Open Profit and Loss"
 msgstr ""
 
