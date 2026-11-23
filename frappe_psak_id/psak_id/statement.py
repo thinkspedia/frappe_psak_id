@@ -15,6 +15,7 @@ from typing import NamedTuple
 
 import frappe
 from frappe import _
+from frappe.query_builder import Case, Criterion
 from frappe.query_builder.functions import Sum
 from frappe.utils import flt, getdate
 
@@ -43,27 +44,83 @@ class StatementError(frappe.ValidationError):
 
 
 def compute(
-	company: str, from_date, to_date, cost_center: str | None = None, finance_book: str | None = None
+	company: str,
+	from_date,
+	to_date,
+	cost_center: str | None = None,
+	finance_book: str | None = None,
+	mapping_date=None,
 ):
 	"""Return the statement lines, unmapped accounts and the reconciliation to the ledger."""
-	from_date, to_date = getdate(from_date), getdate(to_date)
-	if from_date > to_date:
-		frappe.throw(_("The period starts after it ends."), StatementError)
+	return compute_periods(company, [(from_date, to_date)], cost_center, finance_book, mapping_date)[0]
+
+
+def compute_periods(
+	company: str,
+	periods: list,
+	cost_center: str | None = None,
+	finance_book: str | None = None,
+	mapping_date=None,
+) -> list:
+	"""Return one statement per period, from a single pass over the General Ledger.
+
+	Every period is classified with the mappings in force on ``mapping_date`` (default: the end of
+	the last period), so the columns of one report never mix two classifications. Restated
+	comparatives pass the reporting period's end here.
+	"""
+	periods = [(getdate(start), getdate(end)) for start, end in periods]
+	for index, (start, end) in enumerate(periods):
+		if start > end:
+			frappe.throw(_("The period starts after it ends."), StatementError)
+		if index and start <= periods[index - 1][1]:
+			frappe.throw(_("The periods of a statement must not overlap."), StatementError)
+	mapping_date = getdate(mapping_date) if mapping_date else periods[-1][1]
 
 	policy = _get_policy(company)
 	lines = _get_lines()
-	mappings = _get_mappings(company, to_date)
-	include_default_book = _include_default_book(company, finance_book)
+	mappings = _get_mappings(company, mapping_date)
+	categories = {
+		line.name: effective_category(line, policy) for line in lines.values() if line.line_type == "Line"
+	}
+	ordered_lines = presentation_order(
+		[line for line in sorted(lines.values(), key=lambda line: line.sequence) if not line.disabled],
+		categories,
+	)
 	groups = _get_gl_groups(
 		company,
-		from_date,
-		to_date,
+		periods,
 		cost_center,
 		finance_book,
-		include_default_book,
+		_include_default_book(company, finance_book),
 		columns=sorted({m.condition.column for ms in mappings.values() for m in ms if m.condition}),
 	)
+	groups_by_period = {}
+	for group in groups:
+		groups_by_period.setdefault(group.period, []).append(group)
 
+	currency = frappe.get_cached_value("Company", company, "default_currency")
+	return [
+		_statement(
+			frappe._dict(
+				company=company,
+				from_date=start,
+				to_date=end,
+				cost_center=cost_center,
+				finance_book=finance_book,
+				currency=currency,
+			),
+			groups_by_period.get(index, []),
+			lines,
+			ordered_lines,
+			mappings,
+			categories,
+			policy,
+		)
+		for index, (start, end) in enumerate(periods)
+	]
+
+
+def _statement(result, groups, lines, ordered_lines, mappings, categories, policy):
 	line_amounts, line_accounts, unmapped = {}, {}, {}
 	ledger_profit_or_loss = 0.0
 	for group in groups:
@@ -76,21 +133,12 @@ def compute(
 		line_amounts[line.name] = flt(line_amounts.get(line.name)) + flt(group.amount)
 		line_accounts.setdefault(line.name, set()).add(group.account)
 
-	categories = {
-		line.name: effective_category(line, policy) for line in lines.values() if line.line_type == "Line"
-	}
 	amounts = evaluate_lines(lines.values(), line_amounts, categories)
 	hidden = _hidden_lines(lines.values(), amounts, categories, policy)
 
 	profit_or_loss = flt(amounts.get(PROFIT_OR_LOSS_LINE))
 	ledger_profit_or_loss = flt(ledger_profit_or_loss, 2)
-	return frappe._dict(
-		company=company,
-		from_date=from_date,
-		to_date=to_date,
-		cost_center=cost_center,
-		finance_book=finance_book,
-		currency=frappe.get_cached_value("Company", company, "default_currency"),
+	result.update(
 		lines=[
 			frappe._dict(
 				line_code=line.name,
@@ -103,8 +151,7 @@ def compute(
 				accounts=sorted(line_accounts.get(line.name, ())),
 				hidden=line.name in hidden,
 			)
-			for line in sorted(lines.values(), key=lambda line: line.sequence)
-			if not line.disabled
+			for line in ordered_lines
 		],
 		unmapped=[
 			frappe._dict(account=account, amount=amount)
@@ -115,6 +162,41 @@ def compute(
 		ledger_profit_or_loss=ledger_profit_or_loss,
 		ledger_difference=flt(profit_or_loss - ledger_profit_or_loss, 2),
 	)
+	return result
+
+
+def presentation_order(lines: list, categories: dict) -> list:
+	"""Lines in the order they are presented.
+
+	A line presented in another category than its own (an entity whose main business is investing
+	or financing, BR-04 / BR-20) moves just above the first subtotal that closes that category, so
+	it is read with the lines it is added to.
+	"""
+	moved = {
+		line.name: categories[line.name]
+		for line in lines
+		if line.line_type == "Line" and categories.get(line.name) != line.category
+	}
+	if not moved:
+		return list(lines)
+
+	by_code = {line.name: line for line in lines}
+	waiting = dict(moved)
+	ordered = []
+	for line in lines:
+		if line.name in moved:
+			continue
+		if line.line_type == "Subtotal":
+			closes = {
+				term.ref for term in parse_subtotal_formula(line.subtotal_formula) if term.kind == "category"
+			}
+			for code in [code for code, category in waiting.items() if category in closes]:
+				ordered.append(by_code[code])
+				del waiting[code]
+		ordered.append(line)
+	# A category no subtotal closes keeps its lines at the end rather than dropping them
+	ordered.extend(by_code[code] for code in waiting)
+	return ordered
 
 
 def resolve_mapping(group, candidates: list[Mapping]) -> Mapping | None:
@@ -295,7 +377,7 @@ def _include_default_book(company: str, finance_book: str | None) -> bool:
 	return not (finance_book and default_book and finance_book != default_book)
 
 
-def _get_gl_groups(company, from_date, to_date, cost_center, finance_book, include_default_book, columns):
+def _get_gl_groups(company, periods, cost_center, finance_book, include_default_book, columns):
 	gle = frappe.qb.DocType("GL Entry")
 	account = frappe.qb.DocType("Account")
 	group_columns = [gle.account]
@@ -305,6 +387,11 @@ def _get_gl_groups(company, from_date, to_date, cost_center, finance_book, inclu
 		else:
 			group_columns.append(gle[column])
 
+	period = Case()
+	for index, (start, end) in enumerate(periods):
+		period = period.when(gle.posting_date[start:end], index)
+	period = period.as_("period")
+
 	books = [finance_book or ""]
 	if include_default_book:
 		books.append(frappe.get_cached_value("Company", company, "default_finance_book") or "")
@@ -313,14 +400,14 @@ def _get_gl_groups(company, from_date, to_date, cost_center, finance_book, inclu
 		frappe.qb.from_(gle)
 		.join(account)
 		.on(account.name == gle.account)
-		.select(*group_columns, (Sum(gle.credit) - Sum(gle.debit)).as_("amount"))
+		.select(*group_columns, period, (Sum(gle.credit) - Sum(gle.debit)).as_("amount"))
 		.where(gle.company == company)
 		.where(account.root_type.isin(["Income", "Expense"]))
-		.where(gle.posting_date[from_date:to_date])
+		.where(Criterion.any([gle.posting_date[start:end] for start, end in periods]))
 		.where(gle.is_cancelled == 0)
 		.where(gle.voucher_type != "Period Closing Voucher")
 		.where(gle.finance_book.isin(books) | gle.finance_book.isnull())
-		.groupby(*group_columns)
+		.groupby(*group_columns, period)
 	)
 	if cost_center:
 		query = query.where(gle.cost_center.isin(_with_descendants("Cost Center", cost_center)))
