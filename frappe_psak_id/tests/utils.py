@@ -5,7 +5,7 @@ try:
 except ImportError:  # Frappe v15
 	from frappe.tests.utils import FrappeTestCase as IntegrationTestCase
 
-__all__ = ["IntegrationTestCase", "make_company"]
+__all__ = ["IntegrationTestCase", "get_account", "make_company"]
 
 
 def make_company(company_name: str, abbr: str) -> str:
@@ -30,3 +30,9 @@ def make_company(company_name: str, abbr: str) -> str:
 			}
 		).insert()
 	return company_name
+
+
+def get_account(company: str, account_name: str) -> str:
+	"""Return the name of an account of ERPNext's standard chart, e.g. ``get_account(c, "Sales")``."""
+	abbr = frappe.get_cached_value("Company", company, "abbr")
+	return f"{account_name} - {abbr}"
