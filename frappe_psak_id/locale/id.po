@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PSAK ID VERSION\n"
 "Report-Msgid-Bugs-To: helpdesk@thinkspedia.com\n"
-"POT-Creation-Date: 2026-11-23 23:51+0000\n"
+"POT-Creation-Date: 2026-11-24 00:11+0000\n"
 "PO-Revision-Date: 2026-11-23 12:08+0000\n"
 "Last-Translator: helpdesk@thinkspedia.com\n"
 "Language: id\n"
@@ -17,6 +17,12 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.18.0\n"
+
+#. Description of the 'Account Pattern' (Data) field in DocType 'PSAK ID
+#. Mapping Template Row'
+#: frappe_psak_id/psak_id/doctype/psak_id_mapping_template_row/psak_id_mapping_template_row.json:39
+msgid "* matches any text, case is ignored. Example: *interest income* or 41*."
+msgstr "* cocok dengan teks apa pun, huruf besar/kecil diabaikan. Contoh: *pendapatan bunga* atau 41*."
 
 #: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.py:83
 msgid "A subtotal cannot refer to itself."
@@ -28,9 +34,15 @@ msgid "Above the threshold of {0}. Explain it in a note of the statement, or map
 msgstr "Melebihi ambang {0}. Jelaskan di catatan laporan, atau petakan akunnya ke pos yang lebih spesifik."
 
 #. Label of the account (Link) field in DocType 'PSAK ID Account Mapping'
-#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.json:49
+#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.json:51
 msgid "Account"
 msgstr "Akun"
+
+#. Label of the account_pattern (Data) field in DocType 'PSAK ID Mapping
+#. Template Row'
+#: frappe_psak_id/psak_id/doctype/psak_id_mapping_template_row/psak_id_mapping_template_row.json:43
+msgid "Account Pattern"
+msgstr "Pola Akun"
 
 #: frappe_psak_id/psak_id/report/psak_id_mapping_control/psak_id_mapping_control.py:59
 msgid "Account or Line"
@@ -49,10 +61,14 @@ msgstr "Akun {0} tidak ada."
 #. Option for the 'Condition Type' (Select) field in DocType 'PSAK ID Account
 #. Mapping'
 #. Label of the accounting_dimension (Link) field in DocType 'PSAK ID Account
-#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.json:107
-#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.json:113
+#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.json:109
+#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.json:115
 msgid "Accounting Dimension"
 msgstr "Dimensi Akuntansi"
+
+#: frappe_psak_id/psak_id/doctype/psak_id_mapping_template/psak_id_mapping_template.js:33
+msgid "Accounts that already have a mapping are skipped. Review the new mappings before preparing statements."
+msgstr "Akun yang sudah punya pemetaan dilewati. Tinjau pemetaan baru sebelum menyusun laporan."
 
 #: frappe_psak_id/psak_id/report/psak_id_mapping_control/psak_id_mapping_control.js:71
 msgid "Add Fallback Mapping"
@@ -79,7 +95,10 @@ msgstr "Seluruh Beban Pendanaan di Operasi hanya bisa dicentang bila pembiayaan 
 
 #. Option for the 'Expense Nature' (Select) field in DocType 'PSAK ID Account
 #. Mapping'
-#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.json:154
+#. Option for the 'Expense Nature' (Select) field in DocType 'PSAK ID Mapping
+#. Template Row'
+#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.json:156
+#: frappe_psak_id/psak_id/doctype/psak_id_mapping_template_row/psak_id_mapping_template_row.json:61
 msgid "Amortisation"
 msgstr "Amortisasi"
 
@@ -101,9 +120,28 @@ msgstr "Pos Lain-lain yang melebihi ambang wajib dijelaskan di catatan sebelum l
 
 #. Description of the 'Account' (Link) field in DocType 'PSAK ID Account
 #. Mapping'
-#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.json:44
+#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.json:46
 msgid "An income or expense account of the company (not a group)."
 msgstr "Akun pendapatan atau beban perusahaan (bukan grup)."
+
+#. Label of the root_type (Select) field in DocType 'PSAK ID Mapping Template
+#. Row'
+#: frappe_psak_id/psak_id/doctype/psak_id_mapping_template_row/psak_id_mapping_template_row.json:24
+msgid "Applies To"
+msgstr "Berlaku Untuk"
+
+#: frappe_psak_id/psak_id/doctype/psak_id_mapping_template/psak_id_mapping_template.js:38
+msgid "Apply"
+msgstr "Terapkan"
+
+#: frappe_psak_id/psak_id/doctype/psak_id_mapping_template/psak_id_mapping_template.js:7
+msgid "Apply to Company"
+msgstr "Terapkan ke Perusahaan"
+
+#: frappe_psak_id/psak_id/doctype/psak_id_mapping_template/psak_id_mapping_template.js:13
+#, python-brace-format
+msgid "Apply {0} to a Company"
+msgstr "Terapkan {0} ke Perusahaan"
 
 #. Label of the section_audit (Section Break) field in DocType 'PSAK ID Company
 #. Policy'
@@ -151,7 +189,7 @@ msgstr "Per Sifat"
 
 #. Label of the category (Data) field in DocType 'PSAK ID Account Mapping'
 #. Label of the category (Select) field in DocType 'PSAK ID Report Line'
-#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.json:78
+#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.json:80
 #: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.json:71
 msgid "Category"
 msgstr "Kategori"
@@ -167,6 +205,10 @@ msgstr "Pilih kategori PSAK 118 untuk pos ini."
 #: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.py:74
 msgid "Choose the accounting dimension of the condition."
 msgstr "Pilih dimensi akuntansi untuk kondisi ini."
+
+#: frappe_psak_id/psak_id/mapping.py:46
+msgid "Choose the date the mappings are valid from."
+msgstr "Pilih tanggal mulai berlakunya pemetaan."
 
 #: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.py:101
 msgid "Choose the expense nature. Operating expenses are also disclosed by nature (depreciation, employee benefits, ...)."
@@ -193,14 +235,15 @@ msgstr "Pilih {0} yang akan diperiksa."
 
 #. Label of the section_classification (Section Break) field in DocType 'PSAK
 #. ID Account Mapping'
-#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.json:146
+#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.json:148
 msgid "Classification"
 msgstr "Klasifikasi"
 
 #. Label of the company (Link) field in DocType 'PSAK ID Account Mapping'
 #. Label of the company (Link) field in DocType 'PSAK ID Company Policy'
-#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.json:38
+#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.json:40
 #: frappe_psak_id/psak_id/doctype/psak_id_company_policy/psak_id_company_policy.json:43
+#: frappe_psak_id/psak_id/doctype/psak_id_mapping_template/psak_id_mapping_template.js:17
 #: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.js:10
 #: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.py:65
 #: frappe_psak_id/psak_id/report/psak_id_mapping_control/psak_id_mapping_control.js:11
@@ -218,25 +261,25 @@ msgstr "Komparatif"
 
 #. Label of the section_condition (Section Break) field in DocType 'PSAK ID
 #. Account Mapping'
-#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.json:101
+#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.json:103
 msgid "Condition"
 msgstr "Kondisi"
 
 #. Label of the condition_doctype (Link) field in DocType 'PSAK ID Account
 #. Mapping'
-#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.json:131
+#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.json:133
 msgid "Condition Document Type"
 msgstr "Tipe Dokumen Kondisi"
 
 #. Label of the condition_type (Select) field in DocType 'PSAK ID Account
 #. Mapping'
-#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.json:106
+#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.json:108
 msgid "Condition Type"
 msgstr "Tipe Kondisi"
 
 #. Label of the condition_value (Dynamic Link) field in DocType 'PSAK ID
 #. Account Mapping'
-#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.json:140
+#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.json:142
 msgid "Condition Value"
 msgstr "Nilai Kondisi"
 
@@ -246,7 +289,7 @@ msgstr "Pemetaan bertentangan"
 
 #. Option for the 'Condition Type' (Select) field in DocType 'PSAK ID Account
 #. Mapping'
-#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.json:107
+#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.json:109
 #: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.js:58
 msgid "Cost Center"
 msgstr "Pusat Biaya"
@@ -255,6 +298,10 @@ msgstr "Pusat Biaya"
 #, python-brace-format
 msgid "Cost center {0} does not belong to {1}."
 msgstr "Pusat biaya {0} bukan milik {1}."
+
+#: frappe_psak_id/psak_id/doctype/psak_id_mapping_template/psak_id_mapping_template.js:45
+msgid "Creating mappings..."
+msgstr "Membuat pemetaan..."
 
 #. Label of the currency (Link) field in DocType 'PSAK ID Company Policy'
 #: frappe_psak_id/psak_id/doctype/psak_id_company_policy/psak_id_company_policy.json:76
@@ -268,7 +315,10 @@ msgstr "Satuan Default"
 
 #. Option for the 'Expense Nature' (Select) field in DocType 'PSAK ID Account
 #. Mapping'
-#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.json:154
+#. Option for the 'Expense Nature' (Select) field in DocType 'PSAK ID Mapping
+#. Template Row'
+#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.json:156
+#: frappe_psak_id/psak_id/doctype/psak_id_mapping_template_row/psak_id_mapping_template_row.json:61
 msgid "Depreciation"
 msgstr "Penyusutan"
 
@@ -290,7 +340,10 @@ msgstr "Operasi yang Dihentikan"
 
 #. Option for the 'Expense Nature' (Select) field in DocType 'PSAK ID Account
 #. Mapping'
-#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.json:154
+#. Option for the 'Expense Nature' (Select) field in DocType 'PSAK ID Mapping
+#. Template Row'
+#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.json:156
+#: frappe_psak_id/psak_id/doctype/psak_id_mapping_template_row/psak_id_mapping_template_row.json:61
 msgid "Employee Benefits"
 msgstr "Imbalan Kerja"
 
@@ -298,9 +351,18 @@ msgstr "Imbalan Kerja"
 msgid "English"
 msgstr "Inggris"
 
+#. Option for the 'Applies To' (Select) field in DocType 'PSAK ID Mapping
+#. Template Row'
+#: frappe_psak_id/psak_id/doctype/psak_id_mapping_template_row/psak_id_mapping_template_row.json:25
+msgid "Expense"
+msgstr "Beban"
+
 #. Label of the expense_nature (Select) field in DocType 'PSAK ID Account
 #. Mapping'
-#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.json:153
+#. Label of the expense_nature (Select) field in DocType 'PSAK ID Mapping
+#. Template Row'
+#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.json:155
+#: frappe_psak_id/psak_id/doctype/psak_id_mapping_template_row/psak_id_mapping_template_row.json:60
 msgid "Expense Nature"
 msgstr "Sifat Beban"
 
@@ -311,7 +373,10 @@ msgid "Expense Presentation"
 msgstr "Penyajian Beban"
 
 #. Label of the is_final_tax (Check) field in DocType 'PSAK ID Account Mapping'
-#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.json:161
+#. Label of the is_final_tax (Check) field in DocType 'PSAK ID Mapping Template
+#. Row'
+#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.json:163
+#: frappe_psak_id/psak_id/doctype/psak_id_mapping_template_row/psak_id_mapping_template_row.json:69
 msgid "Final Tax"
 msgstr "Pajak Final"
 
@@ -321,7 +386,7 @@ msgstr "PPh final bukan pajak penghasilan menurut PSAK 212. Petakan ke kategori 
 
 #. Description of the 'Final Tax' (Check) field in DocType 'PSAK ID Account
 #. Mapping'
-#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.json:158
+#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.json:160
 msgid "Final income tax (PPh final) is not income tax under PSAK 212. Map it to the category of the income it is levied on."
 msgstr "PPh final bukan pajak penghasilan menurut PSAK 212. Petakan ke kategori penghasilan yang dikenai pajak tersebut."
 
@@ -394,9 +459,18 @@ msgstr "Judul"
 
 #. Option for the 'Expense Nature' (Select) field in DocType 'PSAK ID Account
 #. Mapping'
-#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.json:154
+#. Option for the 'Expense Nature' (Select) field in DocType 'PSAK ID Mapping
+#. Template Row'
+#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.json:156
+#: frappe_psak_id/psak_id/doctype/psak_id_mapping_template_row/psak_id_mapping_template_row.json:61
 msgid "Impairment Losses (Reversals)"
 msgstr "Rugi Penurunan Nilai (Pemulihan)"
+
+#. Option for the 'Applies To' (Select) field in DocType 'PSAK ID Mapping
+#. Template Row'
+#: frappe_psak_id/psak_id/doctype/psak_id_mapping_template_row/psak_id_mapping_template_row.json:25
+msgid "Income"
+msgstr "Pendapatan"
 
 #. Option for the 'Category' (Select) field in DocType 'PSAK ID Report Line'
 #: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.json:73
@@ -411,9 +485,17 @@ msgstr "Indonesia"
 msgid "Indonesian and English"
 msgstr "Indonesia dan Inggris"
 
+#. Label of the industry (Select) field in DocType 'PSAK ID Mapping Template'
+#: frappe_psak_id/psak_id/doctype/psak_id_mapping_template/psak_id_mapping_template.json:31
+msgid "Industry"
+msgstr "Industri"
+
 #. Option for the 'Expense Nature' (Select) field in DocType 'PSAK ID Account
 #. Mapping'
-#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.json:154
+#. Option for the 'Expense Nature' (Select) field in DocType 'PSAK ID Mapping
+#. Template Row'
+#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.json:156
+#: frappe_psak_id/psak_id/doctype/psak_id_mapping_template_row/psak_id_mapping_template_row.json:61
 msgid "Inventory Write-downs (Reversals)"
 msgstr "Penurunan Nilai Persediaan (Pemulihan)"
 
@@ -421,6 +503,12 @@ msgstr "Penurunan Nilai Persediaan (Pemulihan)"
 #: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.json:73
 msgid "Investing"
 msgstr "Investasi"
+
+#. Option for the 'Industry' (Select) field in DocType 'PSAK ID Mapping
+#. Template'
+#: frappe_psak_id/psak_id/doctype/psak_id_mapping_template/psak_id_mapping_template.json:32
+msgid "Investment Holding"
+msgstr "Holding Investasi"
 
 #. Description of the 'Main Business: Investing' (Check) field in DocType 'PSAK
 #. ID Company Policy'
@@ -448,6 +536,12 @@ msgstr "Label (Indonesia)"
 #: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.json:103
 msgid "Labels"
 msgstr "Label"
+
+#. Description of the 'Applies To' (Select) field in DocType 'PSAK ID Mapping
+#. Template Row'
+#: frappe_psak_id/psak_id/doctype/psak_id_mapping_template_row/psak_id_mapping_template_row.json:20
+msgid "Leave empty to match income and expense accounts."
+msgstr "Kosongkan untuk mencocokkan akun pendapatan dan beban."
 
 #. Label of the lft (Int) field in DocType 'PSAK ID Report Line'
 #: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.json:178
@@ -525,6 +619,12 @@ msgstr "Aktivitas Utama: Investasi"
 msgid "Mandatory"
 msgstr "Wajib"
 
+#. Option for the 'Industry' (Select) field in DocType 'PSAK ID Mapping
+#. Template'
+#: frappe_psak_id/psak_id/doctype/psak_id_mapping_template/psak_id_mapping_template.json:32
+msgid "Manufacturing"
+msgstr "Manufaktur"
+
 #: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.py:54
 #, python-brace-format
 msgid "Map accounts to a profit or loss line, not to a heading or subtotal. {0} is a {1}."
@@ -544,6 +644,12 @@ msgstr "Dipetakan ke {0} yang nonaktif. Petakan akun ke pos lain."
 msgid "Mappings {0} match the same entries at priority {1} and name different lines. Give one of them a smaller priority number."
 msgstr "Pemetaan {0} cocok dengan entri yang sama pada prioritas {1} tetapi menunjuk pos berbeda. Beri salah satunya angka prioritas lebih kecil."
 
+#. Label of the match_on (Select) field in DocType 'PSAK ID Mapping Template
+#. Row'
+#: frappe_psak_id/psak_id/doctype/psak_id_mapping_template_row/psak_id_mapping_template_row.json:33
+msgid "Match On"
+msgstr "Cocokkan Pada"
+
 #. Option for the 'Default Unit' (Select) field in DocType 'PSAK ID Company
 #. Policy'
 #: frappe_psak_id/psak_id/doctype/psak_id_company_policy/psak_id_company_policy.json:140
@@ -561,9 +667,15 @@ msgstr "Campuran"
 msgid "Monthly"
 msgstr "Bulanan"
 
+#. Option for the 'Match On' (Select) field in DocType 'PSAK ID Mapping
+#. Template Row'
+#: frappe_psak_id/psak_id/doctype/psak_id_mapping_template_row/psak_id_mapping_template_row.json:34
+msgid "Name"
+msgstr "Nama"
+
 #. Description of the 'Expense Nature' (Select) field in DocType 'PSAK ID
 #. Account Mapping'
-#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.json:150
+#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.json:152
 msgid "Needed for operating expenses: the note on expenses by nature is built from it."
 msgstr "Wajib untuk beban operasi: catatan beban per sifat disusun dari field ini."
 
@@ -587,10 +699,20 @@ msgstr "Tidak ada kondisi yang cocok"
 msgid "None"
 msgstr "Tidak Ada"
 
+#: frappe_psak_id/psak_id/doctype/psak_id_mapping_template/psak_id_mapping_template.js:84
+msgid "Not matched: map these by hand"
+msgstr "Tidak cocok: petakan secara manual"
+
 #. Label of the notes (Small Text) field in DocType 'PSAK ID Account Mapping'
-#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.json:171
+#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.json:173
 msgid "Notes"
 msgstr "Catatan"
+
+#. Option for the 'Match On' (Select) field in DocType 'PSAK ID Mapping
+#. Template Row'
+#: frappe_psak_id/psak_id/doctype/psak_id_mapping_template_row/psak_id_mapping_template_row.json:34
+msgid "Number"
+msgstr "Nomor"
 
 #. Label of the old_parent (Link) field in DocType 'PSAK ID Report Line'
 #: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.json:194
@@ -616,6 +738,10 @@ msgstr "Hanya akun pendapatan dan beban yang tampil di laporan laba rugi; {0} ad
 msgid "Open General Ledger"
 msgstr "Buka Buku Besar"
 
+#: frappe_psak_id/psak_id/doctype/psak_id_mapping_template/psak_id_mapping_template.js:88
+msgid "Open Mapping Control"
+msgstr "Buka Kontrol Pemetaan"
+
 #: frappe_psak_id/psak_id/report/psak_id_mapping_control/psak_id_mapping_control.js:72
 #: frappe_psak_id/psak_id/report/psak_id_mapping_control/psak_id_mapping_control.js:73
 #: frappe_psak_id/psak_id/report/psak_id_mapping_control/psak_id_mapping_control.js:74
@@ -634,13 +760,16 @@ msgstr "Operasi"
 
 #. Description of the 'Condition' (Section Break) field in DocType 'PSAK ID
 #. Account Mapping'
-#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.json:98
+#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.json:100
 msgid "Optional. Use a condition when one account holds amounts of different categories, for example interest income on deposits and on customer financing."
 msgstr "Opsional. Gunakan kondisi bila satu akun menampung nilai dari kategori berbeda, misalnya pendapatan bunga deposito dan bunga pembiayaan pelanggan."
 
 #. Option for the 'Expense Nature' (Select) field in DocType 'PSAK ID Account
 #. Mapping'
-#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.json:154
+#. Option for the 'Expense Nature' (Select) field in DocType 'PSAK ID Mapping
+#. Template Row'
+#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.json:156
+#: frappe_psak_id/psak_id/doctype/psak_id_mapping_template_row/psak_id_mapping_template_row.json:61
 msgid "Other"
 msgstr "Lainnya"
 
@@ -681,35 +810,39 @@ msgid "PSAK 201 Line"
 msgstr "Pos PSAK 201"
 
 #. Name of a role
-#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.json:205
+#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.json:221
 #: frappe_psak_id/psak_id/doctype/psak_id_company_policy/psak_id_company_policy.json:233
+#: frappe_psak_id/psak_id/doctype/psak_id_mapping_template/psak_id_mapping_template.json:92
 #: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.json:231
 msgid "PSAK ID - Accounting - Head"
 msgstr ""
 
 #. Name of a role
-#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.json:215
+#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.json:231
 #: frappe_psak_id/psak_id/doctype/psak_id_company_policy/psak_id_company_policy.json:243
+#: frappe_psak_id/psak_id/doctype/psak_id_mapping_template/psak_id_mapping_template.json:102
 #: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.json:241
 msgid "PSAK ID - Accounting - Staff"
 msgstr ""
 
 #. Name of a role
-#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.json:231
+#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.json:247
 #: frappe_psak_id/psak_id/doctype/psak_id_company_policy/psak_id_company_policy.json:259
+#: frappe_psak_id/psak_id/doctype/psak_id_mapping_template/psak_id_mapping_template.json:118
 #: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.json:257
 msgid "PSAK ID - Auditor"
 msgstr ""
 
 #. Name of a role
-#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.json:223
+#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.json:239
 #: frappe_psak_id/psak_id/doctype/psak_id_company_policy/psak_id_company_policy.json:251
+#: frappe_psak_id/psak_id/doctype/psak_id_mapping_template/psak_id_mapping_template.json:110
 #: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.json:249
 msgid "PSAK ID - CFO"
 msgstr ""
 
 #. Name of a DocType
-#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.json:181
+#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.json:197
 msgid "PSAK ID Account Mapping"
 msgstr "Pemetaan Akun PSAK ID"
 
@@ -724,6 +857,16 @@ msgid "PSAK ID Mapping Control"
 msgstr "Kontrol Pemetaan"
 
 #. Name of a DocType
+#: frappe_psak_id/psak_id/doctype/psak_id_mapping_template/psak_id_mapping_template.json:68
+msgid "PSAK ID Mapping Template"
+msgstr "Template Pemetaan"
+
+#. Name of a DocType
+#: frappe_psak_id/psak_id/doctype/psak_id_mapping_template_row/psak_id_mapping_template_row.json:80
+msgid "PSAK ID Mapping Template Row"
+msgstr "Baris Template Pemetaan"
+
+#. Name of a DocType
 #: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.json:206
 msgid "PSAK ID Report Line"
 msgstr "Pos Laporan PSAK ID"
@@ -736,12 +879,12 @@ msgstr "Pos Induk"
 
 #. Option for the 'Condition Type' (Select) field in DocType 'PSAK ID Account
 #. Mapping'
-#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.json:107
+#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.json:109
 msgid "Party"
 msgstr "Pihak"
 
 #. Label of the party_type (Link) field in DocType 'PSAK ID Account Mapping'
-#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.json:120
+#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.json:122
 msgid "Party Type"
 msgstr "Tipe Pihak"
 
@@ -776,7 +919,7 @@ msgid "Prior Year, Restated"
 msgstr "Tahun Lalu, Disajikan Kembali"
 
 #. Label of the priority (Int) field in DocType 'PSAK ID Account Mapping'
-#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.json:94
+#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.json:96
 msgid "Priority"
 msgstr "Prioritas"
 
@@ -791,9 +934,15 @@ msgstr "Laba (Rugi) (PSAK 118)"
 
 #. Option for the 'Condition Type' (Select) field in DocType 'PSAK ID Account
 #. Mapping'
-#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.json:107
+#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.json:109
 msgid "Project"
 msgstr "Proyek"
+
+#. Option for the 'Industry' (Select) field in DocType 'PSAK ID Mapping
+#. Template'
+#: frappe_psak_id/psak_id/doctype/psak_id_mapping_template/psak_id_mapping_template.json:32
+msgid "Property"
+msgstr "Properti"
 
 #: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.js:40
 msgid "Quarterly"
@@ -801,12 +950,28 @@ msgstr "Kuartalan"
 
 #. Option for the 'Expense Nature' (Select) field in DocType 'PSAK ID Account
 #. Mapping'
-#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.json:154
+#. Option for the 'Expense Nature' (Select) field in DocType 'PSAK ID Mapping
+#. Template Row'
+#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.json:156
+#: frappe_psak_id/psak_id/doctype/psak_id_mapping_template_row/psak_id_mapping_template_row.json:61
 msgid "Raw Materials and Goods"
 msgstr "Bahan Baku dan Barang"
 
+#. Description of the 'Template Version' (Data) field in DocType 'PSAK ID
+#. Mapping Template'
+#: frappe_psak_id/psak_id/doctype/psak_id_mapping_template/psak_id_mapping_template.json:40
+msgid "Recorded on every mapping the template creates."
+msgstr "Dicatat pada setiap pemetaan yang dibuat template."
+
+#: frappe_psak_id/psak_id/doctype/psak_id_mapping_template/psak_id_mapping_template.js:85
+msgid "Refused"
+msgstr "Ditolak"
+
 #. Label of the report_line (Link) field in DocType 'PSAK ID Account Mapping'
-#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.json:69
+#. Label of the report_line (Link) field in DocType 'PSAK ID Mapping Template
+#. Row'
+#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.json:71
+#: frappe_psak_id/psak_id/doctype/psak_id_mapping_template_row/psak_id_mapping_template_row.json:51
 msgid "Report Line"
 msgstr "Pos Laporan"
 
@@ -846,9 +1011,47 @@ msgid "Right"
 msgstr "Kanan"
 
 #. Label of the root_type (Data) field in DocType 'PSAK ID Account Mapping'
-#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.json:57
+#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.json:59
 msgid "Root Type"
 msgstr "Tipe Akar"
+
+#: frappe_psak_id/psak_id/doctype/psak_id_mapping_template/psak_id_mapping_template.py:43
+#, python-brace-format
+msgid "Row {0} repeats the pattern of row {1}; only the first one would ever match."
+msgstr "Baris {0} mengulang pola baris {1}; hanya yang pertama yang akan pernah cocok."
+
+#: frappe_psak_id/psak_id/doctype/psak_id_mapping_template/psak_id_mapping_template.py:23
+#, python-brace-format
+msgid "Row {0}: enter the account pattern."
+msgstr "Baris {0}: isi pola akun."
+
+#: frappe_psak_id/psak_id/doctype/psak_id_mapping_template/psak_id_mapping_template.py:35
+#, python-brace-format
+msgid "Row {0}: final income tax (PPh final) is not income tax under PSAK 212. Map it to the category of the income it is levied on."
+msgstr "Baris {0}: PPh final bukan pajak penghasilan menurut PSAK 212. Petakan ke kategori penghasilan yang dikenai pajak tersebut."
+
+#: frappe_psak_id/psak_id/doctype/psak_id_mapping_template/psak_id_mapping_template.py:28
+#, python-brace-format
+msgid "Row {0}: map to a profit or loss line, not to a heading or subtotal."
+msgstr "Baris {0}: petakan ke pos laba rugi, bukan ke judul atau subtotal."
+
+#: frappe_psak_id/psak_id/doctype/psak_id_mapping_template/psak_id_mapping_template.py:31
+#, python-brace-format
+msgid "Row {0}: report line {1} is disabled."
+msgstr "Baris {0}: pos laporan {1} nonaktif."
+
+#. Label of the section_rows (Section Break) field in DocType 'PSAK ID Mapping
+#. Template'
+#. Label of the rows (Table) field in DocType 'PSAK ID Mapping Template'
+#: frappe_psak_id/psak_id/doctype/psak_id_mapping_template/psak_id_mapping_template.json:51
+msgid "Rows"
+msgstr "Baris"
+
+#. Description of the 'Rows' (Section Break) field in DocType 'PSAK ID Mapping
+#. Template'
+#: frappe_psak_id/psak_id/doctype/psak_id_mapping_template/psak_id_mapping_template.json:48
+msgid "Rows are tried from top to bottom: the first row whose pattern matches an account maps it. Put specific patterns above general ones."
+msgstr "Baris dicoba dari atas ke bawah: baris pertama yang polanya cocok dengan akun yang memetakannya. Letakkan pola spesifik di atas pola umum."
 
 #. Option for the 'Reporting Framework' (Select) field in DocType 'PSAK ID
 #. Company Policy'
@@ -888,6 +1091,12 @@ msgstr "Pisahkan setiap kode pos di rumus subtotal dengan spasi dan tanda. Ditem
 msgid "Sequence"
 msgstr "Urutan"
 
+#. Option for the 'Industry' (Select) field in DocType 'PSAK ID Mapping
+#. Template'
+#: frappe_psak_id/psak_id/doctype/psak_id_mapping_template/psak_id_mapping_template.json:32
+msgid "Services"
+msgstr "Jasa"
+
 #: frappe_psak_id/psak_id/report/psak_id_mapping_control/psak_id_mapping_control.py:57
 msgid "Severity"
 msgstr "Tingkat"
@@ -915,9 +1124,25 @@ msgstr "Disajikan di Operasi bila kebijakan perusahaan menandai investasi atau p
 msgid "Shows all expenses from financing liabilities in Operating. The subtotal Profit or Loss before Financing and Income Taxes is then not presented."
 msgstr "Menyajikan seluruh beban dari liabilitas pendanaan di Operasi. Subtotal Laba (Rugi) sebelum Pendanaan dan Pajak Penghasilan kemudian tidak disajikan."
 
+#: frappe_psak_id/psak_id/doctype/psak_id_mapping_template/psak_id_mapping_template.js:86
+msgid "Skipped"
+msgstr "Dilewati"
+
 #: frappe_psak_id/psak_id/report/psak_id_mapping_control/psak_id_mapping_control.py:84
 msgid "Some entries match none of the account's conditional mappings. Add a mapping without a condition as the fallback."
 msgstr "Sebagian entri tidak cocok dengan pemetaan bersyarat mana pun dari akun ini. Tambahkan pemetaan tanpa kondisi sebagai fallback."
+
+#. Label of the source_template (Link) field in DocType 'PSAK ID Account
+#. Mapping'
+#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.json:178
+msgid "Source Template"
+msgstr "Template Sumber"
+
+#. Label of the source_template_version (Data) field in DocType 'PSAK ID
+#. Account Mapping'
+#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.json:186
+msgid "Source Template Version"
+msgstr "Versi Template Sumber"
 
 #: frappe_psak_id/psak_id/report_lines.py:48
 #, python-brace-format
@@ -941,11 +1166,28 @@ msgid "Subtotal Formula"
 msgstr "Rumus Subtotal"
 
 #. Name of a role
-#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.json:193
+#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.json:209
 #: frappe_psak_id/psak_id/doctype/psak_id_company_policy/psak_id_company_policy.json:222
+#: frappe_psak_id/psak_id/doctype/psak_id_mapping_template/psak_id_mapping_template.json:80
 #: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.json:219
 msgid "System Manager"
 msgstr ""
+
+#: frappe_psak_id/psak_id/doctype/psak_id_mapping_template/psak_id_mapping_template.js:80
+msgid "Template Applied"
+msgstr "Template Diterapkan"
+
+#. Label of the template_name (Data) field in DocType 'PSAK ID Mapping
+#. Template'
+#: frappe_psak_id/psak_id/doctype/psak_id_mapping_template/psak_id_mapping_template.json:22
+msgid "Template Name"
+msgstr "Nama Template"
+
+#. Label of the template_version (Data) field in DocType 'PSAK ID Mapping
+#. Template'
+#: frappe_psak_id/psak_id/doctype/psak_id_mapping_template/psak_id_mapping_template.json:44
+msgid "Template Version"
+msgstr "Versi Template"
 
 #. Description of the 'Subtotal Formula' (Small Text) field in DocType 'PSAK ID
 #. Report Line'
@@ -964,7 +1206,7 @@ msgstr "Ambang Pos Lain-lain tidak boleh negatif."
 
 #. Description of the 'Valid From' (Date) field in DocType 'PSAK ID Account
 #. Mapping'
-#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.json:82
+#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.json:84
 msgid "The mapping applies to statements whose period ends on or after this date."
 msgstr "Pemetaan berlaku untuk laporan yang periodenya berakhir pada atau setelah tanggal ini."
 
@@ -1060,6 +1302,12 @@ msgstr "Total (Disajikan Kembali)"
 msgid "Total Prior Year"
 msgstr "Total Tahun Lalu"
 
+#. Option for the 'Industry' (Select) field in DocType 'PSAK ID Mapping
+#. Template'
+#: frappe_psak_id/psak_id/doctype/psak_id_mapping_template/psak_id_mapping_template.json:32
+msgid "Trading"
+msgstr "Dagang"
+
 #: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.js:73
 msgid "Unit"
 msgstr "Satuan"
@@ -1079,8 +1327,13 @@ msgstr "Kategori {0} di rumus subtotal tidak dikenal. Gunakan salah satu: {1}."
 msgid "Unmapped account"
 msgstr "Akun belum dipetakan"
 
+#: frappe_psak_id/psak_id/doctype/psak_id_mapping_template/psak_id_mapping_template.js:29
+msgid "Usually the PSAK 118 adoption date of the company."
+msgstr "Biasanya tanggal penerapan PSAK 118 perusahaan."
+
 #. Label of the valid_from (Date) field in DocType 'PSAK ID Account Mapping'
-#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.json:86
+#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.json:88
+#: frappe_psak_id/psak_id/doctype/psak_id_mapping_template/psak_id_mapping_template.js:26
 msgid "Valid From"
 msgstr "Berlaku Mulai"
 
@@ -1098,7 +1351,7 @@ msgstr "Yang Harus Dilakukan"
 
 #. Description of the 'Priority' (Int) field in DocType 'PSAK ID Account
 #. Mapping'
-#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.json:91
+#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.json:93
 msgid "When several mappings of the account match an entry, the lowest number wins. A mapping without a condition is the fallback."
 msgstr "Bila beberapa pemetaan akun cocok dengan satu entri, angka terkecil yang dipakai. Pemetaan tanpa kondisi menjadi cadangan."
 
@@ -1110,7 +1363,7 @@ msgstr "Kriteria Pasal 68 UU Perseroan Terbatas yang dipenuhi perusahaan."
 
 #. Description of the 'Notes' (Small Text) field in DocType 'PSAK ID Account
 #. Mapping'
-#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.json:168
+#: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.json:170
 msgid "Why the account is classified this way, for the auditor."
 msgstr "Alasan klasifikasi akun ini, untuk auditor."
 
@@ -1182,4 +1435,9 @@ msgstr "{0} diwajibkan PSAK 118; tipe dan rumusnya tidak bisa diubah."
 #, python-brace-format
 msgid "{0} is used in the subtotal formula of {1}. Change those formulas first."
 msgstr "{0} dipakai di rumus subtotal {1}. Ubah rumus tersebut lebih dulu."
+
+#: frappe_psak_id/psak_id/doctype/psak_id_mapping_template/psak_id_mapping_template.js:75
+#, python-brace-format
+msgid "{0} mappings created, {1} accounts skipped (already mapped), {2} not matched."
+msgstr "{0} pemetaan dibuat, {1} akun dilewati (sudah dipetakan), {2} tidak cocok."
 
