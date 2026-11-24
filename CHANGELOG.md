@@ -4,6 +4,8 @@ All notable changes to PSAK ID are listed here. The project follows [Semantic Ve
 
 ## [Unreleased]
 
+## [1.0.3] - 2026-11-25
+
 ### Added
 
 - A release published on GitHub is advertised on the Frappe Marketplace: the `publish-marketplace` workflow adds it to the registry from a fork and opens or updates one rolling PR to `frappe/marketplace`. It needs the `MARKETPLACE_PR_TOKEN` secret.
