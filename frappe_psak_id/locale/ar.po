@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PSAK ID VERSION\n"
 "Report-Msgid-Bugs-To: helpdesk@thinkspedia.com\n"
-"POT-Creation-Date: 2026-11-24 08:02+0000\n"
+"POT-Creation-Date: 2026-11-24 11:30+0000\n"
 "PO-Revision-Date: 2026-11-23 12:08+0000\n"
 "Last-Translator: helpdesk@thinkspedia.com\n"
 "Language: ar\n"
@@ -22,6 +22,11 @@ msgstr ""
 #. Mapping Template Row'
 #: frappe_psak_id/psak_id/doctype/psak_id_mapping_template_row/psak_id_mapping_template_row.json:39
 msgid "* matches any text, case is ignored. Example: *interest income* or 41*."
+msgstr ""
+
+#. Header text in the PSAK 118 Workspace
+#: frappe_psak_id/psak_id/workspace/psak_118/psak_118.json:3
+msgid "<span class=\"h4\"><b>PSAK 118</b></span>"
 msgstr ""
 
 #: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.py:88
@@ -49,6 +54,13 @@ msgstr ""
 #. Label of the account (Link) field in DocType 'PSAK ID Account Mapping'
 #: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.json:51
 msgid "Account"
+msgstr ""
+
+#. Label of a Sidebar Item
+#. Label of a Link in the PSAK 118 Workspace
+#: frappe_psak_id/psak_id/sidebar/psak_118/psak_118.json:112
+#: frappe_psak_id/psak_id/workspace/psak_118/psak_118.json:67
+msgid "Account Mapping"
 msgstr ""
 
 #. Label of the account_pattern (Data) field in DocType 'PSAK ID Mapping
@@ -106,7 +118,7 @@ msgstr ""
 msgid "All Financing Expenses in Operating can only be ticked when customer financing is a main business activity of the company. Tick Main Business: Customer Financing first."
 msgstr ""
 
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:130
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:139
 #, python-brace-format
 msgid "All checks pass. Computed on {0}."
 msgstr ""
@@ -220,6 +232,16 @@ msgstr ""
 msgid "Audit Required"
 msgstr ""
 
+#. Label of a number card in the PSAK 118 Workspace
+#: frappe_psak_id/psak_id/workspace/psak_118/psak_118.json:134
+msgid "Awaiting CFO Approval"
+msgstr ""
+
+#. Label of a number card in the PSAK 118 Workspace
+#: frappe_psak_id/psak_id/workspace/psak_118/psak_118.json:130
+msgid "Awaiting Review"
+msgstr ""
+
 #: frappe_psak_id/psak_id/report/psak_id_mapping_control/psak_id_mapping_control.py:121
 msgid "Blocking"
 msgstr ""
@@ -262,6 +284,13 @@ msgstr ""
 msgid "Category"
 msgstr ""
 
+#. Label of a Sidebar Item
+#. Label of a Link in the PSAK 118 Workspace
+#: frappe_psak_id/psak_id/sidebar/psak_118/psak_118.json:192
+#: frappe_psak_id/psak_id/workspace/psak_118/psak_118.json:116
+msgid "Change History"
+msgstr ""
+
 #: frappe_psak_id/psak_id/report/psak_id_mapping_control/psak_id_mapping_control.py:56
 msgid "Check"
 msgstr ""
@@ -278,7 +307,7 @@ msgstr ""
 msgid "Checks"
 msgstr ""
 
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:124
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:133
 msgid "Checks pass. Other Items lines are above the threshold: explain them in Other Items Breakdown."
 msgstr ""
 
@@ -350,6 +379,13 @@ msgstr ""
 msgid "Company Default"
 msgstr ""
 
+#. Label of a Sidebar Item
+#. Label of a Link in the PSAK 118 Workspace
+#: frappe_psak_id/psak_id/sidebar/psak_118/psak_118.json:175
+#: frappe_psak_id/psak_id/workspace/psak_118/psak_118.json:106
+msgid "Company Policy"
+msgstr ""
+
 #. Label of the comparative (Select) field in DocType 'PSAK ID Financial
 #. Statement'
 #: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.json:112
@@ -372,7 +408,7 @@ msgstr ""
 msgid "Computed On"
 msgstr ""
 
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:149
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:158
 msgid "Computing the statement from the General Ledger..."
 msgstr ""
 
@@ -472,8 +508,13 @@ msgstr ""
 msgid "Discontinued Operations"
 msgstr ""
 
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:55
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:64
 msgid "Download"
+msgstr ""
+
+#. Label of a shortcut in the PSAK 118 Workspace
+#: frappe_psak_id/psak_id/workspace/psak_118/psak_118.json:175
+msgid "ERPNext Profit and Loss"
 msgstr ""
 
 #. Option for the 'Expense Nature' (Select) field in DocType 'PSAK ID Account
@@ -492,7 +533,7 @@ msgstr ""
 msgid "English"
 msgstr ""
 
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:46
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:55
 msgid "Excel"
 msgstr ""
 
@@ -536,6 +577,11 @@ msgstr ""
 msgid "Final Tax"
 msgstr ""
 
+#. Label of a number card in the PSAK 118 Workspace
+#: frappe_psak_id/psak_id/workspace/psak_118/psak_118.json:142
+msgid "Final This Year"
+msgstr ""
+
 #: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.py:132
 msgid "Final income tax (PPh final) is not income tax under PSAK 212. Map it to the category of the income it is levied on, for example Final tax expense in Operating."
 msgstr ""
@@ -556,6 +602,13 @@ msgstr ""
 #: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.js:67
 #: frappe_psak_id/psak_id/report/psak_id_mapping_control/psak_id_mapping_control.js:37
 msgid "Finance Book"
+msgstr ""
+
+#. Label of a Sidebar Item
+#. Label of a Link in the PSAK 118 Workspace
+#: frappe_psak_id/psak_id/sidebar/psak_118/psak_118.json:49
+#: frappe_psak_id/psak_id/workspace/psak_118/psak_118.json:28
+msgid "Financial Statements"
 msgstr ""
 
 #. Option for the 'Category' (Select) field in DocType 'PSAK ID Report Line'
@@ -644,6 +697,11 @@ msgstr ""
 #. Option for the 'Line Type' (Select) field in DocType 'PSAK ID Report Line'
 #: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.json:62
 msgid "Heading"
+msgstr ""
+
+#. Label of a Sidebar Item
+#: frappe_psak_id/psak_id/sidebar/psak_118/psak_118.json:18
+msgid "Home"
 msgstr ""
 
 #. Option for the 'Expense Nature' (Select) field in DocType 'PSAK ID Account
@@ -752,6 +810,11 @@ msgstr ""
 #. Line'
 #: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.json:103
 msgid "Labels"
+msgstr ""
+
+#. Label of a quick_list in the PSAK 118 Workspace
+#: frappe_psak_id/psak_id/workspace/psak_118/psak_118.json:151
+msgid "Latest Financial Statements"
 msgstr ""
 
 #. Description of the 'Applies To' (Select) field in DocType 'PSAK ID Mapping
@@ -864,8 +927,27 @@ msgstr ""
 msgid "Mapped to {0}, which is disabled. Map the account to another line."
 msgstr ""
 
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:35
+#. Label of a Sidebar Item
+#. Label of a Card Break in the PSAK 118 Workspace
+#: frappe_psak_id/psak_id/sidebar/psak_118/psak_118.json:81
+#: frappe_psak_id/psak_id/workspace/psak_118/psak_118.json:48
+msgid "Mapping"
+msgstr ""
+
+#. Label of a Sidebar Item
+#. Label of a Link in the PSAK 118 Workspace
+#. Label of a shortcut in the PSAK 118 Workspace
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:44
+#: frappe_psak_id/psak_id/sidebar/psak_118/psak_118.json:96
+#: frappe_psak_id/psak_id/workspace/psak_118/psak_118.json:57
 msgid "Mapping Control"
+msgstr ""
+
+#. Label of a Sidebar Item
+#. Label of a Link in the PSAK 118 Workspace
+#: frappe_psak_id/psak_id/sidebar/psak_118/psak_118.json:144
+#: frappe_psak_id/psak_id/workspace/psak_118/psak_118.json:87
+msgid "Mapping Templates"
 msgstr ""
 
 #: frappe_psak_id/psak_id/report/psak_id_mapping_control/psak_id_mapping_control.py:93
@@ -916,6 +998,11 @@ msgstr ""
 
 #: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.py:232
 msgid "Net Profit in ERPNext Profit and Loss"
+msgstr ""
+
+#. Label of a shortcut in the PSAK 118 Workspace
+#: frappe_psak_id/psak_id/workspace/psak_118/psak_118.json:160
+msgid "New Financial Statement"
 msgstr ""
 
 #: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.py:208
@@ -1097,8 +1184,15 @@ msgstr ""
 msgid "Other Items lines are above the company threshold. Explain what they consist of in Other Items Breakdown."
 msgstr ""
 
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:45
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:54
 msgid "PDF"
+msgstr ""
+
+#. Title of a Sidebar
+#. Name of a Workspace
+#: frappe_psak_id/psak_id/sidebar/psak_118/psak_118.json:206
+#: frappe_psak_id/psak_id/workspace/psak_118/psak_118.json:13
+msgid "PSAK 118"
 msgstr ""
 
 #. Label of the report_line (Link) field in DocType 'PSAK ID Transition
@@ -1108,8 +1202,10 @@ msgid "PSAK 118 Line"
 msgstr ""
 
 #. Name of a report
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:40
+#. Label of a Link in the PSAK 118 Workspace
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:49
 #: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.json:22
+#: frappe_psak_id/psak_id/workspace/psak_118/psak_118.json:38
 msgid "PSAK 118 Profit or Loss"
 msgstr ""
 
@@ -1298,7 +1394,9 @@ msgid "Priority"
 msgstr ""
 
 #. Option for the 'Statement' (Select) field in DocType 'PSAK ID Report Line'
+#. Label of a Sidebar Item
 #: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.json:51
+#: frappe_psak_id/psak_id/sidebar/psak_118/psak_118.json:65
 msgid "Profit or Loss"
 msgstr ""
 
@@ -1337,12 +1435,12 @@ msgstr ""
 msgid "Raw Materials and Goods"
 msgstr ""
 
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:78
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:159
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:87
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:168
 msgid "Reason"
 msgstr ""
 
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:22
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:31
 msgid "Recompute"
 msgstr ""
 
@@ -1362,8 +1460,8 @@ msgstr ""
 msgid "Refused"
 msgstr ""
 
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:25
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:176
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:34
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:185
 msgid "Reopen"
 msgstr ""
 
@@ -1373,7 +1471,7 @@ msgstr ""
 msgid "Reopen Reason"
 msgstr ""
 
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:175
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:184
 #, python-brace-format
 msgid "Reopen {0}"
 msgstr ""
@@ -1406,6 +1504,13 @@ msgstr ""
 msgid "Report Line"
 msgstr ""
 
+#. Label of a Sidebar Item
+#. Label of a Link in the PSAK 118 Workspace
+#: frappe_psak_id/psak_id/sidebar/psak_118/psak_118.json:128
+#: frappe_psak_id/psak_id/workspace/psak_118/psak_118.json:77
+msgid "Report Lines"
+msgstr ""
+
 #: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.py:70
 #, python-brace-format
 msgid "Report line {0} does not exist."
@@ -1420,6 +1525,13 @@ msgstr ""
 #. Policy'
 #: frappe_psak_id/psak_id/doctype/psak_id_company_policy/psak_id_company_policy.json:54
 msgid "Reporting Framework"
+msgstr ""
+
+#. Label of a Sidebar Item
+#. Label of a Card Break in the PSAK 118 Workspace
+#: frappe_psak_id/psak_id/sidebar/psak_118/psak_118.json:34
+#: frappe_psak_id/psak_id/workspace/psak_118/psak_118.json:19
+msgid "Reports"
 msgstr ""
 
 #. Description of the 'Mandatory' (Check) field in DocType 'PSAK ID Report
@@ -1559,7 +1671,7 @@ msgstr ""
 msgid "Sent back to {0}: {1}"
 msgstr ""
 
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:137
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:146
 #, python-brace-format
 msgid "Sent back: {0}"
 msgstr ""
@@ -1578,6 +1690,13 @@ msgstr ""
 #. Template'
 #: frappe_psak_id/psak_id/doctype/psak_id_mapping_template/psak_id_mapping_template.json:32
 msgid "Services"
+msgstr ""
+
+#. Label of a Sidebar Item
+#. Label of a Card Break in the PSAK 118 Workspace
+#: frappe_psak_id/psak_id/sidebar/psak_118/psak_118.json:160
+#: frappe_psak_id/psak_id/workspace/psak_118/psak_118.json:97
+msgid "Settings"
 msgstr ""
 
 #: frappe_psak_id/psak_id/report/psak_id_mapping_control/psak_id_mapping_control.py:57
@@ -1643,11 +1762,11 @@ msgstr ""
 msgid "Statement of Profit or Loss"
 msgstr ""
 
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:52
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:61
 msgid "Structured Data (CSV)"
 msgstr ""
 
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:48
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:57
 msgid "Structured Data (Excel)"
 msgstr ""
 
@@ -1671,7 +1790,7 @@ msgstr ""
 msgid "System Manager"
 msgstr ""
 
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:81
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:90
 msgid "Tell the preparer what to change."
 msgstr ""
 
@@ -1791,7 +1910,7 @@ msgstr ""
 msgid "The subtotal formulas refer to each other in a loop: {0}."
 msgstr ""
 
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:162
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:171
 msgid "This version is cancelled and kept. A new version is created to correct, review and approve again."
 msgstr ""
 
@@ -1887,7 +2006,9 @@ msgstr ""
 
 #. Label of the unmapped_count (Int) field in DocType 'PSAK ID Financial
 #. Statement'
+#. Label of a number card in the PSAK 118 Workspace
 #: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.json:165
+#: frappe_psak_id/psak_id/workspace/psak_118/psak_118.json:138
 msgid "Unmapped Accounts"
 msgstr ""
 
@@ -1905,8 +2026,8 @@ msgstr ""
 msgid "Valid From"
 msgstr ""
 
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:37
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:42
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:46
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:51
 msgid "View"
 msgstr ""
 
@@ -2005,7 +2126,7 @@ msgstr ""
 msgid "{0} applies PSAK 118 from {1}. In that first year the comparative is the prior year restated with this year's mappings: choose Restated Prior Year."
 msgstr ""
 
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:119
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:128
 #, python-brace-format
 msgid "{0} checks fail. The statement cannot be sent for review."
 msgstr ""

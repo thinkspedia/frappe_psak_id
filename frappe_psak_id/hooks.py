@@ -43,17 +43,18 @@ fixtures = [
 # and PSAK ID is an add-on to ERPNext, not the site's brand. The apps screen tile below carries
 # the logo instead.
 
-# Each item in the list will be shown as an app in the apps page. Enabled once the PSAK ID
-# workspace exists, with a has_permission check for the accounting roles.
-# add_to_apps_screen = [
-# 	{
-# 		"name": "frappe_psak_id",
-# 		"logo": "/assets/frappe_psak_id/images/psak-id-logo.svg",
-# 		"title": "PSAK ID",
-# 		"route": "/desk/psak-id",
-# 		"has_permission": "frappe_psak_id.permissions.has_app_permission"
-# 	}
-# ]
+# WHY: the apps screen tile is the one entry point to the PSAK 118 workspace (FR-11), shown with
+# the app logo only to users who can open a PSAK ID statement or company policy. /app redirects
+# to /desk on v16.
+add_to_apps_screen = [
+	{
+		"name": "frappe_psak_id",
+		"logo": "/assets/frappe_psak_id/images/psak-id-logo.svg",
+		"title": "PSAK ID",
+		"route": "/app/psak-118",
+		"has_permission": "frappe_psak_id.permissions.has_app_permission",
+	}
+]
 
 # Includes in <head>
 # ------------------

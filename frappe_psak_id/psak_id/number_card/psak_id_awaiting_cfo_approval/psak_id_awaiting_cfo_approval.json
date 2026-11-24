@@ -1,0 +1,23 @@
+{
+ "color": "#ECAD4B",
+ "creation": "2026-11-24 15:33:31.236437",
+ "docstatus": 0,
+ "doctype": "Number Card",
+ "document_type": "PSAK ID Financial Statement",
+ "filters_json": "[[\"PSAK ID Financial Statement\", \"workflow_state\", \"=\", \"Approval CFO\", false]]",
+ "function": "Count",
+ "idx": 0,
+ "is_public": 1,
+ "is_standard": 1,
+ "label": "Awaiting CFO Approval",
+ "modified": "2026-11-24 15:36:11.695131",
+ "modified_by": "Administrator",
+ "module": "PSAK ID",
+ "name": "PSAK ID Awaiting CFO Approval",
+ "owner": "Administrator",
+ "report_function": "Sum",
+ "show_full_number": 0,
+ "show_percentage_stats": 0,
+ "stats_time_interval": "Daily",
+ "type": "Document Type"
+}
