@@ -99,7 +99,9 @@ def download_pdf(name: str) -> None:
 	page after it (Export Layout Standard)."""
 	doc = frappe.get_doc(DOCTYPE, name)
 	doc.check_permission("print")
-	html = frappe.get_print(DOCTYPE, name, print_format=PRINT_FORMAT, doc=doc, no_letterhead=1)
+	# Frappe renders the letter head into the print context; empty uses the default letter head
+	letter_head = frappe.db.get_value("PSAK ID Company Policy", doc.company, "letter_head")
+	html = frappe.get_print(DOCTYPE, name, print_format=PRINT_FORMAT, doc=doc, letterhead=letter_head)
 	pages = PdfReader(io.BytesIO(get_pdf(html, dict(PAGE_FOOTER)))).pages
 
 	watermark = _watermark(doc)
@@ -137,7 +139,7 @@ def get_print_context(doc) -> frappe._dict:
 		frappe.db.get_value(
 			"PSAK ID Company Policy",
 			doc.company,
-			["letter_head", "show_category_headings"],
+			["show_category_headings"],
 			as_dict=True,
 		)
 		or frappe._dict()
@@ -148,7 +150,6 @@ def get_print_context(doc) -> frappe._dict:
 
 	return frappe._dict(
 		company=doc.company,
-		letter_head=_letter_head(doc, policy.letter_head),
 		watermark=_watermark(doc),
 		period=_period_phrase(end, doc.periodicity == "Annual"),
 		unit=_unit_phrase(doc.unit, doc.currency),
@@ -173,12 +174,6 @@ def format_amount(value, divisor: int = 1) -> str:
 		return "-"
 	text = f"{abs(amount):,.0f}".replace(",", ".")
 	return f"({text})" if amount < 0 else text
-
-
-def _letter_head(doc, letter_head: str | None) -> str:
-	name = letter_head or frappe.db.get_value("Letter Head", {"is_default": 1, "disabled": 0})
-	content = name and frappe.db.get_value("Letter Head", name, "content")
-	return frappe.render_template(content, {"doc": doc.as_dict()}) if content else ""
 
 
 def _watermark(doc) -> str | None:

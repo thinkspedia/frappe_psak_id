@@ -3,7 +3,7 @@
 	Frappe v15 and v16. Table layout and CSS that QtWebKit understands; logical properties come
 	with their -webkit- forms so the layout follows the text direction. download_pdf adds the
 	running header, page numbers and watermark to the PDF; the Print view shows the watermark.
-	Escaped here: labels, names and notes typed by users. The letter head and Other Items note are HTML kept by Frappe.
+	Escaped here: labels, names and notes typed by users. The letter head (rendered by Frappe) and Other Items note are HTML.
 -#}
 {%- set fs = doc.get_print_context() -%}
 {%- set amount_count = fs.columns | length -%}
@@ -128,8 +128,8 @@
 	{%- endif %}
 
 	<div class="psak-section">
-		{%- if fs.letter_head %}
-		<div class="psak-letter-head">{{ fs.letter_head }}</div>
+		{%- if letter_head %}
+		<div class="psak-letter-head">{{ letter_head }}</div>
 		{%- endif %}
 		{{ title_block("Laporan Laba Rugi", "Statement of Profit or Loss") }}
 		<table>
