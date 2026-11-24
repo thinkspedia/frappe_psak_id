@@ -4,6 +4,10 @@ All notable changes to PSAK ID are listed here. The project follows [Semantic Ve
 
 ## [Unreleased]
 
+### Added
+
+- PSAK ID Report Line: the statement of financial position and other comprehensive income. The standard lines of both (PRD-002 Appendices B and E) are installed, with total assets, total equity, total liabilities and equity and total comprehensive income required. Financial position lines are assets, liabilities or equity, and assets and liabilities are current or non-current; other comprehensive income lines are marked as may or will not be reclassified to profit or loss. A subtotal formula can add the current or non-current lines of a category (`+CAT:Asset/Current`) and the subtotal of another statement (`+PL-SUB-PL`).
+
 ## [1.0.3] - 2026-11-25
 
 ### Added
