@@ -4,6 +4,10 @@ All notable changes to PSAK ID are listed here. The project follows [Semantic Ve
 
 ## [Unreleased]
 
+### Changed
+
+- CI runs the Frappe v15 tests on Python 3.11: Frappe 15.128 no longer installs on Python 3.10.
+
 ### Added
 
 - **Download > Excel** on the PSAK ID Financial Statement (FR-10): sheets Laba Rugi, Beban per Sifat and Rekonsiliasi Transisi when the statement has them, and Info (company, period, finance book, status, document, version, preparer, reviewer, approver, export time). Same bilingual title block and wording as the PDF, centred across the table without merged cells, English labels in their own column, frozen column headers, fixed column widths, A4 portrait fitted to one page wide with repeated headers and page numbers. Amounts are stored in full and shown in the statement's unit by the number format; subtotals and totals are formulas over the cells of the lines they add up (a subtotal left off the statement is expanded into its own lines), so they give the statement's amounts and still add up when a line is changed. A subtotal whose report line formula changed after the statement was computed is written as its stored amount.

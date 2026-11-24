@@ -23,7 +23,8 @@ jobs:
       matrix:
         include:
           - frappe: version-15
-            python: "3.10"
+            # Frappe 15.128 requires Python 3.11 or later
+            python: "3.11"
             node: 18
             mariadb: "10.6"
           - frappe: version-16
