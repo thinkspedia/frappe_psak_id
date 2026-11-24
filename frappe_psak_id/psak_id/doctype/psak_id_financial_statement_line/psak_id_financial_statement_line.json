@@ -1,0 +1,106 @@
+{
+ "actions": [],
+ "allow_bulk_edit": 1,
+ "allow_rename": 1,
+ "creation": "2026-11-24 08:18:20.499153",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "report_line",
+  "label_id",
+  "label_en",
+  "category",
+  "line_type",
+  "is_other_items",
+  "note_no",
+  "amount",
+  "comparative_amount"
+ ],
+ "fields": [
+  {
+   "columns": 1,
+   "fieldname": "report_line",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Report Line",
+   "options": "PSAK ID Report Line",
+   "read_only": 1
+  },
+  {
+   "columns": 3,
+   "fieldname": "label_id",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Label (Indonesian)",
+   "read_only": 1
+  },
+  {
+   "fieldname": "label_en",
+   "fieldtype": "Data",
+   "label": "Label (English)",
+   "read_only": 1
+  },
+  {
+   "fieldname": "category",
+   "fieldtype": "Data",
+   "label": "Category",
+   "read_only": 1
+  },
+  {
+   "fieldname": "line_type",
+   "fieldtype": "Data",
+   "label": "Line Type",
+   "read_only": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "is_other_items",
+   "fieldtype": "Check",
+   "label": "Other Items",
+   "read_only": 1
+  },
+  {
+   "columns": 1,
+   "description": "Number of the note that explains this line, e.g. 21.",
+   "fieldname": "note_no",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Note"
+  },
+  {
+   "columns": 2,
+   "fieldname": "amount",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Amount",
+   "options": "currency",
+   "read_only": 1
+  },
+  {
+   "columns": 2,
+   "fieldname": "comparative_amount",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Comparative Amount",
+   "options": "currency",
+   "read_only": 1
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "link_display_mode": "Search",
+ "links": [],
+ "modified": "2026-11-24 08:18:20.499153",
+ "modified_by": "Administrator",
+ "module": "PSAK ID",
+ "name": "PSAK ID Financial Statement Line",
+ "owner": "Administrator",
+ "permissions": [],
+ "row_format": "Dynamic",
+ "rows_threshold_for_grid_search": 20,
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": []
+}

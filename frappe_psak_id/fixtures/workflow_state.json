@@ -1,0 +1,56 @@
+[
+ {
+  "docstatus": 0,
+  "doctype": "Workflow State",
+  "icon": null,
+  "modified": "2026-11-24 08:18:22.248357",
+  "name": "Draft",
+  "style": "Info",
+  "workflow_state_name": "Draft"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Workflow State",
+  "icon": null,
+  "modified": "2026-11-24 08:18:22.275666",
+  "name": "Under Review",
+  "style": "Warning",
+  "workflow_state_name": "Under Review"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Workflow State",
+  "icon": null,
+  "modified": "2026-11-24 08:18:22.278033",
+  "name": "Approval CFO",
+  "style": "Primary",
+  "workflow_state_name": "Approval CFO"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Workflow State",
+  "icon": null,
+  "modified": "2026-11-24 08:18:22.279999",
+  "name": "Final",
+  "style": "Success",
+  "workflow_state_name": "Final"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Workflow State",
+  "icon": null,
+  "modified": "2026-11-24 08:18:22.285881",
+  "name": "Reopened",
+  "style": "Info",
+  "workflow_state_name": "Reopened"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Workflow State",
+  "icon": null,
+  "modified": "2026-11-24 08:18:22.287450",
+  "name": "Cancelled",
+  "style": "Danger",
+  "workflow_state_name": "Cancelled"
+ }
+]

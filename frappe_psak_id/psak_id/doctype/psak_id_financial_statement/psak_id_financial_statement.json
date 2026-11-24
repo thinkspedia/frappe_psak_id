@@ -1,0 +1,368 @@
+{
+ "actions": [],
+ "allow_bulk_edit": 1,
+ "allow_rename": 1,
+ "creation": "2026-11-24 08:18:21.793109",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "title",
+  "company",
+  "periodicity",
+  "from_date",
+  "to_date",
+  "column_break_period",
+  "finance_book",
+  "comparative",
+  "unit",
+  "currency",
+  "workflow_state",
+  "amended_from",
+  "section_checks",
+  "blocking_issues",
+  "unmapped_count",
+  "computed_on",
+  "column_break_checks",
+  "erpnext_pl_difference",
+  "restatement_difference",
+  "check_messages",
+  "other_items_warnings",
+  "section_lines",
+  "lines",
+  "section_notes",
+  "other_items_note",
+  "section_approval",
+  "prepared_by",
+  "reviewed_by",
+  "approved_by",
+  "approved_on",
+  "column_break_approval",
+  "return_reason",
+  "reopen_reason",
+  "reopened_by",
+  "reopened_on"
+ ],
+ "fields": [
+  {
+   "fieldname": "title",
+   "fieldtype": "Data",
+   "hidden": 1,
+   "label": "Title",
+   "no_copy": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "company",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Company",
+   "options": "Company",
+   "reqd": 1
+  },
+  {
+   "default": "Annual",
+   "fieldname": "periodicity",
+   "fieldtype": "Select",
+   "in_standard_filter": 1,
+   "label": "Periodicity",
+   "options": "Monthly\nQuarterly\nAnnual",
+   "reqd": 1
+  },
+  {
+   "fieldname": "from_date",
+   "fieldtype": "Date",
+   "label": "From Date",
+   "reqd": 1
+  },
+  {
+   "fieldname": "to_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "To Date",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_period",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "finance_book",
+   "fieldtype": "Link",
+   "label": "Finance Book",
+   "options": "Finance Book"
+  },
+  {
+   "default": "Same Period Last Year",
+   "description": "In the first year PSAK 118 is applied the comparative is the prior year restated with this year's mappings.",
+   "fieldname": "comparative",
+   "fieldtype": "Select",
+   "label": "Comparative",
+   "options": "None\nSame Period Last Year\nRestated Prior Year",
+   "reqd": 1
+  },
+  {
+   "description": "Defaults to the company policy. Amounts are stored in full; the unit is for presentation.",
+   "fieldname": "unit",
+   "fieldtype": "Select",
+   "label": "Unit",
+   "options": "Full\nThousands\nMillions"
+  },
+  {
+   "fieldname": "currency",
+   "fieldtype": "Link",
+   "hidden": 1,
+   "label": "Currency",
+   "options": "Currency",
+   "read_only": 1
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "workflow_state",
+   "fieldtype": "Link",
+   "hidden": 1,
+   "label": "Workflow State",
+   "no_copy": 1,
+   "options": "Workflow State",
+   "read_only": 1
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "PSAK ID Financial Statement",
+   "print_hide": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "section_checks",
+   "fieldtype": "Section Break",
+   "label": "Checks"
+  },
+  {
+   "fieldname": "blocking_issues",
+   "fieldtype": "Int",
+   "label": "Blocking Issues",
+   "no_copy": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "unmapped_count",
+   "fieldtype": "Int",
+   "label": "Unmapped Accounts",
+   "no_copy": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "computed_on",
+   "fieldtype": "Datetime",
+   "label": "Computed On",
+   "no_copy": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_checks",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "erpnext_pl_difference",
+   "fieldtype": "Currency",
+   "label": "Difference to ERPNext Profit and Loss",
+   "no_copy": 1,
+   "options": "currency",
+   "read_only": 1
+  },
+  {
+   "description": "Restated prior year profit or loss less the PSAK 201 profit or loss of that year. Must be zero.",
+   "fieldname": "restatement_difference",
+   "fieldtype": "Currency",
+   "label": "Restatement Difference",
+   "no_copy": 1,
+   "options": "currency",
+   "read_only": 1
+  },
+  {
+   "fieldname": "check_messages",
+   "fieldtype": "Small Text",
+   "label": "Check Results",
+   "no_copy": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "other_items_warnings",
+   "fieldtype": "Small Text",
+   "label": "Other Items Warnings",
+   "no_copy": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "section_lines",
+   "fieldtype": "Section Break",
+   "label": "Statement of Profit or Loss"
+  },
+  {
+   "fieldname": "lines",
+   "fieldtype": "Table",
+   "label": "Lines",
+   "options": "PSAK ID Financial Statement Line"
+  },
+  {
+   "fieldname": "section_notes",
+   "fieldtype": "Section Break",
+   "label": "Notes"
+  },
+  {
+   "description": "Required when an Other Items line is above the company threshold: what it consists of.",
+   "fieldname": "other_items_note",
+   "fieldtype": "Text Editor",
+   "label": "Other Items Breakdown"
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "section_approval",
+   "fieldtype": "Section Break",
+   "label": "Approval"
+  },
+  {
+   "fieldname": "prepared_by",
+   "fieldtype": "Link",
+   "label": "Prepared By",
+   "no_copy": 1,
+   "options": "User",
+   "read_only": 1
+  },
+  {
+   "fieldname": "reviewed_by",
+   "fieldtype": "Link",
+   "label": "Reviewed By",
+   "no_copy": 1,
+   "options": "User",
+   "read_only": 1
+  },
+  {
+   "fieldname": "approved_by",
+   "fieldtype": "Link",
+   "label": "Approved By",
+   "no_copy": 1,
+   "options": "User",
+   "read_only": 1
+  },
+  {
+   "fieldname": "approved_on",
+   "fieldtype": "Datetime",
+   "label": "Approved On",
+   "no_copy": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_approval",
+   "fieldtype": "Column Break"
+  },
+  {
+   "description": "Why the statement was last sent back for changes.",
+   "fieldname": "return_reason",
+   "fieldtype": "Small Text",
+   "label": "Return Reason",
+   "no_copy": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "reopen_reason",
+   "fieldtype": "Small Text",
+   "label": "Reopen Reason",
+   "no_copy": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "reopened_by",
+   "fieldtype": "Link",
+   "label": "Reopened By",
+   "no_copy": 1,
+   "options": "User",
+   "read_only": 1
+  },
+  {
+   "fieldname": "reopened_on",
+   "fieldtype": "Datetime",
+   "label": "Reopened On",
+   "no_copy": 1,
+   "read_only": 1
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "is_submittable": 1,
+ "link_display_mode": "Search",
+ "links": [],
+ "modified": "2026-11-24 08:18:21.793109",
+ "modified_by": "Administrator",
+ "module": "PSAK ID",
+ "name": "PSAK ID Financial Statement",
+ "naming_rule": "By script",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "PSAK ID - Accounting - Head",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "PSAK ID - Accounting - Staff",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "PSAK ID - CFO",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  },
+  {
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "PSAK ID - Auditor"
+  }
+ ],
+ "row_format": "Dynamic",
+ "rows_threshold_for_grid_search": 20,
+ "sort_field": "to_date",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "title",
+ "track_changes": 1
+}

@@ -4,9 +4,26 @@
 import frappe
 from frappe import _
 from frappe.model.document import Document
+from frappe.utils import formatdate, getdate
 
 # Condition types whose value is always a document of the same type
 _FIXED_CONDITION_DOCTYPES = {"Cost Center": "Cost Center", "Project": "Project"}
+
+# Fields that decide how GL Entries are classified; notes and the template source do not
+_CLASSIFICATION_FIELDS = (
+	"company",
+	"account",
+	"report_line",
+	"valid_from",
+	"priority",
+	"condition_type",
+	"accounting_dimension",
+	"party_type",
+	"condition_doctype",
+	"condition_value",
+	"expense_nature",
+	"is_final_tax",
+)
 
 
 class PSAKIDAccountMapping(Document):
@@ -18,6 +35,10 @@ class PSAKIDAccountMapping(Document):
 		self._validate_expense_nature()
 		self._validate_final_tax()
 		self._validate_unique_rule()
+		self._validate_not_in_final_period()
+
+	def on_trash(self):
+		self._validate_not_in_final_period(deleting=True)
 
 	def _validate_account(self):
 		account = frappe.db.get_value(
@@ -131,4 +152,28 @@ class PSAKIDAccountMapping(Document):
 					"mapping or use another priority."
 				).format(duplicate),
 				frappe.DuplicateEntryError,
+			)
+
+	def _validate_not_in_final_period(self, deleting=False):
+		"""Final statements keep their classification: a mapping in force on or before the end of the
+		last final period is neither added, changed nor deleted (BR-09)."""
+		previous = None if deleting else self.get_doc_before_save()
+		if previous and not any(self.has_value_changed(field) for field in _CLASSIFICATION_FIELDS):
+			return
+		final_until = frappe.db.get_value(
+			"PSAK ID Financial Statement",
+			{"company": self.company, "docstatus": 1},
+			"to_date",
+			order_by="to_date desc",
+		)
+		if not final_until:
+			return
+		dates = [self.valid_from] + ([previous.valid_from] if previous else [])
+		if min(getdate(date) for date in dates) <= getdate(final_until):
+			frappe.throw(
+				_(
+					"The statements of {0} are final up to {1}, and this mapping is in force then. Set Valid "
+					"From after {1} to change the mapping from that date, or reopen the final statement."
+				).format(self.company, formatdate(final_until)),
+				title=_("Final period"),
 			)
