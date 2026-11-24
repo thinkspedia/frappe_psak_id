@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PSAK ID VERSION\n"
 "Report-Msgid-Bugs-To: helpdesk@thinkspedia.com\n"
-"POT-Creation-Date: 2026-11-24 06:52+0000\n"
+"POT-Creation-Date: 2026-11-24 07:51+0000\n"
 "PO-Revision-Date: 2026-11-23 12:08+0000\n"
 "Last-Translator: helpdesk@thinkspedia.com\n"
 "Language: id\n"
@@ -106,7 +106,7 @@ msgstr "Seluruh Beban Pendanaan di Operasi"
 msgid "All Financing Expenses in Operating can only be ticked when customer financing is a main business activity of the company. Tick Main Business: Customer Financing first."
 msgstr "Seluruh Beban Pendanaan di Operasi hanya bisa dicentang bila pembiayaan pelanggan adalah aktivitas utama perusahaan. Centang dulu Aktivitas Utama: Pembiayaan Pelanggan."
 
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:128
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:126
 #, python-brace-format
 msgid "All checks pass. Computed on {0}."
 msgstr "Semua pemeriksaan lolos. Dihitung pada {0}."
@@ -278,9 +278,13 @@ msgstr "Hasil Pemeriksaan"
 msgid "Checks"
 msgstr "Pemeriksaan"
 
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:122
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:120
 msgid "Checks pass. Other Items lines are above the threshold: explain them in Other Items Breakdown."
 msgstr "Pemeriksaan lolos. Pos Lain-lain di atas ambang: jelaskan di Rincian Lain-lain."
+
+#: frappe_psak_id/psak_id/export_statement.py:85
+msgid "Choose Excel or CSV."
+msgstr "Pilih Excel atau CSV."
 
 #: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.py:17
 msgid "Choose the PSAK 118 category of this line."
@@ -368,7 +372,7 @@ msgstr "Nilai Komparatif"
 msgid "Computed On"
 msgstr "Dihitung Pada"
 
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:147
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:145
 msgid "Computing the statement from the General Ledger..."
 msgstr "Menghitung laporan dari Buku Besar..."
 
@@ -468,7 +472,7 @@ msgstr "Nonaktif"
 msgid "Discontinued Operations"
 msgstr "Operasi yang Dihentikan"
 
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:53
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:51
 msgid "Download"
 msgstr "Unduh"
 
@@ -487,6 +491,10 @@ msgstr "Imbalan Kerja"
 #: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.js:89
 msgid "English"
 msgstr "Inggris"
+
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:46
+msgid "Excel"
+msgstr "Excel"
 
 #. Option for the 'Applies To' (Select) field in DocType 'PSAK ID Mapping
 #. Template Row'
@@ -856,7 +864,7 @@ msgstr "Dipetakan ke pos nonaktif"
 msgid "Mapped to {0}, which is disabled. Map the account to another line."
 msgstr "Dipetakan ke {0} yang nonaktif. Petakan akun ke pos lain."
 
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:34
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:35
 msgid "Mapping Control"
 msgstr "Kontrol Pemetaan"
 
@@ -1089,7 +1097,7 @@ msgstr "Pos Lain-lain di atas ambang"
 msgid "Other Items lines are above the company threshold. Explain what they consist of in Other Items Breakdown."
 msgstr "Pos Lain-lain di atas ambang perusahaan. Jelaskan isinya di Rincian Lain-lain."
 
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:44
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:45
 msgid "PDF"
 msgstr "PDF"
 
@@ -1100,7 +1108,7 @@ msgid "PSAK 118 Line"
 msgstr "Pos PSAK 118"
 
 #. Name of a report
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:39
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:40
 #: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.json:22
 msgid "PSAK 118 Profit or Loss"
 msgstr "Laba Rugi PSAK 118"
@@ -1329,12 +1337,12 @@ msgstr "Kuartalan"
 msgid "Raw Materials and Goods"
 msgstr "Bahan Baku dan Barang"
 
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:76
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:157
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:74
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:155
 msgid "Reason"
 msgstr "Alasan"
 
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:21
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:22
 msgid "Recompute"
 msgstr "Hitung Ulang"
 
@@ -1354,8 +1362,8 @@ msgstr "Dicatat pada setiap pemetaan yang dibuat template."
 msgid "Refused"
 msgstr "Ditolak"
 
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:24
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:174
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:25
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:172
 msgid "Reopen"
 msgstr "Buka Kembali"
 
@@ -1365,7 +1373,7 @@ msgstr "Buka Kembali"
 msgid "Reopen Reason"
 msgstr "Alasan Buka Kembali"
 
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:173
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:171
 #, python-brace-format
 msgid "Reopen {0}"
 msgstr "Buka Kembali {0}"
@@ -1551,7 +1559,7 @@ msgstr "Periode yang Sama Tahun Lalu"
 msgid "Sent back to {0}: {1}"
 msgstr "Dikembalikan ke {0}: {1}"
 
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:135
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:133
 #, python-brace-format
 msgid "Sent back: {0}"
 msgstr "Dikembalikan: {0}"
@@ -1635,6 +1643,14 @@ msgstr "Laporan"
 msgid "Statement of Profit or Loss"
 msgstr "Laporan Laba Rugi"
 
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:48
+msgid "Structured Data (CSV)"
+msgstr "Data Terstruktur (CSV)"
+
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:47
+msgid "Structured Data (Excel)"
+msgstr "Data Terstruktur (Excel)"
+
 #. Option for the 'Line Type' (Select) field in DocType 'PSAK ID Report Line'
 #: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.json:62
 msgid "Subtotal"
@@ -1655,7 +1671,7 @@ msgstr "Rumus Subtotal"
 msgid "System Manager"
 msgstr "System Manager"
 
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:79
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:77
 msgid "Tell the preparer what to change."
 msgstr "Beri tahu penyusun apa yang perlu diubah."
 
@@ -1775,7 +1791,7 @@ msgstr "Rumus subtotal merujuk {0}, yang bukan pos {1}."
 msgid "The subtotal formulas refer to each other in a loop: {0}."
 msgstr "Rumus subtotal saling merujuk dalam lingkaran: {0}."
 
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:160
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:158
 msgid "This version is cancelled and kept. A new version is created to correct, review and approve again."
 msgstr "Versi ini dibatalkan dan tetap disimpan. Versi baru dibuat untuk dikoreksi, direview, dan disetujui lagi."
 
@@ -1889,8 +1905,8 @@ msgstr "Biasanya tanggal penerapan PSAK 118 perusahaan."
 msgid "Valid From"
 msgstr "Berlaku Mulai"
 
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:36
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:41
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:37
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:42
 msgid "View"
 msgstr "Lihat"
 
@@ -1989,7 +2005,7 @@ msgstr "{0} dan {1} lainnya"
 msgid "{0} applies PSAK 118 from {1}. In that first year the comparative is the prior year restated with this year's mappings: choose Restated Prior Year."
 msgstr "{0} menerapkan PSAK 118 sejak {1}. Pada tahun pertama itu komparatifnya adalah tahun lalu yang disajikan ulang dengan pemetaan tahun ini: pilih Tahun Lalu Disajikan Ulang."
 
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:117
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:115
 #, python-brace-format
 msgid "{0} checks fail. The statement cannot be sent for review."
 msgstr "{0} pemeriksaan gagal. Laporan belum bisa diajukan review."

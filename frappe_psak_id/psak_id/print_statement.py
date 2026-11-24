@@ -122,11 +122,16 @@ def download_pdf(name: str) -> None:
 	output = io.BytesIO()
 	writer.write(output)
 
-	abbr = frappe.get_cached_value("Company", doc.company, "abbr")
-	status = "Final" if doc.docstatus == 1 else ("Cancelled" if doc.docstatus == 2 else "Draft")
-	frappe.local.response.filename = f"PSAK118_{abbr}_{getdate(doc.to_date).strftime('%Y-%m')}_{status}.pdf"
+	frappe.local.response.filename = file_name(doc, "pdf")
 	frappe.local.response.filecontent = output.getvalue()
 	frappe.local.response.type = "pdf"
+
+
+def file_name(doc, extension: str) -> str:
+	"""``PSAK118_<company abbr>_<YYYY-MM>_<status>.<extension>``, the same for every export."""
+	abbr = frappe.get_cached_value("Company", doc.company, "abbr")
+	status = "Final" if doc.docstatus == 1 else ("Cancelled" if doc.docstatus == 2 else "Draft")
+	return f"PSAK118_{abbr}_{getdate(doc.to_date).strftime('%Y-%m')}_{status}.{extension}"
 
 
 def _overlay(html: str) -> bytes:

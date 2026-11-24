@@ -4,6 +4,7 @@
 const STATEMENT_METHODS =
 	"frappe_psak_id.psak_id.doctype.psak_id_financial_statement.psak_id_financial_statement";
 const PRINT_METHODS = "frappe_psak_id.psak_id.print_statement";
+const EXPORT_METHODS = "frappe_psak_id.psak_id.export_statement";
 const PERIOD_MONTHS = { Monthly: 1, Quarterly: 3, Annual: 12 };
 const RETURN_ACTIONS = ["Return to Draft", "Return to Review"];
 const REOPEN_ROLES = ["PSAK ID - Accounting - Head", "PSAK ID - CFO"];
@@ -40,18 +41,19 @@ frappe.ui.form.on("PSAK ID Financial Statement", {
 			() => frappe.set_route("query-report", "PSAK 118 Profit or Loss", filters),
 			__("View")
 		);
-		frm.add_custom_button(
-			__("PDF"),
-			() =>
-				window.open(
-					frappe.urllib.get_full_url(
-						`/api/method/${PRINT_METHODS}.download_pdf?name=${encodeURIComponent(
-							frm.doc.name
-						)}`
-					)
-				),
-			__("Download")
-		);
+		const downloads = [
+			[__("PDF"), `${PRINT_METHODS}.download_pdf`, {}],
+			[__("Excel"), `${EXPORT_METHODS}.export_excel`, {}],
+			[
+				__("Structured Data (Excel)"),
+				`${EXPORT_METHODS}.export_structured`,
+				{ fmt: "xlsx" },
+			],
+			[__("Structured Data (CSV)"), `${EXPORT_METHODS}.export_structured`, { fmt: "csv" }],
+		];
+		for (const [label, method, args] of downloads) {
+			frm.add_custom_button(label, () => download(frm, method, args), __("Download"));
+		}
 	},
 
 	from_date(frm) {
@@ -173,4 +175,9 @@ function reopen(frm) {
 		__("Reopen {0}", [frm.doc.name]),
 		__("Reopen")
 	);
+}
+
+function download(frm, method, args) {
+	const query = new URLSearchParams({ name: frm.doc.name, ...args });
+	window.open(frappe.urllib.get_full_url(`/api/method/${method}?${query}`));
 }
