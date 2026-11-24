@@ -18,6 +18,7 @@ All notable changes to PSAK ID are listed here. The project follows [Semantic Ve
 
 ### Changed
 
+- README describes release 1: its features, the roles and the ERPNext role each user also needs, a getting started sequence, and what to know about adjusting the ledger (post audit adjustments before the next year's statements), dated mappings and reopening.
 - CI runs the Frappe v15 tests on Python 3.11: Frappe 15.128 no longer installs on Python 3.10.
 
 ### Added
