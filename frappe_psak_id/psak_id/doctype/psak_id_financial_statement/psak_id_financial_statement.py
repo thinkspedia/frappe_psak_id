@@ -119,6 +119,7 @@ class PSAKIDFinancialStatement(Document):
 				},
 			)
 
+		self._set_nature_lines(current, comparative)
 		self._set_transition_lines(result.restated)
 
 		issues = result.issues
@@ -135,6 +136,40 @@ class PSAKIDFinancialStatement(Document):
 		)
 		self.check_messages = "\n".join(self._blocking_messages())
 		self.computed_on = now()
+
+	def _set_nature_lines(self, current, comparative):
+		"""Operating expenses by nature per function line, for a statement presented by function or
+		mixed (BR-05): each nature with the amount included in each function line (R-06)."""
+		self.set("nature_lines", [])
+		presentation = frappe.db.get_value("PSAK ID Company Policy", self.company, "expense_presentation")
+		if presentation not in ("By Function", "Mixed"):
+			return
+
+		lines = {line.line_code: line for line in current.lines}
+		amounts = {}
+		for column, statement in ((0, current), (1, comparative)):
+			for row in statement.natures if statement else []:
+				line = lines.get(row.report_line)
+				if line and line.category == "Operating":
+					key = (row.expense_nature, row.report_line)
+					amounts.setdefault(key, [0.0, 0.0])[column] += row.amount
+
+		natures = frappe.get_meta("PSAK ID Expense Nature Line").get_options("expense_nature").split("\n")
+		order = {code: index for index, code in enumerate(lines)}
+		for (nature, code), (amount, comparative_amount) in sorted(
+			amounts.items(), key=lambda item: (natures.index(item[0][0]), order[item[0][1]])
+		):
+			self.append(
+				"nature_lines",
+				{
+					"expense_nature": nature,
+					"report_line": code,
+					"label_id": lines[code].label_id,
+					"label_en": lines[code].label_en,
+					"amount": amount,
+					"comparative_amount": comparative_amount,
+				},
+			)
 
 	def _set_transition_lines(self, restated):
 		"""The prior year reconciled from PSAK 201 lines to PSAK 118 lines (BR-11).

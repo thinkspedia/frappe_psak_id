@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PSAK ID VERSION\n"
 "Report-Msgid-Bugs-To: helpdesk@thinkspedia.com\n"
-"POT-Creation-Date: 2026-11-24 03:18+0000\n"
+"POT-Creation-Date: 2026-11-24 03:31+0000\n"
 "PO-Revision-Date: 2026-11-23 12:08+0000\n"
 "Last-Translator: helpdesk@thinkspedia.com\n"
 "Language: ja\n"
@@ -36,7 +36,7 @@ msgstr ""
 msgid "A subtotal cannot refer to itself."
 msgstr ""
 
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.py:236
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.py:271
 #, python-brace-format
 msgid "A {0} statement covers {1} whole months: from the first day of a month to the last day of its last month. Starting {2}, it ends {3}."
 msgstr ""
@@ -106,30 +106,35 @@ msgstr ""
 msgid "All Financing Expenses in Operating can only be ticked when customer financing is a main business activity of the company. Tick Main Business: Customer Financing first."
 msgstr ""
 
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:112
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:115
 #, python-brace-format
 msgid "All checks pass. Computed on {0}."
 msgstr ""
 
 #. Label of the amended_from (Link) field in DocType 'PSAK ID Financial
 #. Statement'
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.json:140
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.json:142
 msgid "Amended From"
 msgstr ""
 
 #. Option for the 'Expense Nature' (Select) field in DocType 'PSAK ID Account
 #. Mapping'
+#. Option for the 'Expense Nature' (Select) field in DocType 'PSAK ID Expense
+#. Nature Line'
 #. Option for the 'Expense Nature' (Select) field in DocType 'PSAK ID Mapping
 #. Template Row'
 #: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.json:156
+#: frappe_psak_id/psak_id/doctype/psak_id_expense_nature_line/psak_id_expense_nature_line.json:24
 #: frappe_psak_id/psak_id/doctype/psak_id_mapping_template_row/psak_id_mapping_template_row.json:61
 msgid "Amortisation"
 msgstr ""
 
-#. Label of the amount (Currency) field in DocType 'PSAK ID Financial Statement
+#. Label of the amount (Currency) field in DocType 'PSAK ID Expense Nature
 #. Line'
+#. Label of the amount (Currency) field in DocType 'PSAK ID Financial Statement
 #. Label of the amount (Currency) field in DocType 'PSAK ID Transition
 #. Reconciliation Line'
+#: frappe_psak_id/psak_id/doctype/psak_id_expense_nature_line/psak_id_expense_nature_line.json:55
 #: frappe_psak_id/psak_id/doctype/psak_id_financial_statement_line/psak_id_financial_statement_line.json:76
 #: frappe_psak_id/psak_id/doctype/psak_id_transition_reconciliation_line/psak_id_transition_reconciliation_line.json:61
 #: frappe_psak_id/psak_id/report/psak_id_mapping_control/psak_id_mapping_control.py:62
@@ -156,7 +161,7 @@ msgstr ""
 
 #. Option for the 'Periodicity' (Select) field in DocType 'PSAK ID Financial
 #. Statement'
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.json:77
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.json:79
 msgid "Annual"
 msgstr ""
 
@@ -181,19 +186,19 @@ msgstr ""
 
 #. Label of the section_approval (Section Break) field in DocType 'PSAK ID
 #. Financial Statement'
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.json:233
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.json:235
 msgid "Approval"
 msgstr ""
 
 #. Label of the approved_by (Link) field in DocType 'PSAK ID Financial
 #. Statement'
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.json:254
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.json:256
 msgid "Approved By"
 msgstr ""
 
 #. Label of the approved_on (Datetime) field in DocType 'PSAK ID Financial
 #. Statement'
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.json:262
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.json:264
 msgid "Approved On"
 msgstr ""
 
@@ -221,7 +226,7 @@ msgstr ""
 
 #. Label of the blocking_issues (Int) field in DocType 'PSAK ID Financial
 #. Statement'
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.json:154
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.json:156
 #: frappe_psak_id/psak_id/report/psak_id_mapping_control/psak_id_mapping_control.py:149
 msgid "Blocking Issues"
 msgstr ""
@@ -263,17 +268,17 @@ msgstr ""
 
 #. Label of the check_messages (Small Text) field in DocType 'PSAK ID Financial
 #. Statement'
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.json:196
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.json:198
 msgid "Check Results"
 msgstr ""
 
 #. Label of the section_checks (Section Break) field in DocType 'PSAK ID
 #. Financial Statement'
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.json:149
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.json:151
 msgid "Checks"
 msgstr ""
 
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:106
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:109
 msgid "Checks pass. Other Items lines are above the threshold: explain them in Other Items Breakdown."
 msgstr ""
 
@@ -318,7 +323,7 @@ msgstr ""
 msgid "Classification"
 msgstr ""
 
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.py:327
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.py:362
 #, python-brace-format
 msgid "Close {0} to {1} in ERPNext before approving: a closed Accounting Period covering it, or a Period Closing Voucher for an annual statement. Then no entry can change the approved amounts."
 msgstr ""
@@ -328,7 +333,7 @@ msgstr ""
 #. Label of the company (Link) field in DocType 'PSAK ID Financial Statement'
 #: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.json:40
 #: frappe_psak_id/psak_id/doctype/psak_id_company_policy/psak_id_company_policy.json:43
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.json:67
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.json:69
 #: frappe_psak_id/psak_id/doctype/psak_id_mapping_template/psak_id_mapping_template.js:17
 #: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.js:10
 #: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.py:65
@@ -343,24 +348,27 @@ msgstr ""
 
 #. Label of the comparative (Select) field in DocType 'PSAK ID Financial
 #. Statement'
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.json:108
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.json:110
 #: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.js:48
 msgid "Comparative"
 msgstr ""
 
+#. Label of the comparative_amount (Currency) field in DocType 'PSAK ID Expense
+#. Nature Line'
 #. Label of the comparative_amount (Currency) field in DocType 'PSAK ID
 #. Financial Statement Line'
+#: frappe_psak_id/psak_id/doctype/psak_id_expense_nature_line/psak_id_expense_nature_line.json:64
 #: frappe_psak_id/psak_id/doctype/psak_id_financial_statement_line/psak_id_financial_statement_line.json:85
 msgid "Comparative Amount"
 msgstr ""
 
 #. Label of the computed_on (Datetime) field in DocType 'PSAK ID Financial
 #. Statement'
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.json:168
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.json:170
 msgid "Computed On"
 msgstr ""
 
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:131
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:134
 msgid "Computing the statement from the General Ledger..."
 msgstr ""
 
@@ -411,7 +419,7 @@ msgstr ""
 #. Label of the currency (Link) field in DocType 'PSAK ID Company Policy'
 #. Label of the currency (Link) field in DocType 'PSAK ID Financial Statement'
 #: frappe_psak_id/psak_id/doctype/psak_id_company_policy/psak_id_company_policy.json:76
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.json:123
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.json:125
 msgid "Currency"
 msgstr ""
 
@@ -422,15 +430,18 @@ msgstr ""
 
 #. Description of the 'Unit' (Select) field in DocType 'PSAK ID Financial
 #. Statement'
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.json:113
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.json:115
 msgid "Defaults to the company policy. Amounts are stored in full; the unit is for presentation."
 msgstr ""
 
 #. Option for the 'Expense Nature' (Select) field in DocType 'PSAK ID Account
 #. Mapping'
+#. Option for the 'Expense Nature' (Select) field in DocType 'PSAK ID Expense
+#. Nature Line'
 #. Option for the 'Expense Nature' (Select) field in DocType 'PSAK ID Mapping
 #. Template Row'
 #: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.json:156
+#: frappe_psak_id/psak_id/doctype/psak_id_expense_nature_line/psak_id_expense_nature_line.json:24
 #: frappe_psak_id/psak_id/doctype/psak_id_mapping_template_row/psak_id_mapping_template_row.json:61
 msgid "Depreciation"
 msgstr ""
@@ -443,7 +454,7 @@ msgstr ""
 
 #. Label of the erpnext_pl_difference (Currency) field in DocType 'PSAK ID
 #. Financial Statement'
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.json:179
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.json:181
 msgid "Difference to ERPNext Profit and Loss"
 msgstr ""
 
@@ -459,9 +470,12 @@ msgstr ""
 
 #. Option for the 'Expense Nature' (Select) field in DocType 'PSAK ID Account
 #. Mapping'
+#. Option for the 'Expense Nature' (Select) field in DocType 'PSAK ID Expense
+#. Nature Line'
 #. Option for the 'Expense Nature' (Select) field in DocType 'PSAK ID Mapping
 #. Template Row'
 #: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.json:156
+#: frappe_psak_id/psak_id/doctype/psak_id_expense_nature_line/psak_id_expense_nature_line.json:24
 #: frappe_psak_id/psak_id/doctype/psak_id_mapping_template_row/psak_id_mapping_template_row.json:61
 msgid "Employee Benefits"
 msgstr ""
@@ -478,9 +492,12 @@ msgstr ""
 
 #. Label of the expense_nature (Select) field in DocType 'PSAK ID Account
 #. Mapping'
+#. Label of the expense_nature (Select) field in DocType 'PSAK ID Expense
+#. Nature Line'
 #. Label of the expense_nature (Select) field in DocType 'PSAK ID Mapping
 #. Template Row'
 #: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.json:155
+#: frappe_psak_id/psak_id/doctype/psak_id_expense_nature_line/psak_id_expense_nature_line.json:23
 #: frappe_psak_id/psak_id/doctype/psak_id_mapping_template_row/psak_id_mapping_template_row.json:60
 msgid "Expense Nature"
 msgstr ""
@@ -489,6 +506,14 @@ msgstr ""
 #. Policy'
 #: frappe_psak_id/psak_id/doctype/psak_id_company_policy/psak_id_company_policy.json:130
 msgid "Expense Presentation"
+msgstr ""
+
+#. Label of the section_nature (Section Break) field in DocType 'PSAK ID
+#. Financial Statement'
+#. Label of the nature_lines (Table) field in DocType 'PSAK ID Financial
+#. Statement'
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.json:354
+msgid "Expenses by Nature"
 msgstr ""
 
 #. Label of the is_final_tax (Check) field in DocType 'PSAK ID Account Mapping'
@@ -515,7 +540,7 @@ msgstr ""
 
 #. Label of the finance_book (Link) field in DocType 'PSAK ID Financial
 #. Statement'
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.json:100
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.json:102
 #: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.js:67
 #: frappe_psak_id/psak_id/report/psak_id_mapping_control/psak_id_mapping_control.js:37
 msgid "Finance Book"
@@ -534,7 +559,7 @@ msgstr ""
 
 #. Label of the is_transition (Check) field in DocType 'PSAK ID Financial
 #. Statement'
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.json:311
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.json:313
 msgid "First PSAK 118 Year"
 msgstr ""
 
@@ -567,7 +592,7 @@ msgid "Foreign Exchange Differences in Operating"
 msgstr ""
 
 #. Label of the from_date (Date) field in DocType 'PSAK ID Financial Statement'
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.json:83
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.json:85
 #: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.js:18
 #: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.py:66
 #: frappe_psak_id/psak_id/report/psak_id_mapping_control/psak_id_mapping_control.js:19
@@ -580,17 +605,23 @@ msgstr ""
 #. Option for the 'Unit' (Select) field in DocType 'PSAK ID Financial
 #. Statement'
 #: frappe_psak_id/psak_id/doctype/psak_id_company_policy/psak_id_company_policy.json:140
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.json:117
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.json:119
 #: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.js:77
 msgid "Full"
 msgstr ""
 
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.py:450
+#. Label of the report_line (Link) field in DocType 'PSAK ID Expense Nature
+#. Line'
+#: frappe_psak_id/psak_id/doctype/psak_id_expense_nature_line/psak_id_expense_nature_line.json:32
+msgid "Function Line"
+msgstr ""
+
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.py:485
 msgid "Give the reason for reopening the statement."
 msgstr ""
 
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.py:304
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.py:433
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.py:339
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.py:468
 msgid "Give the reason for sending the statement back."
 msgstr ""
 
@@ -605,16 +636,19 @@ msgstr ""
 
 #. Option for the 'Expense Nature' (Select) field in DocType 'PSAK ID Account
 #. Mapping'
+#. Option for the 'Expense Nature' (Select) field in DocType 'PSAK ID Expense
+#. Nature Line'
 #. Option for the 'Expense Nature' (Select) field in DocType 'PSAK ID Mapping
 #. Template Row'
 #: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.json:156
+#: frappe_psak_id/psak_id/doctype/psak_id_expense_nature_line/psak_id_expense_nature_line.json:24
 #: frappe_psak_id/psak_id/doctype/psak_id_mapping_template_row/psak_id_mapping_template_row.json:61
 msgid "Impairment Losses (Reversals)"
 msgstr ""
 
 #. Description of the 'Comparative' (Select) field in DocType 'PSAK ID
 #. Financial Statement'
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.json:105
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.json:107
 msgid "In the first year PSAK 118 is applied the comparative is the prior year restated with this year's mappings."
 msgstr ""
 
@@ -644,9 +678,12 @@ msgstr ""
 
 #. Option for the 'Expense Nature' (Select) field in DocType 'PSAK ID Account
 #. Mapping'
+#. Option for the 'Expense Nature' (Select) field in DocType 'PSAK ID Expense
+#. Nature Line'
 #. Option for the 'Expense Nature' (Select) field in DocType 'PSAK ID Mapping
 #. Template Row'
 #: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.json:156
+#: frappe_psak_id/psak_id/doctype/psak_id_expense_nature_line/psak_id_expense_nature_line.json:24
 #: frappe_psak_id/psak_id/doctype/psak_id_mapping_template_row/psak_id_mapping_template_row.json:61
 msgid "Inventory Write-downs (Reversals)"
 msgstr ""
@@ -673,22 +710,26 @@ msgstr ""
 msgid "Is Group"
 msgstr ""
 
+#. Label of the label_en (Data) field in DocType 'PSAK ID Expense Nature Line'
 #. Label of the label_en (Data) field in DocType 'PSAK ID Financial Statement
 #. Line'
 #. Label of the label_en (Data) field in DocType 'PSAK ID Report Line'
 #. Label of the label_en (Data) field in DocType 'PSAK ID Transition
 #. Reconciliation Line'
+#: frappe_psak_id/psak_id/doctype/psak_id_expense_nature_line/psak_id_expense_nature_line.json:47
 #: frappe_psak_id/psak_id/doctype/psak_id_financial_statement_line/psak_id_financial_statement_line.json:41
 #: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.json:118
 #: frappe_psak_id/psak_id/doctype/psak_id_transition_reconciliation_line/psak_id_transition_reconciliation_line.json:45
 msgid "Label (English)"
 msgstr ""
 
+#. Label of the label_id (Data) field in DocType 'PSAK ID Expense Nature Line'
 #. Label of the label_id (Data) field in DocType 'PSAK ID Financial Statement
 #. Line'
 #. Label of the label_id (Data) field in DocType 'PSAK ID Report Line'
 #. Label of the label_id (Data) field in DocType 'PSAK ID Transition
 #. Reconciliation Line'
+#: frappe_psak_id/psak_id/doctype/psak_id_expense_nature_line/psak_id_expense_nature_line.json:41
 #: frappe_psak_id/psak_id/doctype/psak_id_financial_statement_line/psak_id_financial_statement_line.json:35
 #: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.json:108
 #: frappe_psak_id/psak_id/doctype/psak_id_transition_reconciliation_line/psak_id_transition_reconciliation_line.json:39
@@ -759,7 +800,7 @@ msgid "Line: accounts are mapped to it. Subtotal: calculated from the formula. H
 msgstr ""
 
 #. Label of the lines (Table) field in DocType 'PSAK ID Financial Statement'
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.json:215
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.json:217
 msgid "Lines"
 msgstr ""
 
@@ -811,7 +852,7 @@ msgstr ""
 msgid "Mapped to {0}, which is disabled. Map the account to another line."
 msgstr ""
 
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:30
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:33
 msgid "Mapping Control"
 msgstr ""
 
@@ -831,7 +872,7 @@ msgstr ""
 #. Option for the 'Unit' (Select) field in DocType 'PSAK ID Financial
 #. Statement'
 #: frappe_psak_id/psak_id/doctype/psak_id_company_policy/psak_id_company_policy.json:140
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.json:117
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.json:119
 #: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.js:79
 msgid "Millions"
 msgstr ""
@@ -844,7 +885,7 @@ msgstr ""
 
 #. Option for the 'Periodicity' (Select) field in DocType 'PSAK ID Financial
 #. Statement'
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.json:77
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.json:79
 #: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.js:39
 msgid "Monthly"
 msgstr ""
@@ -865,7 +906,7 @@ msgstr ""
 msgid "Net Profit in ERPNext Profit and Loss"
 msgstr ""
 
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.py:166
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.py:201
 msgid "No PSAK 201 line"
 msgstr ""
 
@@ -883,13 +924,13 @@ msgstr ""
 
 #. Option for the 'Comparative' (Select) field in DocType 'PSAK ID Financial
 #. Statement'
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.json:109
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.json:111
 #: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.js:51
 msgid "None"
 msgstr ""
 
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.py:178
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.py:179
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.py:213
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.py:214
 msgid "Not mapped"
 msgstr ""
 
@@ -907,7 +948,7 @@ msgstr ""
 #. Label of the section_notes (Section Break) field in DocType 'PSAK ID
 #. Financial Statement'
 #: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.json:173
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.json:221
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.json:223
 msgid "Notes"
 msgstr ""
 
@@ -934,7 +975,7 @@ msgstr ""
 msgid "One policy per company. PSAK ID statements can only be prepared for companies that have a policy."
 msgstr ""
 
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.py:418
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.py:453
 msgid "Only Draft or Reopened statements are recomputed. Send this one back to Draft first."
 msgstr ""
 
@@ -942,15 +983,15 @@ msgstr ""
 msgid "Only Investing or Financing lines can follow Operating."
 msgstr ""
 
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.py:447
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.py:482
 msgid "Only a final statement can be reopened."
 msgstr ""
 
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.py:430
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.py:465
 msgid "Only a statement under review or awaiting approval is sent back."
 msgstr ""
 
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.py:444
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.py:479
 msgid "Only an Accounting Head or the CFO can reopen a final statement."
 msgstr ""
 
@@ -983,6 +1024,12 @@ msgstr ""
 msgid "Operating"
 msgstr ""
 
+#. Description of the 'Expenses by Nature' (Section Break) field in DocType
+#. 'PSAK ID Financial Statement'
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.json:351
+msgid "Operating expenses by nature and the function line they are presented in, from the expense nature of each mapping."
+msgstr ""
+
 #. Description of the 'Condition' (Section Break) field in DocType 'PSAK ID
 #. Account Mapping'
 #: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.json:100
@@ -991,9 +1038,12 @@ msgstr ""
 
 #. Option for the 'Expense Nature' (Select) field in DocType 'PSAK ID Account
 #. Mapping'
+#. Option for the 'Expense Nature' (Select) field in DocType 'PSAK ID Expense
+#. Nature Line'
 #. Option for the 'Expense Nature' (Select) field in DocType 'PSAK ID Mapping
 #. Template Row'
 #: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.json:156
+#: frappe_psak_id/psak_id/doctype/psak_id_expense_nature_line/psak_id_expense_nature_line.json:24
 #: frappe_psak_id/psak_id/doctype/psak_id_mapping_template_row/psak_id_mapping_template_row.json:61
 msgid "Other"
 msgstr ""
@@ -1006,7 +1056,7 @@ msgstr ""
 
 #. Label of the other_items_note (Text Editor) field in DocType 'PSAK ID
 #. Financial Statement'
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.json:227
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.json:229
 msgid "Other Items Breakdown"
 msgstr ""
 
@@ -1023,7 +1073,7 @@ msgstr ""
 
 #. Label of the other_items_warnings (Small Text) field in DocType 'PSAK ID
 #. Financial Statement'
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.json:203
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.json:205
 msgid "Other Items Warnings"
 msgstr ""
 
@@ -1031,7 +1081,7 @@ msgstr ""
 msgid "Other Items above threshold"
 msgstr ""
 
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.py:314
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.py:349
 msgid "Other Items lines are above the company threshold. Explain what they consist of in Other Items Breakdown."
 msgstr ""
 
@@ -1042,7 +1092,7 @@ msgid "PSAK 118 Line"
 msgstr ""
 
 #. Name of a report
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:35
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:38
 #: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.json:22
 msgid "PSAK 118 Profit or Loss"
 msgstr ""
@@ -1053,7 +1103,7 @@ msgstr ""
 msgid "PSAK 118 statements are available only for companies reporting under SAK Indonesia."
 msgstr ""
 
-#: frappe_psak_id/psak_id/statement.py:325
+#: frappe_psak_id/psak_id/statement.py:335
 #, python-brace-format
 msgid "PSAK 118 statements are only prepared for companies reporting under SAK Indonesia; {0} uses {1}."
 msgstr ""
@@ -1069,7 +1119,7 @@ msgstr ""
 #. Name of a role
 #: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.json:221
 #: frappe_psak_id/psak_id/doctype/psak_id_company_policy/psak_id_company_policy.json:233
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.json:380
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.json:396
 #: frappe_psak_id/psak_id/doctype/psak_id_mapping_template/psak_id_mapping_template.json:92
 #: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.json:231
 msgid "PSAK ID - Accounting - Head"
@@ -1078,7 +1128,7 @@ msgstr ""
 #. Name of a role
 #: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.json:231
 #: frappe_psak_id/psak_id/doctype/psak_id_company_policy/psak_id_company_policy.json:243
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.json:391
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.json:407
 #: frappe_psak_id/psak_id/doctype/psak_id_mapping_template/psak_id_mapping_template.json:102
 #: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.json:241
 msgid "PSAK ID - Accounting - Staff"
@@ -1087,7 +1137,7 @@ msgstr ""
 #. Name of a role
 #: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.json:247
 #: frappe_psak_id/psak_id/doctype/psak_id_company_policy/psak_id_company_policy.json:259
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.json:412
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.json:428
 #: frappe_psak_id/psak_id/doctype/psak_id_mapping_template/psak_id_mapping_template.json:118
 #: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.json:257
 msgid "PSAK ID - Auditor"
@@ -1096,7 +1146,7 @@ msgstr ""
 #. Name of a role
 #: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.json:239
 #: frappe_psak_id/psak_id/doctype/psak_id_company_policy/psak_id_company_policy.json:251
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.json:401
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.json:417
 #: frappe_psak_id/psak_id/doctype/psak_id_mapping_template/psak_id_mapping_template.json:110
 #: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.json:249
 msgid "PSAK ID - CFO"
@@ -1113,7 +1163,12 @@ msgid "PSAK ID Company Policy"
 msgstr ""
 
 #. Name of a DocType
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.json:356
+#: frappe_psak_id/psak_id/doctype/psak_id_expense_nature_line/psak_id_expense_nature_line.json:77
+msgid "PSAK ID Expense Nature Line"
+msgstr ""
+
+#. Name of a DocType
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.json:372
 msgid "PSAK ID Financial Statement"
 msgstr ""
 
@@ -1170,14 +1225,14 @@ msgstr ""
 
 #. Label of the periodicity (Select) field in DocType 'PSAK ID Financial
 #. Statement'
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.json:76
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.json:78
 #: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.js:36
 msgid "Periodicity"
 msgstr ""
 
 #. Label of the prepared_by (Link) field in DocType 'PSAK ID Financial
 #. Statement'
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.json:238
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.json:240
 msgid "Prepared By"
 msgstr ""
 
@@ -1201,13 +1256,13 @@ msgstr ""
 
 #. Label of the psak201_profit_or_loss (Currency) field in DocType 'PSAK ID
 #. Financial Statement'
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.json:318
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.json:320
 msgid "Prior Year Profit or Loss (PSAK 201)"
 msgstr ""
 
 #. Label of the restated_profit_or_loss (Currency) field in DocType 'PSAK ID
 #. Financial Statement'
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.json:330
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.json:332
 msgid "Prior Year Profit or Loss (Restated)"
 msgstr ""
 
@@ -1243,32 +1298,35 @@ msgstr ""
 
 #. Option for the 'Periodicity' (Select) field in DocType 'PSAK ID Financial
 #. Statement'
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.json:77
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.json:79
 #: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.js:40
 msgid "Quarterly"
 msgstr ""
 
 #. Option for the 'Expense Nature' (Select) field in DocType 'PSAK ID Account
 #. Mapping'
+#. Option for the 'Expense Nature' (Select) field in DocType 'PSAK ID Expense
+#. Nature Line'
 #. Option for the 'Expense Nature' (Select) field in DocType 'PSAK ID Mapping
 #. Template Row'
 #: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.json:156
+#: frappe_psak_id/psak_id/doctype/psak_id_expense_nature_line/psak_id_expense_nature_line.json:24
 #: frappe_psak_id/psak_id/doctype/psak_id_mapping_template_row/psak_id_mapping_template_row.json:61
 msgid "Raw Materials and Goods"
 msgstr ""
 
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:60
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:141
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:63
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:144
 msgid "Reason"
 msgstr ""
 
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:17
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:20
 msgid "Recompute"
 msgstr ""
 
 #. Label of the transition_lines (Table) field in DocType 'PSAK ID Financial
 #. Statement'
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.json:343
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.json:345
 msgid "Reconciliation"
 msgstr ""
 
@@ -1282,35 +1340,35 @@ msgstr ""
 msgid "Refused"
 msgstr ""
 
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:20
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:158
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:23
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:161
 msgid "Reopen"
 msgstr ""
 
 #. Label of the reopen_reason (Small Text) field in DocType 'PSAK ID Financial
 #. Statement'
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.json:281
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.json:283
 msgid "Reopen Reason"
 msgstr ""
 
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:157
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:160
 #, python-brace-format
 msgid "Reopen {0}"
 msgstr ""
 
 #. Label of the reopened_by (Link) field in DocType 'PSAK ID Financial
 #. Statement'
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.json:288
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.json:290
 msgid "Reopened By"
 msgstr ""
 
 #. Label of the reopened_on (Datetime) field in DocType 'PSAK ID Financial
 #. Statement'
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.json:296
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.json:298
 msgid "Reopened On"
 msgstr ""
 
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.py:457
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.py:492
 #, python-brace-format
 msgid "Reopened: {0}"
 msgstr ""
@@ -1350,25 +1408,25 @@ msgstr ""
 
 #. Description of the 'Other Items Breakdown' (Text Editor) field in DocType
 #. 'PSAK ID Financial Statement'
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.json:224
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.json:226
 msgid "Required when an Other Items line is above the company threshold: what it consists of."
 msgstr ""
 
 #. Option for the 'Comparative' (Select) field in DocType 'PSAK ID Financial
 #. Statement'
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.json:109
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.json:111
 msgid "Restated Prior Year"
 msgstr ""
 
 #. Description of the 'Restatement Difference' (Currency) field in DocType
 #. 'PSAK ID Financial Statement'
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.json:185
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.json:187
 msgid "Restated prior year profit or loss less the PSAK 201 profit or loss of that year. Must be zero."
 msgstr ""
 
 #. Label of the restatement_difference (Currency) field in DocType 'PSAK ID
 #. Financial Statement'
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.json:188
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.json:190
 #: frappe_psak_id/psak_id/report/psak_id_mapping_control/psak_id_mapping_control.py:171
 msgid "Restatement Difference"
 msgstr ""
@@ -1379,13 +1437,13 @@ msgstr ""
 
 #. Label of the return_reason (Small Text) field in DocType 'PSAK ID Financial
 #. Statement'
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.json:274
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.json:276
 msgid "Return Reason"
 msgstr ""
 
 #. Label of the reviewed_by (Link) field in DocType 'PSAK ID Financial
 #. Statement'
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.json:246
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.json:248
 msgid "Reviewed By"
 msgstr ""
 
@@ -1463,17 +1521,17 @@ msgstr ""
 
 #. Option for the 'Comparative' (Select) field in DocType 'PSAK ID Financial
 #. Statement'
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.json:109
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.json:111
 #: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.js:52
 msgid "Same Period Last Year"
 msgstr ""
 
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.py:306
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.py:341
 #, python-brace-format
 msgid "Sent back to {0}: {1}"
 msgstr ""
 
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:119
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:122
 #, python-brace-format
 msgid "Sent back: {0}"
 msgstr ""
@@ -1553,7 +1611,7 @@ msgstr ""
 
 #. Label of the section_lines (Section Break) field in DocType 'PSAK ID
 #. Financial Statement'
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.json:210
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.json:212
 msgid "Statement of Profit or Loss"
 msgstr ""
 
@@ -1571,13 +1629,13 @@ msgstr ""
 #. Name of a role
 #: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.json:209
 #: frappe_psak_id/psak_id/doctype/psak_id_company_policy/psak_id_company_policy.json:222
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.json:368
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.json:384
 #: frappe_psak_id/psak_id/doctype/psak_id_mapping_template/psak_id_mapping_template.json:80
 #: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.json:219
 msgid "System Manager"
 msgstr ""
 
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:63
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:66
 msgid "Tell the preparer what to change."
 msgstr ""
 
@@ -1612,11 +1670,11 @@ msgstr ""
 msgid "The Other Items threshold cannot be negative."
 msgstr ""
 
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.py:349
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.py:384
 msgid "The amounts no longer match the ledger"
 msgstr ""
 
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.py:346
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.py:381
 #, python-brace-format
 msgid "The ledger changed after the statement was reviewed ({0}). Send it back to Draft, where it is recomputed on the next review."
 msgstr ""
@@ -1627,23 +1685,23 @@ msgstr ""
 msgid "The mapping applies to statements whose period ends on or after this date."
 msgstr ""
 
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.py:331
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.py:366
 msgid "The period is not closed"
 msgstr ""
 
 #: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.py:72
 #: frappe_psak_id/psak_id/report/psak_id_mapping_control/psak_id_mapping_control.py:50
-#: frappe_psak_id/psak_id/statement.py:79
+#: frappe_psak_id/psak_id/statement.py:80
 msgid "The period starts after it ends."
 msgstr ""
 
-#: frappe_psak_id/psak_id/statement.py:81
+#: frappe_psak_id/psak_id/statement.py:82
 msgid "The periods of a statement must not overlap."
 msgstr ""
 
 #. Description of the 'Transition Reconciliation' (Section Break) field in
 #. DocType 'PSAK ID Financial Statement'
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.json:302
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.json:304
 msgid "The prior year under PSAK 201, as in ERPNext's Profit and Loss, and the PSAK 118 lines its amounts are presented in."
 msgstr ""
 
@@ -1651,7 +1709,7 @@ msgstr ""
 msgid "The profit or loss differs from ERPNext's Profit and Loss by this amount. Map the accounts listed above; nothing is absorbed into a line."
 msgstr ""
 
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.py:213
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.py:248
 #, python-brace-format
 msgid "The profit or loss differs from ERPNext's Profit and Loss by {0}. Open Mapping Control to find the accounts."
 msgstr ""
@@ -1660,7 +1718,7 @@ msgstr ""
 msgid "The restated prior year differs from its PSAK 201 profit or loss (ERPNext's Profit and Loss). Restating only reclassifies, so map the accounts listed for the restated period."
 msgstr ""
 
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.py:220
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.py:255
 #, python-brace-format
 msgid "The restated prior year differs from its PSAK 201 profit or loss by {0}. Map the prior year's accounts in Mapping Control."
 msgstr ""
@@ -1669,7 +1727,7 @@ msgstr ""
 msgid "The share of profit of associates and joint ventures is always Investing, even when investing is a main business activity."
 msgstr ""
 
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.py:320
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.py:355
 msgid "The statement is not ready for review"
 msgstr ""
 
@@ -1697,7 +1755,7 @@ msgstr ""
 msgid "The subtotal formulas refer to each other in a loop: {0}."
 msgstr ""
 
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:144
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:147
 msgid "This version is cancelled and kept. A new version is created to correct, review and approve again."
 msgstr ""
 
@@ -1706,7 +1764,7 @@ msgstr ""
 #. Option for the 'Unit' (Select) field in DocType 'PSAK ID Financial
 #. Statement'
 #: frappe_psak_id/psak_id/doctype/psak_id_company_policy/psak_id_company_policy.json:140
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.json:117
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.json:119
 #: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.js:78
 msgid "Thousands"
 msgstr ""
@@ -1737,12 +1795,12 @@ msgid "Tick when splitting exchange differences by their source would take undue
 msgstr ""
 
 #. Label of the title (Data) field in DocType 'PSAK ID Financial Statement'
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.json:58
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.json:60
 msgid "Title"
 msgstr ""
 
 #. Label of the to_date (Date) field in DocType 'PSAK ID Financial Statement'
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.json:90
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.json:92
 #: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.js:27
 #: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.py:67
 #: frappe_psak_id/psak_id/report/psak_id_mapping_control/psak_id_mapping_control.js:28
@@ -1770,12 +1828,12 @@ msgstr ""
 
 #. Label of the section_transition (Section Break) field in DocType 'PSAK ID
 #. Financial Statement'
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.json:305
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.json:307
 msgid "Transition Reconciliation"
 msgstr ""
 
 #. Label of the unit (Select) field in DocType 'PSAK ID Financial Statement'
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.json:116
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.json:118
 #: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.js:73
 msgid "Unit"
 msgstr ""
@@ -1793,7 +1851,7 @@ msgstr ""
 
 #. Label of the unmapped_count (Int) field in DocType 'PSAK ID Financial
 #. Statement'
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.json:161
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.json:163
 msgid "Unmapped Accounts"
 msgstr ""
 
@@ -1811,8 +1869,8 @@ msgstr ""
 msgid "Valid From"
 msgstr ""
 
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:32
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:37
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:35
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:40
 msgid "View"
 msgstr ""
 
@@ -1848,13 +1906,13 @@ msgstr ""
 
 #. Description of the 'Return Reason' (Small Text) field in DocType 'PSAK ID
 #. Financial Statement'
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.json:271
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.json:273
 msgid "Why the statement was last sent back for changes."
 msgstr ""
 
 #. Label of the workflow_state (Link) field in DocType 'PSAK ID Financial
 #. Statement'
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.json:132
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.json:134
 msgid "Workflow State"
 msgstr ""
 
@@ -1862,12 +1920,12 @@ msgstr ""
 msgid "Yearly"
 msgstr ""
 
-#: frappe_psak_id/psak_id/statement.py:298
+#: frappe_psak_id/psak_id/statement.py:308
 #, python-brace-format
 msgid "You are not allowed to see the statements of {0}."
 msgstr ""
 
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.py:348
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.py:383
 msgid "check results"
 msgstr ""
 
@@ -1886,12 +1944,12 @@ msgstr ""
 msgid "{0} accounts with a balance are not mapped to a PSAK 118 line ({1}). They are left out of the statement, so it does not match ERPNext's Profit and Loss yet. Map them in PSAK ID Account Mapping."
 msgstr ""
 
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.py:206
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.py:241
 #, python-brace-format
 msgid "{0} accounts with a balance have no PSAK 118 line. Map them in Mapping Control."
 msgstr ""
 
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.py:282
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.py:317
 #, python-brace-format
 msgid "{0} already covers this company, period and finance book. Open that statement."
 msgstr ""
@@ -1906,17 +1964,17 @@ msgstr ""
 msgid "{0} and {1} more"
 msgstr ""
 
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.py:263
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.py:298
 #, python-brace-format
 msgid "{0} applies PSAK 118 from {1}. In that first year the comparative is the prior year restated with this year's mappings: choose Restated Prior Year."
 msgstr ""
 
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:101
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:104
 #, python-brace-format
 msgid "{0} checks fail. The statement cannot be sent for review."
 msgstr ""
 
-#: frappe_psak_id/psak_id/statement.py:318
+#: frappe_psak_id/psak_id/statement.py:328
 #, python-brace-format
 msgid "{0} has no PSAK ID Company Policy yet. Create one before preparing PSAK 118 statements."
 msgstr ""
@@ -1956,7 +2014,7 @@ msgstr ""
 msgid "{0} mappings created, {1} accounts skipped (already mapped), {2} not matched."
 msgstr ""
 
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.py:130
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.py:131
 #, python-brace-format
 msgid "{0}: {1} is above the threshold of {2}."
 msgstr ""
