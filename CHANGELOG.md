@@ -6,6 +6,12 @@ All notable changes to PSAK ID are listed here. The project follows [Semantic Ve
 
 ### Fixed
 
+- PSAK 118 Profit or Loss: clicking an amount whose account a conditional mapping splits between lines opens the General Ledger for that line's cost centers or projects, so it shows the entries behind the amount instead of every entry of the account. When one set of filters cannot select the line's entries (its other accounts need the cost centers the split leaves out), a dialog lists the line's accounts with their amounts and opens the General Ledger for one of them. Where the General Ledger cannot select them at all (a split by party or another accounting dimension, or a total over several periods), an alert says that it also shows entries of other lines.
+- PSAK ID Financial Statement: a new statement takes its unit from the company policy. The form used to start on Full, so the policy's default unit was never used.
+- PSAK ID Financial Statement: once Other Items above the threshold are explained in Other Items Breakdown, the banner turns green instead of still asking for the breakdown.
+- **Download > PDF** of a cancelled (reopened) version: it prints with its CANCELLED watermark even where Print Settings keep cancelled documents from printing, which is Frappe's default. Draft versions likewise print with DRAFT whatever Print Settings allow.
+- PDF: the rounding and restatement footnotes stay on the page of the last totals of their table; they no longer end up alone on a page.
+- PSAK ID - Auditor reads the change history (Version) of the PSAK ID documents they can read, as the PRD's role matrix says, through **Change History** in the PSAK 118 sidebar. The rule is added as a Custom DocPerm on Version on install and by a patch, limited by permission hooks to versions of PSAK ID documents the user can read, and removed on uninstall; users who read Version through another role see what they saw before.
 - PSAK ID Financial Statement: To Date is again the last day of the period that starts on From Date. It was set to the end of the current month, because `frappe.datetime.month_end()` ignores its argument.
 - PSAK 118 Profit or Loss and PSAK ID Mapping Control open on last month again, as intended, instead of the current month.
 - PSAK ID Financial Statement: **View > PSAK 118 Profit or Loss** and **View > Mapping Control** no longer pass an empty finance book as the text "undefined", which showed a permission error and left the report empty until it was reloaded.

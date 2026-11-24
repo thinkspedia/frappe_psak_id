@@ -36,6 +36,7 @@ PAGE_FOOTER = {
 	"footer-font-size": "7",
 	"footer-spacing": "8",
 }
+PRINT_EVERY_STATUS = {"allow_print_for_draft": 1, "allow_print_for_cancelled": 1}
 # Stamped on the pages after rendering. wkhtmltopdf cannot leave its header off page 1 with
 # JavaScript off, reloads a header page (and the site's stylesheet) for every page, and places a
 # fixed element on one page only.
@@ -101,6 +102,9 @@ def download_pdf(name: str) -> None:
 	doc.check_permission("print")
 	# Frappe renders the letter head into the print context; empty uses the default letter head
 	letter_head = frappe.db.get_value("PSAK ID Company Policy", doc.company, "letter_head")
+	# Every version prints, with its DRAFT or CANCELLED watermark, whatever Print Settings allow
+	# for other documents. Frappe's print view reads these overrides from the request.
+	frappe.local.form_dict.settings = PRINT_EVERY_STATUS
 	html = frappe.get_print(DOCTYPE, name, print_format=PRINT_FORMAT, doc=doc, letterhead=letter_head)
 	pages = PdfReader(io.BytesIO(get_pdf(html, dict(PAGE_FOOTER)))).pages
 

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PSAK ID VERSION\n"
 "Report-Msgid-Bugs-To: helpdesk@thinkspedia.com\n"
-"POT-Creation-Date: 2026-11-24 11:39+0000\n"
+"POT-Creation-Date: 2026-11-24 14:31+0000\n"
 "PO-Revision-Date: 2026-11-23 12:08+0000\n"
 "Last-Translator: helpdesk@thinkspedia.com\n"
 "Language: zh\n"
@@ -27,6 +27,10 @@ msgstr ""
 #. Header text in the PSAK 118 Workspace
 #: frappe_psak_id/psak_id/workspace/psak_118/psak_118.json:3
 msgid "<span class=\"h4\"><b>PSAK 118</b></span>"
+msgstr ""
+
+#: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.js:170
+msgid "A conditional mapping splits an account of this line by cost center or project. Open the General Ledger for one account."
 msgstr ""
 
 #: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.py:88
@@ -118,9 +122,14 @@ msgstr ""
 msgid "All Financing Expenses in Operating can only be ticked when customer financing is a main business activity of the company. Tick Main Business: Customer Financing first."
 msgstr ""
 
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:141
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:150
 #, python-brace-format
 msgid "All checks pass. Computed on {0}."
+msgstr ""
+
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:145
+#, python-brace-format
+msgid "All checks pass. Other Items above the threshold are explained in Other Items Breakdown. Computed on {0}."
 msgstr ""
 
 #. Label of the amended_from (Link) field in DocType 'PSAK ID Financial
@@ -307,7 +316,7 @@ msgstr ""
 msgid "Checks"
 msgstr ""
 
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:135
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:138
 msgid "Checks pass. Other Items lines are above the threshold: explain them in Other Items Breakdown."
 msgstr ""
 
@@ -408,7 +417,7 @@ msgstr ""
 msgid "Computed On"
 msgstr ""
 
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:160
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:169
 msgid "Computing the statement from the General Ledger..."
 msgstr ""
 
@@ -486,7 +495,7 @@ msgstr ""
 msgid "Depreciation"
 msgstr ""
 
-#: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.py:239
+#: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.py:253
 #: frappe_psak_id/psak_id/report/psak_id_mapping_control/psak_id_mapping_control.py:103
 #: frappe_psak_id/psak_id/report/psak_id_mapping_control/psak_id_mapping_control.py:161
 msgid "Difference to ERPNext"
@@ -996,7 +1005,7 @@ msgstr ""
 msgid "Needed for operating expenses: the note on expenses by nature is built from it."
 msgstr ""
 
-#: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.py:232
+#: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.py:246
 msgid "Net Profit in ERPNext Profit and Loss"
 msgstr ""
 
@@ -1101,6 +1110,11 @@ msgstr ""
 
 #: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.js:126
 msgid "Open General Ledger"
+msgstr ""
+
+#: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.js:158
+#, python-brace-format
+msgid "Open General Ledger: {0}"
 msgstr ""
 
 #: frappe_psak_id/psak_id/doctype/psak_id_mapping_template/psak_id_mapping_template.js:88
@@ -1215,7 +1229,7 @@ msgstr ""
 msgid "PSAK 118 statements are available only for companies reporting under SAK Indonesia."
 msgstr ""
 
-#: frappe_psak_id/psak_id/statement.py:335
+#: frappe_psak_id/psak_id/statement.py:388
 #, python-brace-format
 msgid "PSAK 118 statements are only prepared for companies reporting under SAK Indonesia; {0} uses {1}."
 msgstr ""
@@ -1400,7 +1414,7 @@ msgstr ""
 msgid "Profit or Loss"
 msgstr ""
 
-#: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.py:225
+#: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.py:239
 msgid "Profit or Loss (PSAK 118)"
 msgstr ""
 
@@ -1436,7 +1450,7 @@ msgid "Raw Materials and Goods"
 msgstr ""
 
 #: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:88
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:170
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:179
 msgid "Reason"
 msgstr ""
 
@@ -1461,7 +1475,7 @@ msgid "Refused"
 msgstr ""
 
 #: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:34
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:187
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:196
 msgid "Reopen"
 msgstr ""
 
@@ -1471,7 +1485,7 @@ msgstr ""
 msgid "Reopen Reason"
 msgstr ""
 
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:186
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:195
 #, python-brace-format
 msgid "Reopen {0}"
 msgstr ""
@@ -1671,7 +1685,7 @@ msgstr ""
 msgid "Sent back to {0}: {1}"
 msgstr ""
 
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:148
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:157
 #, python-brace-format
 msgid "Sent back: {0}"
 msgstr ""
@@ -1816,6 +1830,10 @@ msgstr ""
 msgid "Terms separated by spaces, each starting with + or -: a line code (+PL-OP-REV) or a whole category (+CAT:Operating)."
 msgstr ""
 
+#: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.js:198
+msgid "The General Ledger also shows entries of these accounts that are on other lines."
+msgstr ""
+
 #: frappe_psak_id/psak_id/doctype/psak_id_company_policy/psak_id_company_policy.py:21
 #, python-format
 msgid "The Other Items threshold cannot be more than 100% of revenue."
@@ -1846,11 +1864,11 @@ msgstr ""
 
 #: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.py:72
 #: frappe_psak_id/psak_id/report/psak_id_mapping_control/psak_id_mapping_control.py:50
-#: frappe_psak_id/psak_id/statement.py:80
+#: frappe_psak_id/psak_id/statement.py:82
 msgid "The period starts after it ends."
 msgstr ""
 
-#: frappe_psak_id/psak_id/statement.py:82
+#: frappe_psak_id/psak_id/statement.py:84
 msgid "The periods of a statement must not overlap."
 msgstr ""
 
@@ -1910,7 +1928,7 @@ msgstr ""
 msgid "The subtotal formulas refer to each other in a loop: {0}."
 msgstr ""
 
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:173
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:182
 msgid "This version is cancelled and kept. A new version is created to correct, review and approve again."
 msgstr ""
 
@@ -2077,7 +2095,7 @@ msgstr ""
 msgid "Yearly"
 msgstr ""
 
-#: frappe_psak_id/psak_id/statement.py:308
+#: frappe_psak_id/psak_id/statement.py:361
 #, python-brace-format
 msgid "You are not allowed to see the statements of {0}."
 msgstr ""
@@ -2096,7 +2114,7 @@ msgstr ""
 msgid "{0} (restated)"
 msgstr ""
 
-#: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.py:260
+#: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.py:274
 #, python-brace-format
 msgid "{0} accounts with a balance are not mapped to a PSAK 118 line ({1}). They are left out of the statement, so it does not match ERPNext's Profit and Loss yet. Map them in PSAK ID Account Mapping."
 msgstr ""
@@ -2116,7 +2134,7 @@ msgstr ""
 msgid "{0} already maps this account with the same condition, priority and start date. Edit that mapping or use another priority."
 msgstr ""
 
-#: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.py:258
+#: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.py:272
 #, python-brace-format
 msgid "{0} and {1} more"
 msgstr ""
@@ -2131,7 +2149,7 @@ msgstr ""
 msgid "{0} checks fail. The statement cannot be sent for review."
 msgstr ""
 
-#: frappe_psak_id/psak_id/statement.py:328
+#: frappe_psak_id/psak_id/statement.py:381
 #, python-brace-format
 msgid "{0} has no PSAK ID Company Policy yet. Create one before preparing PSAK 118 statements."
 msgstr ""

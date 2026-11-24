@@ -119,8 +119,8 @@ frappe.query_reports[PSAK_118_PL] = {
 		let text = value === 0 ? "-" : format_number(Math.abs(value), null, 0);
 		if (value < 0) text = `(${text})`;
 
-		const accounts = (data.accounts || {})[column.fieldname] || [];
-		if (accounts.length && data.line_type === "Line") {
+		const ledger = (data.ledger || {})[column.fieldname];
+		if (ledger && ledger.accounts.length && data.line_type === "Line") {
 			text = `<a href="#" class="psak-gl-link" data-line="${frappe.utils.escape_html(
 				data.line_code
 			)}" data-column="${column.fieldname}" title="${__(
@@ -138,17 +138,71 @@ frappe.query_reports[PSAK_118_PL] = {
 		const column = (report.raw_data.columns || []).find((c) => c.fieldname === fieldname);
 		if (!row || !column) return;
 
-		// The ledger shows every entry of these accounts; an account split between lines by a
-		// conditional mapping therefore shows more than this line's amount
+		const ledger = row.ledger[fieldname];
+		if (!ledger.exact && ledger.by_account.length) {
+			// One set of General Ledger filters cannot select this line's entries; each account can
+			this.choose_account(report, column, row.line, ledger.by_account);
+			return;
+		}
+		this.route_to_general_ledger(
+			report,
+			column,
+			ledger.accounts,
+			ledger.filters,
+			ledger.exact
+		);
+	},
+
+	choose_account(report, column, line_label, by_account) {
+		const dialog = new frappe.ui.Dialog({
+			title: __("Open General Ledger: {0}", [line_label]),
+			fields: [{ fieldname: "accounts", fieldtype: "HTML" }],
+		});
+		const rows = by_account
+			.map(
+				(item, index) => `<tr>
+					<td><a href="#" data-index="${index}">${frappe.utils.escape_html(item.account)}</a></td>
+					<td class="text-right">${format_number(item.amount, null, 0)}</td>
+				</tr>`
+			)
+			.join("");
+		dialog.fields_dict.accounts.$wrapper.html(
+			`<p class="text-muted small">${__(
+				"A conditional mapping splits an account of this line by cost center or project. Open the General Ledger for one account."
+			)}</p><table class="table table-bordered table-sm"><tbody>${rows}</tbody></table>`
+		);
+		dialog.fields_dict.accounts.$wrapper.on("click", "a[data-index]", (event) => {
+			event.preventDefault();
+			const item = by_account[$(event.currentTarget).attr("data-index")];
+			dialog.hide();
+			this.route_to_general_ledger(report, column, [item.account], item.filters, item.exact);
+		});
+		dialog.show();
+	},
+
+	route_to_general_ledger(report, column, accounts, filters, exact) {
 		const cost_center = report.get_filter_value("cost_center");
 		frappe.route_options = {
 			company: report.get_filter_value("company"),
 			from_date: column.from_date,
 			to_date: column.to_date,
-			account: row.accounts[fieldname],
-			cost_center: cost_center ? [cost_center] : [],
+			account: accounts,
+			// A conditional mapping splits an account between lines by cost center or project
+			cost_center: filters.cost_center || (cost_center ? [cost_center] : []),
+			project: filters.project || [],
 			finance_book: report.get_filter_value("finance_book") || "",
 		};
+		if (!exact) {
+			frappe.show_alert(
+				{
+					message: __(
+						"The General Ledger also shows entries of these accounts that are on other lines."
+					),
+					indicator: "orange",
+				},
+				10
+			);
+		}
 		frappe.set_route("query-report", "General Ledger");
 	},
 };

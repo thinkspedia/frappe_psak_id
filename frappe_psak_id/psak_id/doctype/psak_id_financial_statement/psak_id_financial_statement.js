@@ -131,11 +131,20 @@ function show_check_results(frm) {
 			frm.doc.blocking_issues,
 		])}</div><div class="small">${escape(frm.doc.check_messages || "")}</div>`;
 		color = "red";
-	} else if (frm.doc.other_items_warnings) {
+	} else if (
+		frm.doc.other_items_warnings &&
+		!strip_html(frm.doc.other_items_note || "").trim()
+	) {
 		message = `<div>${__(
 			"Checks pass. Other Items lines are above the threshold: explain them in Other Items Breakdown."
 		)}</div><div class="small">${escape(frm.doc.other_items_warnings)}</div>`;
 		color = "orange";
+	} else if (frm.doc.other_items_warnings) {
+		message = `<div>${__(
+			"All checks pass. Other Items above the threshold are explained in Other Items Breakdown. Computed on {0}.",
+			[frappe.datetime.str_to_user(frm.doc.computed_on)]
+		)}</div>`;
+		color = "green";
 	} else {
 		message = `<div>${__("All checks pass. Computed on {0}.", [
 			frappe.datetime.str_to_user(frm.doc.computed_on),

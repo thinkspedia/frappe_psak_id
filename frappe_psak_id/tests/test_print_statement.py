@@ -1,9 +1,10 @@
 import io
 import shutil
+from unittest.mock import patch
 
 import frappe
 from frappe.model.workflow import apply_workflow
-from pypdf import PdfReader
+from pypdf import PdfReader, PdfWriter
 
 from frappe_psak_id.psak_id.doctype.psak_id_financial_statement.psak_id_financial_statement import (
 	reopen_statement,
@@ -139,6 +140,22 @@ class TestPrintStatement(IntegrationTestCase):
 		self.assertEqual((context.version, context.watermark), (2, "DRAFT"))
 		doc.reload()
 		self.assertEqual(doc.get_print_context().watermark, "DIBATALKAN / CANCELLED")
+		self.assert_cancelled_version_prints(doc)
+
+	def assert_cancelled_version_prints(self, doc):
+		"""The cancelled version prints with its watermark even where Print Settings keep
+		cancelled documents from printing, as they do by default."""
+		allowed = frappe.db.get_single_value("Print Settings", "allow_print_for_cancelled")
+		frappe.db.set_single_value("Print Settings", "allow_print_for_cancelled", 0)
+		self.addCleanup(frappe.db.set_single_value, "Print Settings", "allow_print_for_cancelled", allowed)
+		blank = io.BytesIO()
+		writer = PdfWriter()
+		writer.add_blank_page(width=595, height=842)
+		writer.write(blank)
+		# CI has no wkhtmltopdf: render the pages blank and check the print view lets it through
+		with patch("frappe_psak_id.psak_id.print_statement.get_pdf", return_value=blank.getvalue()):
+			download_pdf(doc.name)
+		self.assertEqual(frappe.local.response.filename, "PSAK118__TPP_2026-07_Cancelled.pdf")
 
 	def assert_pdf(self, doc):
 		download_pdf(doc.name)

@@ -125,12 +125,16 @@ add_to_apps_screen = [
 # WHY: ship the standard PSAK 118 profit or loss lines once; later edits by the user are kept,
 # so they are inserted on install instead of being synced as fixtures on every migrate
 after_install = "frappe_psak_id.install.after_install"
+# WHY: the auditor reads the change history (Version) of PSAK ID documents; the rule needs the
+# auditor role, which the fixtures create after after_install
+after_sync = "frappe_psak_id.install.after_sync"
 # after_migrate = "frappe_psak_id.install.after_migrate"
 
 # Uninstallation
 # ------------
 
-# before_uninstall = "frappe_psak_id.uninstall.before_uninstall"
+# WHY: take back the auditor's Version rule, which is a site setting outside this app's doctypes
+before_uninstall = "frappe_psak_id.install.before_uninstall"
 # after_uninstall = "frappe_psak_id.uninstall.after_uninstall"
 
 # Integration Setup
@@ -176,13 +180,15 @@ after_install = "frappe_psak_id.install.after_install"
 # -----------
 # Permissions evaluated in scripted ways
 
-# permission_query_conditions = {
-# 	"Event": "frappe.desk.doctype.event.event.get_permission_query_conditions",
-# }
-#
-# has_permission = {
-# 	"Event": "frappe.desk.doctype.event.event.has_permission",
-# }
+# WHY: the auditor's Version rule would otherwise show the change history of every doctype;
+# these keep it to the PSAK ID documents the auditor can read
+permission_query_conditions = {
+	"Version": "frappe_psak_id.permissions.version_query_conditions",
+}
+
+has_permission = {
+	"Version": "frappe_psak_id.permissions.version_has_permission",
+}
 
 # Document Events
 # ---------------

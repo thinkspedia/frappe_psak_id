@@ -8,6 +8,7 @@ from frappe_psak_id.psak_id.statement import (
 	compute,
 	compute_periods,
 	evaluate_lines,
+	ledger_filters,
 	presentation_order,
 	resolve_mapping,
 	tied_mappings,
@@ -53,6 +54,33 @@ class TestResolveAndEvaluate(IntegrationTestCase):
 		self.assertEqual(tied_mappings(group, candidates, chosen), [by_project])
 		group.project = "Q"
 		self.assertEqual(tied_mappings(group, candidates, chosen), [])
+
+	def test_ledger_filters_select_the_entries_of_a_split_account(self):
+		groups = [
+			frappe._dict(account="A", cost_center="Ops", party="X", line="L1"),
+			frappe._dict(account="A", cost_center="Main", party="X", line="L2"),
+			frappe._dict(account="B", cost_center="Main", party="Y", line="L1"),
+			frappe._dict(account="B", cost_center="Main", party="Z", line="L3"),
+		]
+		# A is split by cost center, which the General Ledger filters on; B is split by party
+		self.assertEqual(
+			ledger_filters("L2", groups[1:2], groups),
+			{
+				"accounts": ["A"],
+				"ledger_filters": {"cost_center": ["Main"]},
+				"ledger_exact": True,
+				"ledger_accounts": [],
+			},
+		)
+		on_l1 = ledger_filters("L1", [groups[0], groups[2]], groups)
+		# Main is needed for B, so one set of filters also shows A in Main, which is on L2
+		self.assertEqual(on_l1["ledger_filters"], {})
+		self.assertFalse(on_l1["ledger_exact"])
+		# Per account, A is exact; B is not, the ledger cannot filter on party
+		self.assertEqual(
+			[(item["account"], item["filters"], item["exact"]) for item in on_l1["ledger_accounts"]],
+			[("A", {"cost_center": ["Ops"]}, True), ("B", {}, False)],
+		)
 
 	def test_subtotals_follow_formulas_and_categories(self):
 		line = lambda code, line_type="Line", formula=None: frappe._dict(  # noqa: E731
@@ -221,6 +249,12 @@ class TestCompute(IntegrationTestCase):
 		lines = self._lines(compute(COMPANY, "2027-03-01", "2027-03-31"))
 		self.assertEqual(lines["PL-OP-OTH"].amount, 10_000)
 		self.assertEqual(lines["PL-INV-INC"].amount, 5_000)
+		# The drill-down to the General Ledger selects each line's cost centers
+		self.assertEqual(lines["PL-OP-OTH"].ledger_filters, {"cost_center": [self.ops]})
+		self.assertEqual(lines["PL-INV-INC"].ledger_filters, {"cost_center": [self.main]})
+		self.assertTrue(lines["PL-OP-OTH"].ledger_exact)
+		self.assertTrue(lines["PL-INV-INC"].ledger_exact)
+		self.assertEqual(lines["PL-OP-REV"].ledger_filters, {})
 
 	def test_main_business_investing_moves_investment_income_to_operating(self):
 		self._set_policy(main_business_investing=1)

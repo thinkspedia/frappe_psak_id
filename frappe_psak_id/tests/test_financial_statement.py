@@ -196,6 +196,23 @@ class TestStatementLines(IntegrationTestCase):
 		doc.compute()
 		self.assertEqual(doc.nature_lines, [])
 
+	def test_new_statement_takes_the_unit_of_the_company_policy(self):
+		make_policy(TRANSITION_COMPANY, "2027-01-01", default_unit="Thousands")
+		self.addCleanup(make_policy, TRANSITION_COMPANY, "2027-01-01", default_unit="Full")
+		# A form starts from new_doc, which fills a Select with its first option
+		doc = frappe.new_doc("PSAK ID Financial Statement")
+		doc.update(
+			{
+				"company": TRANSITION_COMPANY,
+				"periodicity": "Monthly",
+				"from_date": "2027-05-01",
+				"to_date": "2027-05-31",
+				"comparative": "Restated Prior Year",
+			}
+		)
+		doc.insert()
+		self.assertEqual(doc.unit, "Thousands")
+
 	def test_period_is_whole_months_of_the_periodicity(self):
 		for periodicity, from_date, to_date in (
 			("Monthly", "2027-01-01", "2027-02-28"),
