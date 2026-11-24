@@ -1,17 +1,28 @@
 // Copyright (c) 2026, Thinkspedia and contributors
 // For license information, please see license.txt
 
+// The report lines an account of each root type is mapped to (same rule as the controller)
+const LINE_FILTERS = {
+	Income: { statement: "Profit or Loss" },
+	Expense: { statement: "Profit or Loss" },
+	Asset: { statement: "Financial Position", category: "Asset" },
+	Liability: { statement: "Financial Position", category: "Liability" },
+	Equity: { statement: "Financial Position", category: "Equity" },
+};
+
 frappe.ui.form.on("PSAK ID Account Mapping", {
 	setup(frm) {
 		frm.set_query("account", () => ({
-			filters: {
-				company: frm.doc.company,
-				is_group: 0,
-				root_type: ["in", ["Income", "Expense"]],
-			},
+			filters: { company: frm.doc.company, is_group: 0 },
 		}));
 		frm.set_query("report_line", () => ({
-			filters: { line_type: "Line", statement: "Profit or Loss", disabled: 0 },
+			filters: { line_type: "Line", disabled: 0, ...LINE_FILTERS[frm.doc.root_type] },
+		}));
+		frm.set_query("equity_component", () => ({
+			filters: { line_type: "Line", disabled: 0, ...LINE_FILTERS.Equity },
+		}));
+		frm.set_query("oci_line", () => ({
+			filters: { line_type: "Line", disabled: 0, statement: "Other Comprehensive Income" },
 		}));
 		frm.set_query("condition_value", () =>
 			frm.doc.condition_type === "Cost Center"

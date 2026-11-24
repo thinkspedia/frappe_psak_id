@@ -6,8 +6,21 @@ from frappe import _
 from frappe.model.document import Document
 from frappe.utils import formatdate, getdate
 
+from frappe_psak_id.psak_id.report_lines import FINANCIAL_POSITION, OTHER_COMPREHENSIVE_INCOME, PROFIT_OR_LOSS
+
 # Condition types whose value is always a document of the same type
 _FIXED_CONDITION_DOCTYPES = {"Cost Center": "Cost Center", "Project": "Project"}
+
+# The statement an account's root type is presented in, and the category its line must have there
+_ROOT_TYPE_LINES = {
+	"Income": (PROFIT_OR_LOSS, None),
+	"Expense": (PROFIT_OR_LOSS, None),
+	"Asset": (FINANCIAL_POSITION, "Asset"),
+	"Liability": (FINANCIAL_POSITION, "Liability"),
+	"Equity": (FINANCIAL_POSITION, "Equity"),
+}
+# The financial position line of cash and cash equivalents; cash and bank accounts belong there
+_CASH_LINE = "FP-CA-CASH"
 
 # Fields that decide how GL Entries are classified; notes and the template source do not
 _CLASSIFICATION_FIELDS = (
@@ -23,6 +36,8 @@ _CLASSIFICATION_FIELDS = (
 	"condition_value",
 	"expense_nature",
 	"is_final_tax",
+	"equity_component",
+	"oci_line",
 )
 
 
@@ -30,6 +45,7 @@ class PSAKIDAccountMapping(Document):
 	def validate(self):
 		self._validate_account()
 		self._validate_report_line()
+		self._validate_equity_fields()
 		self._set_condition_doctype()
 		self._validate_condition_value()
 		self._validate_expense_nature()
@@ -50,34 +66,85 @@ class PSAKIDAccountMapping(Document):
 			frappe.throw(_("Account {0} does not belong to {1}.").format(self.account, self.company))
 		if account.is_group:
 			frappe.throw(_("{0} is a group account. Map the accounts under it instead.").format(self.account))
-		if account.root_type not in ("Income", "Expense"):
-			frappe.throw(
-				_(
-					"Only income and expense accounts appear in the statement of profit or loss; {0} is {1}."
-				).format(self.account, _(account.root_type))
-			)
+		if account.root_type not in _ROOT_TYPE_LINES:
+			frappe.throw(_("{0} has no root type. Set it on the account first.").format(self.account))
 		self.root_type = account.root_type
 
 	def _validate_report_line(self):
-		line = frappe.db.get_value(
-			"PSAK ID Report Line",
-			self.report_line,
-			["line_type", "statement", "disabled", "category"],
-			as_dict=True,
-		)
-		if not line:
+		statement, category = _ROOT_TYPE_LINES[self.root_type]
+		line = _get_line(self.report_line)
+		if line.line_type != "Line":
 			frappe.throw(
-				_("Report line {0} does not exist.").format(self.report_line), frappe.LinkValidationError
+				_("Map accounts to a line, not to a heading or subtotal. {0} is a {1}.").format(
+					self.report_line, _(line.line_type)
+				)
 			)
-		if line.line_type != "Line" or line.statement != "Profit or Loss":
+		if line.statement != statement or (category and line.category != category):
 			frappe.throw(
-				_(
-					"Map accounts to a profit or loss line, not to a heading or subtotal. {0} is a {1}."
-				).format(self.report_line, _(line.line_type))
+				_("{0} is an income or expense account. Map it to a profit or loss line.").format(
+					self.account
+				)
+				if statement == PROFIT_OR_LOSS
+				else _("{0} is a {1} account. Map it to a financial position line of category {1}.").format(
+					self.account, _(category)
+				)
 			)
 		if line.disabled:
 			frappe.throw(_("Report line {0} is disabled.").format(self.report_line))
 		self.category = line.category
+		self._warn_cash_account()
+
+	def _warn_cash_account(self):
+		if self.root_type != "Asset":
+			return
+		account_type = frappe.db.get_value("Account", self.account, "account_type")
+		is_cash = account_type in ("Cash", "Bank")
+		if is_cash != (self.report_line == _CASH_LINE):
+			# A warning, not an error: deposits held in a bank account may not be cash equivalents
+			frappe.msgprint(
+				_(
+					"{0} is a {1} account but is mapped to {2}. Cash and cash equivalents are presented in "
+					"{3}; map it elsewhere only if it holds deposits that are not cash equivalents."
+				).format(self.account, _(account_type), self.report_line, _CASH_LINE)
+				if is_cash
+				else _(
+					"{0} is mapped to {1} but is not a cash or bank account. The statement of cash flows "
+					"takes the cash balance from this line."
+				).format(self.account, _CASH_LINE),
+				title=_("Cash and cash equivalents"),
+				indicator="orange",
+				alert=True,
+			)
+
+	def _validate_equity_fields(self):
+		if self.root_type != "Equity":
+			self.equity_component = self.oci_line = None
+			return
+		# The column of the statement of changes in equity; most equity accounts sit in the
+		# component of their own line
+		self.equity_component = self.equity_component or self.report_line
+		component = _get_line(self.equity_component)
+		if (
+			component.line_type != "Line"
+			or component.statement != FINANCIAL_POSITION
+			or component.category != "Equity"
+		):
+			frappe.throw(
+				_("The equity component must be an equity line of the {0}; {1} is not.").format(
+					_(FINANCIAL_POSITION), self.equity_component
+				)
+			)
+		if not self.oci_line:
+			return
+		oci_line = _get_line(self.oci_line)
+		if oci_line.line_type != "Line" or oci_line.statement != OTHER_COMPREHENSIVE_INCOME:
+			frappe.throw(
+				_("The OCI line must be a line of {0}; {1} is not.").format(
+					_(OTHER_COMPREHENSIVE_INCOME), self.oci_line
+				)
+			)
+		if oci_line.disabled:
+			frappe.throw(_("Report line {0} is disabled.").format(self.oci_line))
 
 	def _set_condition_doctype(self):
 		if not self.condition_type:
@@ -126,7 +193,9 @@ class PSAKIDAccountMapping(Document):
 			)
 
 	def _validate_final_tax(self):
-		if self.is_final_tax and self.category == "Income Tax":
+		if self.root_type not in ("Income", "Expense"):
+			self.is_final_tax = 0
+		elif self.is_final_tax and self.category == "Income Tax":
 			frappe.throw(
 				_(
 					"Final income tax (PPh final) is not income tax under PSAK 212. Map it to the category of "
@@ -177,3 +246,15 @@ class PSAKIDAccountMapping(Document):
 				).format(self.company, formatdate(final_until)),
 				title=_("Final period"),
 			)
+
+
+def _get_line(name: str) -> frappe._dict:
+	line = frappe.db.get_value(
+		"PSAK ID Report Line",
+		name,
+		["line_type", "statement", "disabled", "category"],
+		as_dict=True,
+	)
+	if not line:
+		frappe.throw(_("Report line {0} does not exist.").format(name), frappe.LinkValidationError)
+	return line
