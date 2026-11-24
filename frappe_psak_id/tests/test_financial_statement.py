@@ -153,6 +153,49 @@ class TestStatementLines(IntegrationTestCase):
 		with self.assertRaises(StatementNotReady):
 			apply_workflow(doc, "Submit for Review")
 
+	def test_expenses_by_nature_per_function_line(self):
+		cash = get_account(TRANSITION_COMPANY, "Cash")
+		cogs = get_account(TRANSITION_COMPANY, "Cost of Goods Sold")
+		technicians = make_account(TRANSITION_COMPANY, "Statement Technicians", "Indirect Expenses")
+		make_mapping(TRANSITION_COMPANY, cogs, "PL-OP-COS", expense_nature="Raw Materials and Goods")
+		make_mapping(TRANSITION_COMPANY, technicians, "PL-OP-COS", expense_nature="Employee Benefits")
+		for posting_date, account, amount in (
+			("2026-04-10", self.salary, 40_000),
+			("2027-04-10", cogs, 200_000),
+			("2027-04-11", technicians, 70_000),
+			("2027-04-12", self.salary, 50_000),
+		):
+			make_journal_entry(TRANSITION_COMPANY, posting_date, account, amount, cash)
+
+		frappe.db.set_value(
+			"PSAK ID Company Policy", TRANSITION_COMPANY, "expense_presentation", "By Function"
+		)
+		doc = make_statement(
+			TRANSITION_COMPANY, "2027-04-01", "2027-04-30", comparative="Restated Prior Year"
+		).insert()
+		self.assertEqual(
+			[
+				(row.expense_nature, row.report_line, row.amount, row.comparative_amount)
+				for row in doc.nature_lines
+			],
+			[
+				("Raw Materials and Goods", "PL-OP-COS", -200_000, 0),
+				("Employee Benefits", "PL-OP-COS", -70_000, 0),
+				("Employee Benefits", "PL-OP-GA", -50_000, -40_000),
+			],
+		)
+
+		frappe.db.set_value("PSAK ID Company Policy", TRANSITION_COMPANY, "expense_presentation", "By Nature")
+		self.addCleanup(
+			frappe.db.set_value,
+			"PSAK ID Company Policy",
+			TRANSITION_COMPANY,
+			"expense_presentation",
+			"By Function",
+		)
+		doc.compute()
+		self.assertEqual(doc.nature_lines, [])
+
 	def test_period_is_whole_months_of_the_periodicity(self):
 		for periodicity, from_date, to_date in (
 			("Monthly", "2027-01-01", "2027-02-28"),

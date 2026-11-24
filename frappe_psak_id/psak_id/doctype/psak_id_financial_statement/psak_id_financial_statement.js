@@ -9,6 +9,9 @@ const REOPEN_ROLES = ["PSAK ID - Accounting - Head", "PSAK ID - CFO"];
 
 frappe.ui.form.on("PSAK ID Financial Statement", {
 	refresh(frm) {
+		// Lines come from Recompute; only their note numbers are edited by hand
+		frm.set_df_property("lines", "cannot_add_rows", true);
+		frm.set_df_property("lines", "cannot_delete_rows", true);
 		show_check_results(frm);
 		if (frm.is_new()) return;
 

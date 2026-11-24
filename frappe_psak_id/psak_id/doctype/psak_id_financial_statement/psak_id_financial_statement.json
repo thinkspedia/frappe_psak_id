@@ -30,6 +30,8 @@
   "other_items_warnings",
   "section_lines",
   "lines",
+  "section_nature",
+  "nature_lines",
   "section_transition",
   "is_transition",
   "psak201_profit_or_loss",
@@ -343,6 +345,20 @@
    "label": "Reconciliation",
    "options": "PSAK ID Transition Reconciliation Line",
    "read_only": 1
+  },
+  {
+   "depends_on": "eval:(doc.nature_lines || []).length",
+   "description": "Operating expenses by nature and the function line they are presented in, from the expense nature of each mapping.",
+   "fieldname": "section_nature",
+   "fieldtype": "Section Break",
+   "label": "Expenses by Nature"
+  },
+  {
+   "fieldname": "nature_lines",
+   "fieldtype": "Table",
+   "label": "Expenses by Nature",
+   "options": "PSAK ID Expense Nature Line",
+   "read_only": 1
   }
  ],
  "grid_page_length": 50,
@@ -350,7 +366,7 @@
  "is_submittable": 1,
  "link_display_mode": "Search",
  "links": [],
- "modified": "2026-11-24 08:47:05.327609",
+ "modified": "2026-11-24 08:58:22.303847",
  "modified_by": "Administrator",
  "module": "PSAK ID",
  "name": "PSAK ID Financial Statement",

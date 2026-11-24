@@ -42,6 +42,7 @@ class Mapping(NamedTuple):
 	report_line: str
 	priority: int
 	condition: Condition | None
+	expense_nature: str | None = None
 
 
 class StatementError(frappe.ValidationError):
@@ -126,7 +127,7 @@ def compute_periods(
 
 
 def _statement(result, groups, lines, ordered_lines, mappings, categories, policy):
-	line_amounts, line_accounts, unmapped, conflicts = {}, {}, {}, {}
+	line_amounts, line_accounts, unmapped, conflicts, natures = {}, {}, {}, {}, {}
 	ledger_profit_or_loss = 0.0
 	for group in groups:
 		ledger_profit_or_loss += flt(group.amount)
@@ -142,6 +143,9 @@ def _statement(result, groups, lines, ordered_lines, mappings, categories, polic
 			continue
 		line_amounts[line.name] = flt(line_amounts.get(line.name)) + flt(group.amount)
 		line_accounts.setdefault(line.name, set()).add(group.account)
+		if mapping.expense_nature:
+			key = (line.name, mapping.expense_nature)
+			natures[key] = flt(natures.get(key)) + flt(group.amount)
 		tied = tied_mappings(group, candidates, mapping)
 		if tied:
 			key = (group.account, mapping.priority, tuple(sorted(m.name for m in (mapping, *tied))))
@@ -171,6 +175,12 @@ def _statement(result, groups, lines, ordered_lines, mappings, categories, polic
 			frappe._dict(account=account, reason=reason, report_line=report_line, amount=amount)
 			for (account, reason, report_line), amount in sorted(unmapped.items(), key=lambda i: i[0][:2])
 			if flt(amount)
+		],
+		# Expenses by nature per line, for the by-nature note of a statement presented by function
+		natures=[
+			frappe._dict(report_line=line, expense_nature=nature, amount=amount)
+			for (line, nature), amount in natures.items()
+			if flt(amount, 2)
 		],
 		conflicts=[
 			frappe._dict(account=account, priority=priority, mappings=list(names), amount=amount)
@@ -369,6 +379,7 @@ def _get_mappings(company: str, to_date) -> dict[str, list[Mapping]]:
 			"condition_value",
 			"party_type",
 			"accounting_dimension",
+			"expense_nature",
 		],
 		order_by="valid_from desc, priority asc",
 	)
@@ -381,7 +392,13 @@ def _get_mappings(company: str, to_date) -> dict[str, list[Mapping]]:
 	mappings = {}
 	for row in latest.values():
 		mappings.setdefault(row.account, []).append(
-			Mapping(row.name, row.report_line, row.priority, _condition(row, dimension_columns))
+			Mapping(
+				row.name,
+				row.report_line,
+				row.priority,
+				_condition(row, dimension_columns),
+				row.expense_nature or None,
+			)
 		)
 	return mappings
 
