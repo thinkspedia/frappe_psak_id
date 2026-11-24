@@ -12,7 +12,7 @@ from frappe.utils import today
 
 
 @frappe.whitelist()
-def unmapped_accounts(filters=None) -> int:
+def unmapped_accounts(filters: str | dict | None = None) -> int:
 	"""Income and expense accounts of the PSAK ID companies the user can see that have no mapping
 	in force today (FR-05 lists the ones with a balance)."""
 	frappe.has_permission("PSAK ID Account Mapping", "read", throw=True)
