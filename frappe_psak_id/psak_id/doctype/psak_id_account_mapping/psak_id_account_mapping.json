@@ -27,7 +27,9 @@
   "expense_nature",
   "is_final_tax",
   "column_break_classification",
-  "notes"
+  "notes",
+  "source_template",
+  "source_template_version"
  ],
  "fields": [
   {
@@ -169,13 +171,27 @@
    "fieldname": "notes",
    "fieldtype": "Small Text",
    "label": "Notes"
+  },
+  {
+   "fieldname": "source_template",
+   "fieldtype": "Link",
+   "label": "Source Template",
+   "options": "PSAK ID Mapping Template",
+   "read_only": 1
+  },
+  {
+   "depends_on": "source_template",
+   "fieldname": "source_template_version",
+   "fieldtype": "Data",
+   "label": "Source Template Version",
+   "read_only": 1
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "link_display_mode": "Search",
  "links": [],
- "modified": "2026-11-23 21:23:58.084557",
+ "modified": "2026-11-24 05:35:53.750145",
  "modified_by": "Administrator",
  "module": "PSAK ID",
  "name": "PSAK ID Account Mapping",
