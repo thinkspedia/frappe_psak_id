@@ -11,6 +11,7 @@ All notable changes to PSAK ID are listed here. The project follows [Semantic Ve
 ### Changed
 
 - Mapping Control and PSAK ID Financial Statement: conditional mappings of the same priority that put an account's balance on different lines block the statement from being sent for review, since which line gets the balance is arbitrary. They stay a warning when the account's entries in the period net to nothing.
+- PSAK ID Financial Statement: the Accounting Head no longer creates statements. The Head reviews what staff prepare and could not edit a draft, so a statement the Head created could not be computed. Give one person both the Staff and the Head roles where the same person prepares and reviews.
 
 ## [1.0.0] - 2026-11-24
 

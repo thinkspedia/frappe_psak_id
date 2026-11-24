@@ -382,7 +382,7 @@
  "is_submittable": 1,
  "link_display_mode": "Search",
  "links": [],
- "modified": "2026-11-24 19:36:51.734653",
+ "modified": "2026-11-24 22:15:56.488802",
  "modified_by": "Administrator",
  "module": "PSAK ID",
  "name": "PSAK ID Financial Statement",
@@ -403,7 +403,6 @@
    "write": 1
   },
   {
-   "create": 1,
    "email": 1,
    "export": 1,
    "print": 1,
