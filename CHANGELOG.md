@@ -6,7 +6,7 @@ All notable changes to PSAK ID are listed here. The project follows [Semantic Ve
 
 ### Fixed
 
-- PSAK 118 Profit or Loss: clicking an amount whose account a conditional mapping splits between lines opens the General Ledger for that line's cost centers or projects, so it shows the entries behind the amount instead of every entry of the account. Where the General Ledger cannot select them (a split by party or another accounting dimension), an alert says that it also shows entries of other lines.
+- PSAK 118 Profit or Loss: clicking an amount whose account a conditional mapping splits between lines opens the General Ledger for that line's cost centers or projects, so it shows the entries behind the amount instead of every entry of the account. When one set of filters cannot select the line's entries (its other accounts need the cost centers the split leaves out), a dialog lists the line's accounts with their amounts and opens the General Ledger for one of them. Where the General Ledger cannot select them at all (a split by party or another accounting dimension, or a total over several periods), an alert says that it also shows entries of other lines.
 - PSAK ID Financial Statement: a new statement takes its unit from the company policy. The form used to start on Full, so the policy's default unit was never used.
 - PSAK ID Financial Statement: once Other Items above the threshold are explained in Other Items Breakdown, the banner turns green instead of still asking for the breakdown.
 - **Download > PDF** of a cancelled (reopened) version: it prints with its CANCELLED watermark even where Print Settings keep cancelled documents from printing, which is Frappe's default. Draft versions likewise print with DRAFT whatever Print Settings allow.
