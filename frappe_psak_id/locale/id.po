@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PSAK ID VERSION\n"
 "Report-Msgid-Bugs-To: helpdesk@thinkspedia.com\n"
-"POT-Creation-Date: 2026-11-24 14:31+0000\n"
+"POT-Creation-Date: 2026-11-24 16:58+0000\n"
 "PO-Revision-Date: 2026-11-23 12:08+0000\n"
 "Last-Translator: helpdesk@thinkspedia.com\n"
 "Language: id\n"
@@ -1245,7 +1245,7 @@ msgstr "Pos PSAK 201"
 #. Name of a role
 #: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.json:221
 #: frappe_psak_id/psak_id/doctype/psak_id_company_policy/psak_id_company_policy.json:233
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.json:412
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.json:411
 #: frappe_psak_id/psak_id/doctype/psak_id_mapping_template/psak_id_mapping_template.json:92
 #: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.json:231
 msgid "PSAK ID - Accounting - Head"
@@ -1254,7 +1254,7 @@ msgstr "PSAK ID - Accounting - Head"
 #. Name of a role
 #: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.json:231
 #: frappe_psak_id/psak_id/doctype/psak_id_company_policy/psak_id_company_policy.json:243
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.json:423
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.json:422
 #: frappe_psak_id/psak_id/doctype/psak_id_mapping_template/psak_id_mapping_template.json:102
 #: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.json:241
 msgid "PSAK ID - Accounting - Staff"
@@ -1263,7 +1263,7 @@ msgstr "PSAK ID - Accounting - Staff"
 #. Name of a role
 #: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.json:247
 #: frappe_psak_id/psak_id/doctype/psak_id_company_policy/psak_id_company_policy.json:259
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.json:444
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.json:443
 #: frappe_psak_id/psak_id/doctype/psak_id_mapping_template/psak_id_mapping_template.json:118
 #: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.json:257
 msgid "PSAK ID - Auditor"
@@ -1272,7 +1272,7 @@ msgstr "PSAK ID - Auditor"
 #. Name of a role
 #: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.json:239
 #: frappe_psak_id/psak_id/doctype/psak_id_company_policy/psak_id_company_policy.json:251
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.json:433
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.json:432
 #: frappe_psak_id/psak_id/doctype/psak_id_mapping_template/psak_id_mapping_template.json:110
 #: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.json:249
 msgid "PSAK ID - CFO"
