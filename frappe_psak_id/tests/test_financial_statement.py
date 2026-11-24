@@ -124,6 +124,35 @@ class TestStatementLines(IntegrationTestCase):
 				TRANSITION_COMPANY, "2027-01-01", "2027-01-31", comparative="Restated Prior Year"
 			).insert()
 
+	def test_transition_reconciliation_from_psak201_to_psak118_lines(self):
+		cash = get_account(TRANSITION_COMPANY, "Cash")
+		legacy = make_account(TRANSITION_COMPANY, "Statement Legacy", "Indirect Expenses")
+		for posting_date, account, amount in (
+			("2026-02-10", self.sales, -600_000),
+			("2026-02-11", self.salary, 100_000),
+			("2026-02-12", legacy, 50_000),
+		):
+			make_journal_entry(TRANSITION_COMPANY, posting_date, account, amount, cash)
+		doc = make_statement(
+			TRANSITION_COMPANY, "2027-02-01", "2027-02-28", comparative="Restated Prior Year"
+		).insert()
+
+		self.assertTrue(doc.is_transition)
+		self.assertEqual(
+			[(row.psak201_line, row.report_line, row.amount) for row in doc.transition_lines],
+			[
+				("Pendapatan", "PL-OP-REV", 600_000),
+				("Beban umum dan administrasi", "PL-OP-GA", -100_000),
+				("Not mapped", None, -50_000),
+			],
+		)
+		self.assertEqual((doc.psak201_profit_or_loss, doc.restated_profit_or_loss), (450_000, 500_000))
+		self.assertEqual(doc.restatement_difference, 50_000)
+		self.assertEqual(sum(row.amount for row in doc.transition_lines), doc.psak201_profit_or_loss)
+		# BR-19: the restated year must equal PSAK 201 before review
+		with self.assertRaises(StatementNotReady):
+			apply_workflow(doc, "Submit for Review")
+
 	def test_period_is_whole_months_of_the_periodicity(self):
 		for periodicity, from_date, to_date in (
 			("Monthly", "2027-01-01", "2027-02-28"),
@@ -188,6 +217,8 @@ class TestStatementWorkflow(IntegrationTestCase):
 
 	def test_review_approval_final_and_reopen(self):
 		doc = make_statement(COMPANY, "2026-04-01", "2026-04-30").insert()
+		self.assertFalse(doc.is_transition)
+		self.assertEqual(doc.transition_lines, [])
 		self.assertIn("PL-OP-OTH", doc.other_items_warnings)
 		with self.assertRaises(StatementNotReady):
 			apply_workflow(doc, "Submit for Review")

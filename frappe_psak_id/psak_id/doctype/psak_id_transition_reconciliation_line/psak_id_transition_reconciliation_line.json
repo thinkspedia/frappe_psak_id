@@ -1,0 +1,82 @@
+{
+ "actions": [],
+ "allow_bulk_edit": 1,
+ "allow_rename": 1,
+ "creation": "2026-11-24 08:46:47.276870",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "psak201_line",
+  "report_line",
+  "label_id",
+  "label_en",
+  "category",
+  "amount"
+ ],
+ "fields": [
+  {
+   "columns": 3,
+   "fieldname": "psak201_line",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "PSAK 201 Line",
+   "read_only": 1
+  },
+  {
+   "columns": 2,
+   "fieldname": "report_line",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "PSAK 118 Line",
+   "options": "PSAK ID Report Line",
+   "read_only": 1
+  },
+  {
+   "columns": 2,
+   "fieldname": "label_id",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Label (Indonesian)",
+   "read_only": 1
+  },
+  {
+   "fieldname": "label_en",
+   "fieldtype": "Data",
+   "label": "Label (English)",
+   "read_only": 1
+  },
+  {
+   "columns": 1,
+   "fieldname": "category",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Category",
+   "read_only": 1
+  },
+  {
+   "columns": 2,
+   "fieldname": "amount",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Amount",
+   "options": "currency",
+   "read_only": 1
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "link_display_mode": "Search",
+ "links": [],
+ "modified": "2026-11-24 08:46:47.276870",
+ "modified_by": "Administrator",
+ "module": "PSAK ID",
+ "name": "PSAK ID Transition Reconciliation Line",
+ "owner": "Administrator",
+ "permissions": [],
+ "row_format": "Dynamic",
+ "rows_threshold_for_grid_search": 20,
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": []
+}

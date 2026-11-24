@@ -30,6 +30,13 @@
   "other_items_warnings",
   "section_lines",
   "lines",
+  "section_transition",
+  "is_transition",
+  "psak201_profit_or_loss",
+  "column_break_transition",
+  "restated_profit_or_loss",
+  "section_transition_lines",
+  "transition_lines",
   "section_notes",
   "other_items_note",
   "section_approval",
@@ -289,6 +296,53 @@
    "label": "Reopened On",
    "no_copy": 1,
    "read_only": 1
+  },
+  {
+   "depends_on": "eval:doc.is_transition",
+   "description": "The prior year under PSAK 201, as in ERPNext's Profit and Loss, and the PSAK 118 lines its amounts are presented in.",
+   "fieldname": "section_transition",
+   "fieldtype": "Section Break",
+   "label": "Transition Reconciliation"
+  },
+  {
+   "default": "0",
+   "fieldname": "is_transition",
+   "fieldtype": "Check",
+   "label": "First PSAK 118 Year",
+   "no_copy": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "psak201_profit_or_loss",
+   "fieldtype": "Currency",
+   "label": "Prior Year Profit or Loss (PSAK 201)",
+   "no_copy": 1,
+   "options": "currency",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_transition",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "restated_profit_or_loss",
+   "fieldtype": "Currency",
+   "label": "Prior Year Profit or Loss (Restated)",
+   "no_copy": 1,
+   "options": "currency",
+   "read_only": 1
+  },
+  {
+   "depends_on": "eval:doc.is_transition",
+   "fieldname": "section_transition_lines",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "transition_lines",
+   "fieldtype": "Table",
+   "label": "Reconciliation",
+   "options": "PSAK ID Transition Reconciliation Line",
+   "read_only": 1
   }
  ],
  "grid_page_length": 50,
@@ -296,7 +350,7 @@
  "is_submittable": 1,
  "link_display_mode": "Search",
  "links": [],
- "modified": "2026-11-24 08:18:21.793109",
+ "modified": "2026-11-24 08:47:05.327609",
  "modified_by": "Administrator",
  "module": "PSAK ID",
  "name": "PSAK ID Financial Statement",
