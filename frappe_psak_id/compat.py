@@ -18,3 +18,10 @@ def is_supported() -> bool:
 
 #: Path the desk lives under: v16 moved it from /app to /desk (and redirects /app/* there)
 DESK_PATH = "/desk" if FRAPPE_MAJOR >= 16 else "/app"
+
+
+def accounting_period_filters() -> dict:
+	"""Filters that leave out disabled Accounting Periods, on versions where they can be disabled."""
+	if frappe.get_meta("Accounting Period").has_field("disabled"):
+		return {"disabled": 0}
+	return {}

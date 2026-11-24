@@ -18,6 +18,25 @@ fixtures = [
 	# WHY: the four PSAK ID roles (Staff, Head, CFO, Auditor) gate every PSAK ID doctype and must
 	# exist on install, before an administrator assigns them to users
 	{"dt": "Role", "filters": [["name", "like", "PSAK ID - %"]]},
+	# WHY: the review and approval workflow of PSAK ID Financial Statement (FR-08) is part of the
+	# app, with its states and actions, so every site gets the same Draft to Final path
+	{"dt": "Workflow", "filters": [["name", "=", "PSAK ID Financial Statement"]]},
+	{
+		"dt": "Workflow State",
+		"filters": [
+			["name", "in", ["Draft", "Under Review", "Approval CFO", "Final", "Reopened", "Cancelled"]]
+		],
+	},
+	{
+		"dt": "Workflow Action Master",
+		"filters": [
+			[
+				"name",
+				"in",
+				["Submit for Review", "Return to Draft", "Send to CFO", "Approve", "Return to Review"],
+			]
+		],
+	},
 ]
 
 # No app_logo_url: the last installed app's value replaces the Desk navbar logo on every page,
