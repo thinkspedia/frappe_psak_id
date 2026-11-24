@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PSAK ID VERSION\n"
 "Report-Msgid-Bugs-To: helpdesk@thinkspedia.com\n"
-"POT-Creation-Date: 2026-11-24 08:02+0000\n"
+"POT-Creation-Date: 2026-11-24 10:13+0000\n"
 "PO-Revision-Date: 2026-11-23 12:08+0000\n"
 "Last-Translator: helpdesk@thinkspedia.com\n"
 "Language: id\n"
@@ -23,6 +23,11 @@ msgstr ""
 #: frappe_psak_id/psak_id/doctype/psak_id_mapping_template_row/psak_id_mapping_template_row.json:39
 msgid "* matches any text, case is ignored. Example: *interest income* or 41*."
 msgstr "* cocok dengan teks apa pun, huruf besar/kecil diabaikan. Contoh: *pendapatan bunga* atau 41*."
+
+#. Header text in the PSAK 118 Workspace
+#: frappe_psak_id/psak_id/workspace/psak_118/psak_118.json:3
+msgid "<span class=\"h4\"><b>PSAK 118</b></span>"
+msgstr "<span class=\"h4\"><b>PSAK 118</b></span>"
 
 #: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.py:88
 msgid "A final statement is not cancelled. Use Reopen: it keeps this version and creates a new one to correct."
@@ -50,6 +55,13 @@ msgstr "Melebihi ambang {0}. Jelaskan di catatan laporan, atau petakan akunnya k
 #: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.json:51
 msgid "Account"
 msgstr "Akun"
+
+#. Label of a Sidebar Item
+#. Label of a Link in the PSAK 118 Workspace
+#: frappe_psak_id/psak_id/sidebar/psak_118/psak_118.json:112
+#: frappe_psak_id/psak_id/workspace/psak_118/psak_118.json:67
+msgid "Account Mapping"
+msgstr "Pemetaan Akun"
 
 #. Label of the account_pattern (Data) field in DocType 'PSAK ID Mapping
 #. Template Row'
@@ -220,6 +232,16 @@ msgstr "Kriteria Audit"
 msgid "Audit Required"
 msgstr "Wajib Audit"
 
+#. Label of a number card in the PSAK 118 Workspace
+#: frappe_psak_id/psak_id/workspace/psak_118/psak_118.json:134
+msgid "Awaiting CFO Approval"
+msgstr "Menunggu Persetujuan CFO"
+
+#. Label of a number card in the PSAK 118 Workspace
+#: frappe_psak_id/psak_id/workspace/psak_118/psak_118.json:130
+msgid "Awaiting Review"
+msgstr "Menunggu Review"
+
 #: frappe_psak_id/psak_id/report/psak_id_mapping_control/psak_id_mapping_control.py:121
 msgid "Blocking"
 msgstr "Memblokir"
@@ -261,6 +283,13 @@ msgstr "Per Sifat"
 #: frappe_psak_id/psak_id/doctype/psak_id_transition_reconciliation_line/psak_id_transition_reconciliation_line.json:53
 msgid "Category"
 msgstr "Kategori"
+
+#. Label of a Sidebar Item
+#. Label of a Link in the PSAK 118 Workspace
+#: frappe_psak_id/psak_id/sidebar/psak_118/psak_118.json:192
+#: frappe_psak_id/psak_id/workspace/psak_118/psak_118.json:116
+msgid "Change History"
+msgstr "Riwayat Perubahan"
 
 #: frappe_psak_id/psak_id/report/psak_id_mapping_control/psak_id_mapping_control.py:56
 msgid "Check"
@@ -349,6 +378,13 @@ msgstr "Perusahaan"
 #: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.js:76
 msgid "Company Default"
 msgstr "Default Perusahaan"
+
+#. Label of a Sidebar Item
+#. Label of a Link in the PSAK 118 Workspace
+#: frappe_psak_id/psak_id/sidebar/psak_118/psak_118.json:175
+#: frappe_psak_id/psak_id/workspace/psak_118/psak_118.json:106
+msgid "Company Policy"
+msgstr "Kebijakan Perusahaan"
 
 #. Label of the comparative (Select) field in DocType 'PSAK ID Financial
 #. Statement'
@@ -476,6 +512,11 @@ msgstr "Operasi yang Dihentikan"
 msgid "Download"
 msgstr "Unduh"
 
+#. Label of a shortcut in the PSAK 118 Workspace
+#: frappe_psak_id/psak_id/workspace/psak_118/psak_118.json:175
+msgid "ERPNext Profit and Loss"
+msgstr "Laba Rugi ERPNext"
+
 #. Option for the 'Expense Nature' (Select) field in DocType 'PSAK ID Account
 #. Mapping'
 #. Option for the 'Expense Nature' (Select) field in DocType 'PSAK ID Expense
@@ -536,6 +577,11 @@ msgstr "Beban per Sifat"
 msgid "Final Tax"
 msgstr "Pajak Final"
 
+#. Label of a number card in the PSAK 118 Workspace
+#: frappe_psak_id/psak_id/workspace/psak_118/psak_118.json:142
+msgid "Final This Year"
+msgstr "Final Tahun Ini"
+
 #: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.py:132
 msgid "Final income tax (PPh final) is not income tax under PSAK 212. Map it to the category of the income it is levied on, for example Final tax expense in Operating."
 msgstr "PPh final bukan pajak penghasilan menurut PSAK 212. Petakan ke kategori penghasilan yang dikenai pajak tersebut, misalnya Beban pajak final di Operasi."
@@ -557,6 +603,13 @@ msgstr "Periode Final"
 #: frappe_psak_id/psak_id/report/psak_id_mapping_control/psak_id_mapping_control.js:37
 msgid "Finance Book"
 msgstr "Buku Keuangan"
+
+#. Label of a Sidebar Item
+#. Label of a Link in the PSAK 118 Workspace
+#: frappe_psak_id/psak_id/sidebar/psak_118/psak_118.json:49
+#: frappe_psak_id/psak_id/workspace/psak_118/psak_118.json:28
+msgid "Financial Statements"
+msgstr "Laporan Keuangan"
 
 #. Option for the 'Category' (Select) field in DocType 'PSAK ID Report Line'
 #: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.json:73
@@ -645,6 +698,11 @@ msgstr "Bersaldo tetapi tidak punya pemetaan yang berlaku pada akhir periode. Pe
 #: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.json:62
 msgid "Heading"
 msgstr "Judul"
+
+#. Label of a Sidebar Item
+#: frappe_psak_id/psak_id/sidebar/psak_118/psak_118.json:18
+msgid "Home"
+msgstr "Beranda"
 
 #. Option for the 'Expense Nature' (Select) field in DocType 'PSAK ID Account
 #. Mapping'
@@ -753,6 +811,11 @@ msgstr "Label (Indonesia)"
 #: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.json:103
 msgid "Labels"
 msgstr "Label"
+
+#. Label of a quick_list in the PSAK 118 Workspace
+#: frappe_psak_id/psak_id/workspace/psak_118/psak_118.json:151
+msgid "Latest Financial Statements"
+msgstr "Laporan Keuangan Terbaru"
 
 #. Description of the 'Applies To' (Select) field in DocType 'PSAK ID Mapping
 #. Template Row'
@@ -864,9 +927,28 @@ msgstr "Dipetakan ke pos nonaktif"
 msgid "Mapped to {0}, which is disabled. Map the account to another line."
 msgstr "Dipetakan ke {0} yang nonaktif. Petakan akun ke pos lain."
 
+#. Label of a Sidebar Item
+#. Label of a Card Break in the PSAK 118 Workspace
+#: frappe_psak_id/psak_id/sidebar/psak_118/psak_118.json:81
+#: frappe_psak_id/psak_id/workspace/psak_118/psak_118.json:48
+msgid "Mapping"
+msgstr "Pemetaan"
+
+#. Label of a Sidebar Item
+#. Label of a Link in the PSAK 118 Workspace
+#. Label of a shortcut in the PSAK 118 Workspace
 #: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:35
+#: frappe_psak_id/psak_id/sidebar/psak_118/psak_118.json:96
+#: frappe_psak_id/psak_id/workspace/psak_118/psak_118.json:57
 msgid "Mapping Control"
 msgstr "Kontrol Pemetaan"
+
+#. Label of a Sidebar Item
+#. Label of a Link in the PSAK 118 Workspace
+#: frappe_psak_id/psak_id/sidebar/psak_118/psak_118.json:144
+#: frappe_psak_id/psak_id/workspace/psak_118/psak_118.json:87
+msgid "Mapping Templates"
+msgstr "Template Pemetaan"
 
 #: frappe_psak_id/psak_id/report/psak_id_mapping_control/psak_id_mapping_control.py:93
 #, python-brace-format
@@ -917,6 +999,11 @@ msgstr "Wajib untuk beban operasi: catatan beban per sifat disusun dari field in
 #: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.py:232
 msgid "Net Profit in ERPNext Profit and Loss"
 msgstr "Laba Bersih di Laba Rugi ERPNext"
+
+#. Label of a shortcut in the PSAK 118 Workspace
+#: frappe_psak_id/psak_id/workspace/psak_118/psak_118.json:160
+msgid "New Financial Statement"
+msgstr "Laporan Keuangan Baru"
 
 #: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.py:208
 msgid "No PSAK 201 line"
@@ -1101,6 +1188,13 @@ msgstr "Pos Lain-lain di atas ambang perusahaan. Jelaskan isinya di Rincian Lain
 msgid "PDF"
 msgstr "PDF"
 
+#. Title of a Sidebar
+#. Name of a Workspace
+#: frappe_psak_id/psak_id/sidebar/psak_118/psak_118.json:206
+#: frappe_psak_id/psak_id/workspace/psak_118/psak_118.json:13
+msgid "PSAK 118"
+msgstr "PSAK 118"
+
 #. Label of the report_line (Link) field in DocType 'PSAK ID Transition
 #. Reconciliation Line'
 #: frappe_psak_id/psak_id/doctype/psak_id_transition_reconciliation_line/psak_id_transition_reconciliation_line.json:30
@@ -1108,8 +1202,10 @@ msgid "PSAK 118 Line"
 msgstr "Pos PSAK 118"
 
 #. Name of a report
+#. Label of a Link in the PSAK 118 Workspace
 #: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:40
 #: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.json:22
+#: frappe_psak_id/psak_id/workspace/psak_118/psak_118.json:38
 msgid "PSAK 118 Profit or Loss"
 msgstr "Laba Rugi PSAK 118"
 
@@ -1298,7 +1394,9 @@ msgid "Priority"
 msgstr "Prioritas"
 
 #. Option for the 'Statement' (Select) field in DocType 'PSAK ID Report Line'
+#. Label of a Sidebar Item
 #: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.json:51
+#: frappe_psak_id/psak_id/sidebar/psak_118/psak_118.json:65
 msgid "Profit or Loss"
 msgstr "Laba Rugi"
 
@@ -1406,6 +1504,13 @@ msgstr "Dibuka kembali: {0}"
 msgid "Report Line"
 msgstr "Pos Laporan"
 
+#. Label of a Sidebar Item
+#. Label of a Link in the PSAK 118 Workspace
+#: frappe_psak_id/psak_id/sidebar/psak_118/psak_118.json:128
+#: frappe_psak_id/psak_id/workspace/psak_118/psak_118.json:77
+msgid "Report Lines"
+msgstr "Pos Laporan"
+
 #: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.py:70
 #, python-brace-format
 msgid "Report line {0} does not exist."
@@ -1421,6 +1526,13 @@ msgstr "Pos laporan {0} nonaktif."
 #: frappe_psak_id/psak_id/doctype/psak_id_company_policy/psak_id_company_policy.json:54
 msgid "Reporting Framework"
 msgstr "Kerangka Pelaporan"
+
+#. Label of a Sidebar Item
+#. Label of a Card Break in the PSAK 118 Workspace
+#: frappe_psak_id/psak_id/sidebar/psak_118/psak_118.json:34
+#: frappe_psak_id/psak_id/workspace/psak_118/psak_118.json:19
+msgid "Reports"
+msgstr "Laporan"
 
 #. Description of the 'Mandatory' (Check) field in DocType 'PSAK ID Report
 #. Line'
@@ -1579,6 +1691,13 @@ msgstr "Urutan"
 #: frappe_psak_id/psak_id/doctype/psak_id_mapping_template/psak_id_mapping_template.json:32
 msgid "Services"
 msgstr "Jasa"
+
+#. Label of a Sidebar Item
+#. Label of a Card Break in the PSAK 118 Workspace
+#: frappe_psak_id/psak_id/sidebar/psak_118/psak_118.json:160
+#: frappe_psak_id/psak_id/workspace/psak_118/psak_118.json:97
+msgid "Settings"
+msgstr "Pengaturan"
 
 #: frappe_psak_id/psak_id/report/psak_id_mapping_control/psak_id_mapping_control.py:57
 msgid "Severity"
@@ -1887,7 +2006,9 @@ msgstr "Kategori {0} di rumus subtotal tidak dikenal. Gunakan salah satu: {1}."
 
 #. Label of the unmapped_count (Int) field in DocType 'PSAK ID Financial
 #. Statement'
+#. Label of a number card in the PSAK 118 Workspace
 #: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.json:165
+#: frappe_psak_id/psak_id/workspace/psak_118/psak_118.json:138
 msgid "Unmapped Accounts"
 msgstr "Akun Belum Terpetakan"
 

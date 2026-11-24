@@ -1,0 +1,23 @@
+{
+ "color": "#CB2929",
+ "creation": "2026-11-24 15:33:31.240005",
+ "docstatus": 0,
+ "doctype": "Number Card",
+ "document_type": "PSAK ID Account Mapping",
+ "function": "Count",
+ "idx": 0,
+ "is_public": 1,
+ "is_standard": 1,
+ "label": "Unmapped Accounts",
+ "method": "frappe_psak_id.psak_id.number_cards.unmapped_accounts",
+ "modified": "2026-11-24 15:36:34.358610",
+ "modified_by": "Administrator",
+ "module": "PSAK ID",
+ "name": "PSAK ID Unmapped Accounts",
+ "owner": "Administrator",
+ "report_function": "Sum",
+ "show_full_number": 0,
+ "show_percentage_stats": 0,
+ "stats_time_interval": "Daily",
+ "type": "Custom"
+}

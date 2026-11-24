@@ -1,0 +1,184 @@
+{
+ "charts": [],
+ "content": "[{\"id\": \"h-cards\", \"type\": \"header\", \"data\": {\"text\": \"\\u003cspan class=\\\"h4\\\"\\u003e\\u003cb\\u003ePSAK 118\\u003c/b\\u003e\\u003c/span\\u003e\", \"col\": 12}}, {\"id\": \"nc-0\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"Awaiting Review\", \"col\": 3}}, {\"id\": \"nc-1\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"Awaiting CFO Approval\", \"col\": 3}}, {\"id\": \"nc-2\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"Unmapped Accounts\", \"col\": 3}}, {\"id\": \"nc-3\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"Final This Year\", \"col\": 3}}, {\"id\": \"sc-0\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"New Financial Statement\", \"col\": 4}}, {\"id\": \"sc-1\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Mapping Control\", \"col\": 4}}, {\"id\": \"sc-2\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"ERPNext Profit and Loss\", \"col\": 4}}, {\"id\": \"ql\", \"type\": \"quick_list\", \"data\": {\"quick_list_name\": \"Latest Financial Statements\", \"col\": 12}}, {\"id\": \"sp\", \"type\": \"spacer\", \"data\": {\"col\": 12}}, {\"id\": \"card-0\", \"type\": \"card\", \"data\": {\"card_name\": \"Reports\", \"col\": 4}}, {\"id\": \"card-1\", \"type\": \"card\", \"data\": {\"card_name\": \"Mapping\", \"col\": 4}}, {\"id\": \"card-2\", \"type\": \"card\", \"data\": {\"card_name\": \"Settings\", \"col\": 4}}]",
+ "creation": "2026-11-24 15:33:31.255883",
+ "custom_blocks": [],
+ "docstatus": 0,
+ "doctype": "Workspace",
+ "hide_custom": 0,
+ "icon": "file",
+ "idx": 0,
+ "indicator_color": "green",
+ "is_hidden": 0,
+ "label": "PSAK 118",
+ "link_type": "DocType",
+ "links": [
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Reports",
+   "link_count": 2,
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Financial Statements",
+   "link_count": 0,
+   "link_to": "PSAK ID Financial Statement",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 1,
+   "label": "PSAK 118 Profit or Loss",
+   "link_count": 0,
+   "link_to": "PSAK 118 Profit or Loss",
+   "link_type": "Report",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Mapping",
+   "link_count": 4,
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 1,
+   "label": "Mapping Control",
+   "link_count": 0,
+   "link_to": "PSAK ID Mapping Control",
+   "link_type": "Report",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Account Mapping",
+   "link_count": 0,
+   "link_to": "PSAK ID Account Mapping",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Report Lines",
+   "link_count": 0,
+   "link_to": "PSAK ID Report Line",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Mapping Templates",
+   "link_count": 0,
+   "link_to": "PSAK ID Mapping Template",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Settings",
+   "link_count": 2,
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Company Policy",
+   "link_count": 0,
+   "link_to": "PSAK ID Company Policy",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Change History",
+   "link_count": 0,
+   "link_to": "Version",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  }
+ ],
+ "modified": "2026-11-24 15:36:34.618639",
+ "modified_by": "Administrator",
+ "module": "PSAK ID",
+ "name": "PSAK 118",
+ "number_cards": [
+  {
+   "label": "Awaiting Review",
+   "number_card_name": "PSAK ID Awaiting Review"
+  },
+  {
+   "label": "Awaiting CFO Approval",
+   "number_card_name": "PSAK ID Awaiting CFO Approval"
+  },
+  {
+   "label": "Unmapped Accounts",
+   "number_card_name": "PSAK ID Unmapped Accounts"
+  },
+  {
+   "label": "Final This Year",
+   "number_card_name": "PSAK ID Final Statements This Year"
+  }
+ ],
+ "owner": "Administrator",
+ "public": 1,
+ "quick_lists": [
+  {
+   "document_type": "PSAK ID Financial Statement",
+   "label": "Latest Financial Statements"
+  }
+ ],
+ "roles": [],
+ "sequence_id": 50.0,
+ "shortcuts": [
+  {
+   "color": "Blue",
+   "doc_view": "New",
+   "label": "New Financial Statement",
+   "link_to": "PSAK ID Financial Statement",
+   "type": "DocType"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "",
+   "label": "Mapping Control",
+   "link_to": "PSAK ID Mapping Control",
+   "report_ref_doctype": "PSAK ID Company Policy",
+   "type": "Report"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "",
+   "label": "ERPNext Profit and Loss",
+   "link_to": "Profit and Loss Statement",
+   "report_ref_doctype": "GL Entry",
+   "type": "Report"
+  }
+ ],
+ "standard": 1,
+ "title": "PSAK 118",
+ "type": "Workspace"
+}
