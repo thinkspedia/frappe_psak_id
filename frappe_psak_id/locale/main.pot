@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PSAK ID VERSION\n"
 "Report-Msgid-Bugs-To: helpdesk@thinkspedia.com\n"
-"POT-Creation-Date: 2026-11-24 10:13+0000\n"
-"PO-Revision-Date: 2026-11-24 10:13+0000\n"
+"POT-Creation-Date: 2026-11-24 11:30+0000\n"
+"PO-Revision-Date: 2026-11-24 11:30+0000\n"
 "Last-Translator: helpdesk@thinkspedia.com\n"
 "Language-Team: helpdesk@thinkspedia.com\n"
 "MIME-Version: 1.0\n"
@@ -117,7 +117,7 @@ msgstr ""
 msgid "All Financing Expenses in Operating can only be ticked when customer financing is a main business activity of the company. Tick Main Business: Customer Financing first."
 msgstr ""
 
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:130
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:139
 #, python-brace-format
 msgid "All checks pass. Computed on {0}."
 msgstr ""
@@ -307,7 +307,7 @@ msgstr ""
 msgid "Checks"
 msgstr ""
 
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:124
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:133
 msgid "Checks pass. Other Items lines are above the threshold: explain them in Other Items Breakdown."
 msgstr ""
 
@@ -408,7 +408,7 @@ msgstr ""
 msgid "Computed On"
 msgstr ""
 
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:149
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:158
 msgid "Computing the statement from the General Ledger..."
 msgstr ""
 
@@ -508,7 +508,7 @@ msgstr ""
 msgid "Discontinued Operations"
 msgstr ""
 
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:55
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:64
 msgid "Download"
 msgstr ""
 
@@ -533,7 +533,7 @@ msgstr ""
 msgid "English"
 msgstr ""
 
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:46
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:55
 msgid "Excel"
 msgstr ""
 
@@ -937,7 +937,7 @@ msgstr ""
 #. Label of a Sidebar Item
 #. Label of a Link in the PSAK 118 Workspace
 #. Label of a shortcut in the PSAK 118 Workspace
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:35
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:44
 #: frappe_psak_id/psak_id/sidebar/psak_118/psak_118.json:96
 #: frappe_psak_id/psak_id/workspace/psak_118/psak_118.json:57
 msgid "Mapping Control"
@@ -1184,7 +1184,7 @@ msgstr ""
 msgid "Other Items lines are above the company threshold. Explain what they consist of in Other Items Breakdown."
 msgstr ""
 
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:45
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:54
 msgid "PDF"
 msgstr ""
 
@@ -1203,7 +1203,7 @@ msgstr ""
 
 #. Name of a report
 #. Label of a Link in the PSAK 118 Workspace
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:40
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:49
 #: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.json:22
 #: frappe_psak_id/psak_id/workspace/psak_118/psak_118.json:38
 msgid "PSAK 118 Profit or Loss"
@@ -1435,12 +1435,12 @@ msgstr ""
 msgid "Raw Materials and Goods"
 msgstr ""
 
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:78
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:159
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:87
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:168
 msgid "Reason"
 msgstr ""
 
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:22
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:31
 msgid "Recompute"
 msgstr ""
 
@@ -1460,8 +1460,8 @@ msgstr ""
 msgid "Refused"
 msgstr ""
 
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:25
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:176
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:34
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:185
 msgid "Reopen"
 msgstr ""
 
@@ -1471,7 +1471,7 @@ msgstr ""
 msgid "Reopen Reason"
 msgstr ""
 
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:175
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:184
 #, python-brace-format
 msgid "Reopen {0}"
 msgstr ""
@@ -1671,7 +1671,7 @@ msgstr ""
 msgid "Sent back to {0}: {1}"
 msgstr ""
 
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:137
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:146
 #, python-brace-format
 msgid "Sent back: {0}"
 msgstr ""
@@ -1762,11 +1762,11 @@ msgstr ""
 msgid "Statement of Profit or Loss"
 msgstr ""
 
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:52
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:61
 msgid "Structured Data (CSV)"
 msgstr ""
 
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:48
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:57
 msgid "Structured Data (Excel)"
 msgstr ""
 
@@ -1790,7 +1790,7 @@ msgstr ""
 msgid "System Manager"
 msgstr ""
 
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:81
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:90
 msgid "Tell the preparer what to change."
 msgstr ""
 
@@ -1910,7 +1910,7 @@ msgstr ""
 msgid "The subtotal formulas refer to each other in a loop: {0}."
 msgstr ""
 
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:162
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:171
 msgid "This version is cancelled and kept. A new version is created to correct, review and approve again."
 msgstr ""
 
@@ -2026,8 +2026,8 @@ msgstr ""
 msgid "Valid From"
 msgstr ""
 
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:37
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:42
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:46
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:51
 msgid "View"
 msgstr ""
 
@@ -2126,7 +2126,7 @@ msgstr ""
 msgid "{0} applies PSAK 118 from {1}. In that first year the comparative is the prior year restated with this year's mappings: choose Restated Prior Year."
 msgstr ""
 
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:119
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:128
 #, python-brace-format
 msgid "{0} checks fail. The statement cannot be sent for review."
 msgstr ""
