@@ -43,7 +43,9 @@
   "other_items_note",
   "section_approval",
   "prepared_by",
+  "prepared_on",
   "reviewed_by",
+  "reviewed_on",
   "approved_by",
   "approved_on",
   "column_break_approval",
@@ -359,6 +361,20 @@
    "label": "Expenses by Nature",
    "options": "PSAK ID Expense Nature Line",
    "read_only": 1
+  },
+  {
+   "fieldname": "prepared_on",
+   "fieldtype": "Datetime",
+   "label": "Prepared On",
+   "no_copy": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "reviewed_on",
+   "fieldtype": "Datetime",
+   "label": "Reviewed On",
+   "no_copy": 1,
+   "read_only": 1
   }
  ],
  "grid_page_length": 50,
@@ -366,7 +382,7 @@
  "is_submittable": 1,
  "link_display_mode": "Search",
  "links": [],
- "modified": "2026-11-24 08:58:22.303847",
+ "modified": "2026-11-24 11:55:47.823406",
  "modified_by": "Administrator",
  "module": "PSAK ID",
  "name": "PSAK ID Financial Statement",

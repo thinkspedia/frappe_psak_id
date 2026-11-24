@@ -1,0 +1,280 @@
+{#-
+	PDF of a PSAK ID Financial Statement (FR-10, Export Layout Standard), rendered by wkhtmltopdf on
+	Frappe v15 and v16. Table layout and CSS that QtWebKit understands; logical properties come
+	with their -webkit- forms so the layout follows the text direction. download_pdf adds the
+	running header, page numbers and watermark to the PDF; the Print view shows the watermark.
+	Escaped here: labels, names and notes typed by users. The letter head (rendered by Frappe) and Other Items note are HTML.
+-#}
+{%- set fs = doc.get_print_context() -%}
+{%- set amount_count = fs.columns | length -%}
+
+{%- macro bilingual(text_id, text_en) -%}
+	<span class="psak-id">{{ text_id | e }}</span><span class="psak-en">{{ text_en | e }}</span>
+{%- endmacro -%}
+
+{%- macro title_block(title_id, title_en, show_unit=true) -%}
+	<div class="psak-status">{{ bilingual("Tidak diaudit", "Unaudited") }}</div>
+	<div class="psak-title">
+		<div class="psak-company">{{ fs.company | e }}</div>
+		<div class="psak-name">{{ bilingual(title_id, title_en) }}</div>
+		<div>{{ bilingual(fs.period[0], fs.period[1]) }}</div>
+		{%- if show_unit %}
+		<div class="psak-unit">{{ bilingual(fs.unit[0], fs.unit[1]) }}</div>
+		{%- endif %}
+	</div>
+{%- endmacro -%}
+
+{%- macro amount_header(first_id, first_en, columns, note=true) -%}
+	<thead>
+		<tr>
+			<th class="psak-label">{{ bilingual(first_id, first_en) }}</th>
+			{%- if note %}
+			<th class="psak-note">{{ bilingual("Catatan", "Notes") }}</th>
+			{%- endif %}
+			{%- for column in columns %}
+			<th class="psak-amount">{{ bilingual(column[0], column[1]) }}</th>
+			{%- endfor %}
+		</tr>
+	</thead>
+{%- endmacro -%}
+
+{%- macro rounding_note() -%}
+	{%- if fs.rounded %}
+	<p class="psak-footnote">{{ bilingual("Selisih penjumlahan dapat timbul karena pembulatan.", "Totals may differ from the sum of their parts because of rounding.") }}</p>
+	{%- endif %}
+{%- endmacro -%}
+
+<style>
+	.print-format {
+		margin-top: 30mm;
+		margin-bottom: 40mm;
+		margin-left: 20mm;
+		margin-right: 20mm;
+		page-size: A4;
+		orientation: Portrait;
+	}
+	/* The page margins are the whole gutter in the PDF: no screen card width or padding */
+	@media print {
+		.print-format { max-width: none !important; margin: 0 !important; padding: 0 !important; }
+	}
+	/* The footer page repeats these styles; the page margins are not its own */
+	body > .print-format { margin: 0 !important; padding: 0 !important; }
+	/* Only the footer page loads with onload; the page number is drawn under it */
+	body[onload], body[onload] .print-format { background: transparent !important; }
+	.psak-statement, .psak-footer {
+		font-family: "DejaVu Sans", sans-serif;
+		font-size: 9pt;
+		color: #000;
+	}
+	.psak-statement { position: relative; }
+	.psak-watermark {
+		position: fixed;
+		top: 40%;
+		left: 0;
+		right: 0;
+		text-align: center;
+		z-index: 0;
+		font-size: 90pt;
+		font-weight: bold;
+		color: rgba(190, 0, 0, 0.1);
+		-webkit-transform: rotate(-35deg);
+		transform: rotate(-35deg);
+	}
+	.psak-section + .psak-section { page-break-before: always; }
+	.psak-letter-head { margin-bottom: 6mm; }
+	.psak-status { text-align: end; font-weight: bold; margin-bottom: 2mm; }
+	.psak-title { text-align: center; margin-bottom: 6mm; line-height: 1.4; }
+	.psak-company { font-weight: bold; font-size: 11pt; }
+	.psak-name { font-weight: bold; }
+	.psak-unit .psak-id, .psak-unit .psak-en { font-style: italic; }
+	.psak-statement .psak-en { display: block; font-style: italic; color: #444; }
+	.psak-statement .psak-status .psak-en, .psak-statement .psak-name .psak-en { color: #000; }
+	.psak-statement table { width: 100%; border-collapse: collapse; }
+	.psak-statement thead { display: table-header-group; }
+	.psak-statement tr { page-break-inside: avoid; }
+	.psak-statement th {
+		vertical-align: bottom;
+		border-bottom: 1px solid #000;
+		padding: 1.5mm 1mm;
+		font-weight: bold;
+	}
+	.psak-statement td { vertical-align: top; padding: 1mm; }
+	.psak-statement .psak-label { text-align: start; }
+	.psak-statement .psak-note { text-align: center; width: 12%; }
+	.psak-statement .psak-amount {
+		text-align: end;
+		white-space: nowrap;
+		width: 20%;
+		font-variant-numeric: tabular-nums;
+	}
+	.psak-statement th.psak-amount { white-space: normal; }
+	.psak-statement .psak-indent { -webkit-padding-start: 5mm; padding-inline-start: 5mm; }
+	.psak-statement tr.psak-heading td,
+	.psak-statement tr.psak-subtotal td { font-weight: bold; }
+	.psak-statement tr.psak-subtotal td.psak-amount { border-top: 1px solid #000; }
+	.psak-statement tr.psak-profit-or-loss td.psak-amount { border-bottom: 3px double #000; }
+	.psak-statement .psak-footnote { margin-top: 4mm; font-size: 8pt; color: #444; }
+	.psak-statement .psak-note-text { margin-top: 6mm; }
+	.psak-statement .psak-approval td { padding: 3mm 1mm; border-bottom: 1px solid #ccc; }
+	.psak-statement .psak-approval .psak-step { width: 28%; font-weight: bold; }
+	.psak-statement .psak-approval .psak-on { width: 22%; text-align: end; white-space: nowrap; }
+	.psak-statement .psak-signed { margin-top: 8mm; font-style: italic; }
+	.psak-footer { font-size: 7pt; color: #444; }
+</style>
+
+<div class="psak-statement">
+	{%- if fs.watermark %}
+	<div class="psak-watermark hidden-pdf">{{ fs.watermark }}</div>
+	{%- endif %}
+
+	<div class="psak-section">
+		{%- if letter_head %}
+		<div class="psak-letter-head">{{ letter_head }}</div>
+		{%- endif %}
+		{{ title_block("Laporan Laba Rugi", "Statement of Profit or Loss") }}
+		<table>
+			{{ amount_header("", "", fs.columns) }}
+			<tbody>
+				{%- for row in fs.lines %}
+				<tr class="{{ 'psak-heading' if row.kind == 'Heading' }} {{ 'psak-subtotal' if row.kind == 'Subtotal' }} {{ 'psak-profit-or-loss' if row.profit_or_loss }}">
+					<td class="psak-label {{ 'psak-indent' if row.indented }}">{{ bilingual(row.label_id, row.label_en) }}</td>
+					<td class="psak-note">{{ (row.note or "") | e }}</td>
+					{%- if row.kind == "Heading" %}
+					<td colspan="{{ amount_count }}"></td>
+					{%- else %}
+					{%- for amount in row.amounts %}
+					<td class="psak-amount">{{ amount }}</td>
+					{%- endfor %}
+					{%- endif %}
+				</tr>
+				{%- endfor %}
+			</tbody>
+		</table>
+		{%- if fs.restated_note %}
+		<p class="psak-footnote">{{ bilingual(
+			"* Disajikan kembali dengan pemetaan PSAK 118; lihat Rekonsiliasi Transisi.",
+			"* Restated with the PSAK 118 mappings; see the Transition Reconciliation."
+		) }}</p>
+		{%- endif %}
+		{{ rounding_note() }}
+	</div>
+
+	{%- if fs.natures %}
+	<div class="psak-section">
+		{{ title_block("Beban Operasi menurut Sifat", "Operating Expenses by Nature") }}
+		<table>
+			{{ amount_header("Sifat / pos fungsi", "Nature / function line", fs.columns, note=false) }}
+			<tbody>
+				{%- for group in fs.natures.groups %}
+				<tr class="psak-heading">
+					<td class="psak-label">{{ bilingual(group.label_id, group.label_en) }}</td>
+					{%- for amount in group.amounts %}
+					<td class="psak-amount">{{ amount }}</td>
+					{%- endfor %}
+				</tr>
+				{%- for row in group.rows %}
+				<tr>
+					<td class="psak-label psak-indent">{{ bilingual(row.label_id, row.label_en) }}</td>
+					{%- for amount in row.amounts %}
+					<td class="psak-amount">{{ amount }}</td>
+					{%- endfor %}
+				</tr>
+				{%- endfor %}
+				{%- endfor %}
+				<tr class="psak-subtotal psak-profit-or-loss">
+					<td class="psak-label">{{ bilingual("Jumlah beban operasi menurut sifat", "Total operating expenses by nature") }}</td>
+					{%- for amount in fs.natures.total %}
+					<td class="psak-amount">{{ amount }}</td>
+					{%- endfor %}
+				</tr>
+			</tbody>
+		</table>
+		{{ rounding_note() }}
+	</div>
+	{%- endif %}
+
+	{%- if fs.transition %}
+	<div class="psak-section">
+		{{ title_block("Rekonsiliasi Transisi PSAK 201 ke PSAK 118", "Transition Reconciliation from PSAK 201 to PSAK 118") }}
+		<table>
+			{{ amount_header("Pos PSAK 201 / pos PSAK 118", "PSAK 201 line / PSAK 118 line", [fs.transition.column], note=false) }}
+			<tbody>
+				{%- for group in fs.transition.groups %}
+				<tr class="psak-heading">
+					<td class="psak-label">{{ group.label | e }}</td>
+					<td class="psak-amount">{{ group.amount }}</td>
+				</tr>
+				{%- for row in group.rows %}
+				<tr>
+					<td class="psak-label psak-indent">{{ bilingual(row.label_id, row.label_en) }}</td>
+					<td class="psak-amount">{{ row.amount }}</td>
+				</tr>
+				{%- endfor %}
+				{%- endfor %}
+				<tr class="psak-subtotal">
+					<td class="psak-label">{{ bilingual("Laba (rugi) menurut PSAK 201", "Profit (loss) under PSAK 201") }}</td>
+					<td class="psak-amount">{{ fs.transition.psak201 }}</td>
+				</tr>
+				<tr class="psak-subtotal psak-profit-or-loss">
+					<td class="psak-label">{{ bilingual("Laba (rugi) disajikan kembali menurut PSAK 118", "Profit (loss) restated under PSAK 118") }}</td>
+					<td class="psak-amount">{{ fs.transition.restated }}</td>
+				</tr>
+			</tbody>
+		</table>
+		{{ rounding_note() }}
+	</div>
+	{%- endif %}
+
+	{%- if fs.other_items %}
+	<div class="psak-section">
+		{{ title_block("Rincian Pos Lain-lain", "Other Items Breakdown") }}
+		{%- if fs.other_items.rows %}
+		<table>
+			{{ amount_header("", "", fs.columns, note=false) }}
+			<tbody>
+				{%- for row in fs.other_items.rows %}
+				<tr>
+					<td class="psak-label">{{ bilingual(row.label_id, row.label_en) }}</td>
+					{%- for amount in row.amounts %}
+					<td class="psak-amount">{{ amount }}</td>
+					{%- endfor %}
+				</tr>
+				{%- endfor %}
+			</tbody>
+		</table>
+		{%- endif %}
+		<div class="psak-note-text">{{ fs.other_items.note }}</div>
+	</div>
+	{%- endif %}
+
+	<div class="psak-section">
+		{{ title_block("Lembar Persetujuan", "Approval Sheet", show_unit=false) }}
+		<table class="psak-approval">
+			<tbody>
+				{%- for approval in fs.approvals %}
+				<tr>
+					<td class="psak-step">{{ bilingual(approval.step[0], approval.step[1]) }}</td>
+					<td>
+						{{ approval.name | e if approval.name else "-" }}
+						<span class="psak-en">{{ bilingual(approval.function[0], approval.function[1]) }}</span>
+					</td>
+					<td class="psak-on">{{ approval.on or "-" }}</td>
+				</tr>
+				{%- endfor %}
+			</tbody>
+		</table>
+		{%- if not fs.watermark %}
+		<p class="psak-signed">{{ bilingual("Disetujui secara elektronik melalui ERPNext.", "Approved electronically in ERPNext.") }}</p>
+		{%- endif %}
+	</div>
+</div>
+
+<div id="footer-html" class="visible-pdf">
+	<div class="psak-footer">
+		<p>{{ bilingual(
+			"Catatan atas laporan keuangan terlampir merupakan bagian yang tidak terpisahkan dari laporan keuangan secara keseluruhan.",
+			"The accompanying notes form an integral part of these financial statements."
+		) }}</p>
+		<p>{{ fs.document | e }} &middot; Versi / Version {{ fs.version }} &middot; Dicetak / Printed {{ fs.printed_on }}</p>
+	</div>
+</div>
