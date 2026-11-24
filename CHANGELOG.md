@@ -4,6 +4,12 @@ All notable changes to PSAK ID are listed here. The project follows [Semantic Ve
 
 ## [Unreleased]
 
+### Fixed
+
+- PSAK ID Financial Statement: To Date is again the last day of the period that starts on From Date. It was set to the end of the current month, because `frappe.datetime.month_end()` ignores its argument.
+- PSAK 118 Profit or Loss and PSAK ID Mapping Control open on last month again, as intended, instead of the current month.
+- PSAK ID Financial Statement: **View > PSAK 118 Profit or Loss** and **View > Mapping Control** no longer pass an empty finance book as the text "undefined", which showed a permission error and left the report empty until it was reloaded.
+
 ### Changed
 
 - CI runs the Frappe v15 tests on Python 3.11: Frappe 15.128 no longer installs on Python 3.10.
