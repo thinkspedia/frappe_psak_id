@@ -69,9 +69,11 @@ Every statement total reconciles with ERPNext's Profit and Loss for the same com
 | Role | Can |
 |---|---|
 | PSAK ID - Accounting - Staff | Read the policy and mappings, prepare statements and submit them for review |
-| PSAK ID - Accounting - Head | Maintain the company policy, report lines, mappings and templates, apply templates, prepare and review statements, send them to the CFO or back to draft, reopen a final statement |
+| PSAK ID - Accounting - Head | Maintain the company policy, report lines, mappings and templates, apply templates, review statements, send them to the CFO or back to draft, reopen a final statement |
 | PSAK ID - CFO | Approve statements (Final) or return them to review, reopen a final statement |
 | PSAK ID - Auditor | Read everything, including the change history of PSAK ID documents, and print or export |
+
+The Accounting Head reviews what staff prepare, so the role does not create or edit draft statements. In a small company, give one person both the Staff and the Head roles.
 
 The PSAK ID roles grant access to PSAK ID documents only. The statements and reports also read ERPNext's Company, accounts and ledger, so give each user an ERPNext role as well:
 

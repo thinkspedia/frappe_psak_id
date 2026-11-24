@@ -19,6 +19,7 @@ from frappe_psak_id.tests.utils import (
 TRANSITION_COMPANY = "_Test PSAK Statement Company"
 COMPANY = "_Test PSAK Final Company"
 STAFF_USER = "psak-statement-staff@example.com"
+HEAD_USER = "psak-statement-head@example.com"
 
 
 def make_policy(company, adoption_date, **values):
@@ -371,3 +372,19 @@ class TestStatementWorkflow(IntegrationTestCase):
 			apply_workflow(doc, "Approve")
 		with self.assertRaises(frappe.PermissionError):
 			reopen_statement(doc.name, "No reason")
+
+	def test_head_reviews_but_does_not_prepare(self):
+		if not frappe.db.exists("User", HEAD_USER):
+			frappe.get_doc(
+				{
+					"doctype": "User",
+					"email": HEAD_USER,
+					"first_name": "PSAK Statement Head",
+					"send_welcome_email": 0,
+				}
+			).insert().add_roles("PSAK ID - Accounting - Head")
+		frappe.set_user(HEAD_USER)
+		self.addCleanup(frappe.set_user, "Administrator")
+		# The reviewer does not prepare what they review; a small company gives one person both roles
+		self.assertFalse(frappe.has_permission("PSAK ID Financial Statement", "create"))
+		self.assertTrue(frappe.has_permission("PSAK ID Financial Statement", "read"))
