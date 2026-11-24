@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PSAK ID VERSION\n"
 "Report-Msgid-Bugs-To: helpdesk@thinkspedia.com\n"
-"POT-Creation-Date: 2026-11-24 14:20+0000\n"
+"POT-Creation-Date: 2026-11-24 14:31+0000\n"
 "PO-Revision-Date: 2026-11-23 12:08+0000\n"
 "Last-Translator: helpdesk@thinkspedia.com\n"
 "Language: ar\n"
@@ -29,7 +29,7 @@ msgstr ""
 msgid "<span class=\"h4\"><b>PSAK 118</b></span>"
 msgstr ""
 
-#: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.js:164
+#: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.js:170
 msgid "A conditional mapping splits an account of this line by cost center or project. Open the General Ledger for one account."
 msgstr ""
 
@@ -1112,7 +1112,7 @@ msgstr ""
 msgid "Open General Ledger"
 msgstr ""
 
-#: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.js:152
+#: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.js:158
 #, python-brace-format
 msgid "Open General Ledger: {0}"
 msgstr ""
@@ -1830,7 +1830,7 @@ msgstr ""
 msgid "Terms separated by spaces, each starting with + or -: a line code (+PL-OP-REV) or a whole category (+CAT:Operating)."
 msgstr ""
 
-#: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.js:192
+#: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.js:198
 msgid "The General Ledger also shows entries of these accounts that are on other lines."
 msgstr ""
 
