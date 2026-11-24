@@ -119,6 +119,8 @@ class PSAKIDFinancialStatement(Document):
 				},
 			)
 
+		self._set_transition_lines(result.restated)
+
 		issues = result.issues
 		self.unmapped_count = len({issue.account for issue in issues if issue.check in UNMAPPED_CHECKS})
 		self.erpnext_pl_difference = current.ledger_difference
@@ -133,6 +135,53 @@ class PSAKIDFinancialStatement(Document):
 		)
 		self.check_messages = "\n".join(self._blocking_messages())
 		self.computed_on = now()
+
+	def _set_transition_lines(self, restated):
+		"""The prior year reconciled from PSAK 201 lines to PSAK 118 lines (BR-11).
+
+		PSAK 201 amounts are ERPNext's Profit and Loss per account; each account's PSAK 201 line is
+		the PSAK 201 line of the PSAK 118 line it is mapped to, so one PSAK 201 line may split over
+		several PSAK 118 lines. Accounts without a mapping stay in their own row, and the two totals
+		differ by exactly that row (BR-19).
+		"""
+		self.set("transition_lines", [])
+		self.is_transition = bool(restated)
+		if not restated:
+			self.psak201_profit_or_loss = self.restated_profit_or_loss = 0
+			return
+		self.psak201_profit_or_loss = restated.ledger_profit_or_loss
+		self.restated_profit_or_loss = restated.profit_or_loss
+
+		psak201_lines = dict(
+			frappe.get_all(
+				"PSAK ID Report Line",
+				filters={"statement": "Profit or Loss"},
+				fields=["name", "psak201_line"],
+				as_list=True,
+			)
+		)
+		groups = {}
+		for line in restated.lines:
+			if line.line_type == "Line" and flt(line.amount, 2):
+				psak201_line = psak201_lines.get(line.line_code) or _("No PSAK 201 line")
+				groups.setdefault(psak201_line, []).append(
+					{
+						"psak201_line": psak201_line,
+						"report_line": line.line_code,
+						"label_id": line.label_id,
+						"label_en": line.label_en,
+						"category": line.category,
+						"amount": line.amount,
+					}
+				)
+		if flt(restated.ledger_difference, 2):
+			groups.setdefault(_("Not mapped"), []).append(
+				{"psak201_line": _("Not mapped"), "amount": -restated.ledger_difference}
+			)
+		# Rows of one PSAK 201 line together, in the order its first PSAK 118 line is presented
+		for rows in groups.values():
+			for row in rows:
+				self.append("transition_lines", row)
 
 	def _comparative_statement(self, result):
 		if self.comparative == NO_COMPARATIVE:
