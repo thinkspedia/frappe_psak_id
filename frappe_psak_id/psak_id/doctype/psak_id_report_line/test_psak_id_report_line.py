@@ -4,7 +4,7 @@
 import frappe
 
 from frappe_psak_id.psak_id.report_lines import (
-	STANDARD_PROFIT_OR_LOSS_LINES,
+	STANDARD_LINES,
 	FormulaError,
 	FormulaTerm,
 	find_cycle,
@@ -12,7 +12,15 @@ from frappe_psak_id.psak_id.report_lines import (
 )
 from frappe_psak_id.tests.utils import IntegrationTestCase
 
-MANDATORY = ("PL-SUB-OP", "PL-SUB-PBFT", "PL-SUB-PL")
+MANDATORY = (
+	"PL-SUB-OP",
+	"PL-SUB-PBFT",
+	"PL-SUB-PL",
+	"FP-SUB-TA",
+	"FP-SUB-EQ",
+	"FP-SUB-TLE",
+	"OCI-SUB-TCI",
+)
 
 
 class TestSubtotalFormula(IntegrationTestCase):
@@ -26,8 +34,24 @@ class TestSubtotalFormula(IntegrationTestCase):
 			],
 		)
 
+	def test_parses_category_classification(self):
+		self.assertEqual(
+			parse_subtotal_formula("+CAT:Asset/Non-current -CAT:Equity"),
+			[
+				FormulaTerm(1, "category", "Asset", "Non-current"),
+				FormulaTerm(-1, "category", "Equity"),
+			],
+		)
+
 	def test_rejects_missing_sign_unknown_category_and_empty(self):
-		for formula in ("PL-OP-REV", "+CAT:Other", "", "+PL-OP-REV PL-OP-COS"):
+		for formula in (
+			"PL-OP-REV",
+			"+CAT:Other",
+			"",
+			"+PL-OP-REV PL-OP-COS",
+			"+CAT:Equity/Current",
+			"+CAT:Asset/Long-term",
+		):
 			with self.subTest(formula=formula), self.assertRaises(FormulaError):
 				parse_subtotal_formula(formula)
 
@@ -51,15 +75,18 @@ class TestPSAKIDReportLine(IntegrationTestCase):
 		)
 
 	def test_standard_lines_are_installed_in_order(self):
-		codes = frappe.get_all(
-			"PSAK ID Report Line",
-			filters={"name": ("in", [line["line_code"] for line in STANDARD_PROFIT_OR_LOSS_LINES])},
-			order_by="sequence asc",
-			pluck="name",
-		)
-		self.assertEqual(codes, [line["line_code"] for line in STANDARD_PROFIT_OR_LOSS_LINES])
+		for statement, lines in STANDARD_LINES.items():
+			standard = [line["line_code"] for line in lines]
+			with self.subTest(statement=statement):
+				codes = frappe.get_all(
+					"PSAK ID Report Line",
+					filters={"name": ("in", standard), "statement": statement},
+					order_by="sequence asc",
+					pluck="name",
+				)
+				self.assertEqual(codes, standard)
 
-	def test_only_the_three_required_subtotals_are_mandatory(self):
+	def test_only_the_required_subtotals_are_mandatory(self):
 		self.assertEqual(
 			sorted(frappe.get_all("PSAK ID Report Line", filters={"mandatory": 1}, pluck="name")),
 			sorted(MANDATORY),
@@ -137,3 +164,85 @@ class TestPSAKIDReportLine(IntegrationTestCase):
 		associates.follows_operating = 1
 		with self.assertRaises(frappe.ValidationError):
 			associates.save()
+
+	def test_financial_position_line_needs_its_category_and_classification(self):
+		with self.assertRaises(frappe.ValidationError):
+			self._line(
+				line_code="_T-FP-OP", statement="Financial Position", line_type="Line", category="Operating"
+			).insert()
+		with self.assertRaises(frappe.MandatoryError):
+			self._line(
+				line_code="_T-FP-NOCLS", statement="Financial Position", line_type="Line", category="Asset"
+			).insert()
+
+		equity = self._line(
+			line_code="_T-FP-EQ",
+			statement="Financial Position",
+			line_type="Line",
+			category="Equity",
+			classification="Current",
+			follows_operating=1,
+		).insert()
+		self.assertIsNone(equity.classification)
+		self.assertEqual(equity.follows_operating, 0)
+
+	def test_profit_or_loss_line_takes_only_its_own_categories(self):
+		with self.assertRaises(frappe.ValidationError):
+			self._line(line_code="_T-PL-ASSET", line_type="Line", category="Asset").insert()
+
+		line = self._line(
+			line_code="_T-PL-CLS",
+			line_type="Line",
+			category="Operating",
+			classification="Current",
+			reclassifiable=1,
+		).insert()
+		self.assertIsNone(line.classification)
+		self.assertEqual(line.reclassifiable, 0)
+
+	def test_other_comprehensive_income_line_has_no_category(self):
+		line = self._line(
+			line_code="_T-OCI",
+			statement="Other Comprehensive Income",
+			line_type="Line",
+			category="Operating",
+			reclassifiable=1,
+		).insert()
+		self.assertIsNone(line.category)
+		self.assertEqual(line.reclassifiable, 1)
+
+	def test_formula_categories_belong_to_the_statement(self):
+		with self.assertRaises(frappe.ValidationError):
+			self._line(
+				line_code="_T-FP-SUB",
+				statement="Financial Position",
+				line_type="Subtotal",
+				subtotal_formula="+CAT:Operating",
+			).insert()
+
+	def test_formula_adds_only_subtotals_of_another_statement(self):
+		self._line(
+			line_code="_T-OCI-SUB",
+			statement="Other Comprehensive Income",
+			line_type="Subtotal",
+			subtotal_formula="+PL-SUB-PL +OCI-SUB-OCI",
+		).insert()
+		with self.assertRaises(frappe.ValidationError):
+			self._line(
+				line_code="_T-OCI-BAD",
+				statement="Other Comprehensive Income",
+				line_type="Subtotal",
+				subtotal_formula="+PL-OP-REV",
+			).insert()
+
+	def test_formula_loop_across_statements_is_rejected(self):
+		first = self._line(line_code="_T-PL-A", line_type="Subtotal", subtotal_formula="+PL-OP-REV").insert()
+		self._line(
+			line_code="_T-OCI-B",
+			statement="Other Comprehensive Income",
+			line_type="Subtotal",
+			subtotal_formula="+_T-PL-A",
+		).insert()
+		first.subtotal_formula = "+_T-OCI-B"
+		with self.assertRaises(frappe.ValidationError):
+			first.save()

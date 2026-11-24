@@ -9,8 +9,23 @@ from typing import NamedTuple
 import frappe
 from frappe import _
 
-CATEGORIES = ("Operating", "Investing", "Financing", "Income Tax", "Discontinued Operations")
+PROFIT_OR_LOSS = "Profit or Loss"
+FINANCIAL_POSITION = "Financial Position"
+OTHER_COMPREHENSIVE_INCOME = "Other Comprehensive Income"
+
+# The categories a line of each statement belongs to. Other comprehensive income lines have no
+# category; they are split by whether they may be reclassified to profit or loss.
+STATEMENT_CATEGORIES = {
+	PROFIT_OR_LOSS: ("Operating", "Investing", "Financing", "Income Tax", "Discontinued Operations"),
+	FINANCIAL_POSITION: ("Asset", "Liability", "Equity"),
+	OTHER_COMPREHENSIVE_INCOME: (),
+}
+CATEGORIES = tuple(category for categories in STATEMENT_CATEGORIES.values() for category in categories)
 CATEGORY_PREFIX = "CAT:"
+
+# Assets and liabilities are split into current and non-current; equity is not
+CLASSIFIED_CATEGORIES = ("Asset", "Liability")
+CLASSIFICATIONS = ("Current", "Non-current")
 
 # Equity-accounted investees are always Investing, even for an entity whose main business is
 # investing, so this line may never be presented in Operating.
@@ -24,6 +39,7 @@ class FormulaTerm(NamedTuple):
 	sign: int
 	kind: str  # "category" or "line"
 	ref: str
+	classification: str | None = None  # only for an asset or liability category
 
 
 class FormulaError(frappe.ValidationError):
@@ -33,7 +49,8 @@ class FormulaError(frappe.ValidationError):
 def parse_subtotal_formula(formula: str) -> list[FormulaTerm]:
 	"""Parse ``+PL-OP-REV -PL-OP-COS +CAT:Operating`` into terms.
 
-	Every term starts with + or -. A term is a line code or ``CAT:`` followed by a category.
+	Every term starts with + or -. A term is a line code or ``CAT:`` followed by a category; an
+	asset or liability category may name a classification, as in ``+CAT:Asset/Current``.
 	"""
 	text = (formula or "").strip()
 	if not text:
@@ -51,14 +68,23 @@ def parse_subtotal_formula(formula: str) -> list[FormulaTerm]:
 		sign = 1 if raw[0] == "+" else -1
 		ref = raw[1:].strip()
 		if ref.upper().startswith(CATEGORY_PREFIX):
-			category = ref[len(CATEGORY_PREFIX) :].strip()
+			category, _slash, classification = ref[len(CATEGORY_PREFIX) :].partition("/")
+			category, classification = category.strip(), classification.strip() or None
 			if category not in CATEGORIES:
 				raise FormulaError(
 					_("Unknown category {0} in the subtotal formula. Use one of: {1}.").format(
 						category, ", ".join(CATEGORIES)
 					)
 				)
-			terms.append(FormulaTerm(sign, "category", category))
+			if classification and (
+				category not in CLASSIFIED_CATEGORIES or classification not in CLASSIFICATIONS
+			):
+				raise FormulaError(
+					_(
+						"Only assets and liabilities are split into {0} in the subtotal formula. Found: {1}"
+					).format(" / ".join(CLASSIFICATIONS), raw)
+				)
+			terms.append(FormulaTerm(sign, "category", category, classification))
 		else:
 			if " " in ref:
 				raise FormulaError(
@@ -98,6 +124,39 @@ def find_cycle(formulas: dict[str, list[FormulaTerm]]) -> list[str] | None:
 		if cycle:
 			return cycle
 	return None
+
+
+def _subtotal(code: str, label_id: str, label_en: str, formula: str, mandatory: int = 0) -> dict:
+	return {
+		"line_code": code,
+		"label_id": label_id,
+		"label_en": label_en,
+		"line_type": "Subtotal",
+		"subtotal_formula": formula,
+		"mandatory": mandatory,
+	}
+
+
+def _fp_line(code, label_id, label_en, category, classification, is_other_items) -> dict:
+	return {
+		"line_code": code,
+		"label_id": label_id,
+		"label_en": label_en,
+		"line_type": "Line",
+		"category": category,
+		"classification": classification,
+		"is_other_items": is_other_items,
+	}
+
+
+def _oci_line(code, label_id, label_en, reclassifiable) -> dict:
+	return {
+		"line_code": code,
+		"label_id": label_id,
+		"label_en": label_en,
+		"line_type": "Line",
+		"reclassifiable": reclassifiable,
+	}
 
 
 # Standard PSAK 118 statement of profit or loss (PRD-001 Appendix A). Amounts are signed:
@@ -267,20 +326,218 @@ STANDARD_PROFIT_OR_LOSS_LINES = (
 )
 
 
+# Standard PSAK 118 statement of financial position (PRD-002 Appendix B). Assets, liabilities and
+# equity are presented positive; treasury shares carry their debit balance as a negative amount.
+STANDARD_FINANCIAL_POSITION_LINES = (
+	*(
+		_fp_line(code, label_id, label_en, "Asset", "Non-current", other)
+		for code, label_id, label_en, other in (
+			("FP-NCA-PPE", "Aset tetap", "Property, plant and equipment", 0),
+			("FP-NCA-ROU", "Aset hak guna", "Right-of-use assets", 0),
+			("FP-NCA-INVPROP", "Properti investasi", "Investment property", 0),
+			("FP-NCA-GW", "Goodwill", "Goodwill", 0),
+			(
+				"FP-NCA-INTANG",
+				"Aset takberwujud selain goodwill",
+				"Intangible assets other than goodwill",
+				0,
+			),
+			(
+				"FP-NCA-ASSOC",
+				"Investasi pada entitas asosiasi dan ventura bersama",
+				"Investments in associates and joint ventures",
+				0,
+			),
+			("FP-NCA-FIN", "Aset keuangan tidak lancar lain", "Other non-current financial assets", 0),
+			("FP-NCA-DTA", "Aset pajak tangguhan", "Deferred tax assets", 0),
+			("FP-NCA-OTH", "Aset tidak lancar lain", "Other non-current assets", 1),
+		)
+	),
+	_subtotal("FP-SUB-NCA", "Jumlah aset tidak lancar", "Total non-current assets", "+CAT:Asset/Non-current"),
+	*(
+		_fp_line(code, label_id, label_en, "Asset", "Current", other)
+		for code, label_id, label_en, other in (
+			("FP-CA-INV", "Persediaan", "Inventories", 0),
+			("FP-CA-AR", "Piutang usaha dan piutang lain", "Trade and other receivables", 0),
+			("FP-CA-TAX", "Pajak dibayar dimuka", "Prepaid taxes", 0),
+			("FP-CA-PREP", "Biaya dibayar dimuka dan uang muka", "Prepayments and advances", 0),
+			("FP-CA-FIN", "Aset keuangan lancar lain", "Other current financial assets", 0),
+			("FP-CA-CASH", "Kas dan setara kas", "Cash and cash equivalents", 0),
+			("FP-CA-HFS", "Aset dimiliki untuk dijual", "Assets held for sale", 0),
+			("FP-CA-OTH", "Aset lancar lain", "Other current assets", 1),
+		)
+	),
+	_subtotal("FP-SUB-CA", "Jumlah aset lancar", "Total current assets", "+CAT:Asset/Current"),
+	_subtotal("FP-SUB-TA", "Jumlah aset", "Total assets", "+FP-SUB-NCA +FP-SUB-CA", mandatory=1),
+	*(
+		_fp_line(code, label_id, label_en, "Liability", "Current", other)
+		for code, label_id, label_en, other in (
+			("FP-CL-AP", "Utang usaha dan utang lain", "Trade and other payables", 0),
+			(
+				"FP-CL-BORR",
+				"Pinjaman jangka pendek dan bagian lancar pinjaman jangka panjang",
+				"Short-term borrowings and current portion of long-term borrowings",
+				0,
+			),
+			("FP-CL-LEASE", "Liabilitas sewa jangka pendek", "Current lease liabilities", 0),
+			("FP-CL-TAX", "Utang pajak", "Taxes payable", 0),
+			("FP-CL-ACCR", "Beban akrual", "Accrued expenses", 0),
+			(
+				"FP-CL-CONTRACT",
+				"Liabilitas kontrak dan uang muka pelanggan",
+				"Contract liabilities and customer advances",
+				0,
+			),
+			("FP-CL-PROV", "Provisi jangka pendek", "Current provisions", 0),
+			(
+				"FP-CL-HFS",
+				"Liabilitas terkait aset dimiliki untuk dijual",
+				"Liabilities associated with assets held for sale",
+				0,
+			),
+			("FP-CL-OTH", "Liabilitas jangka pendek lain", "Other current liabilities", 1),
+		)
+	),
+	_subtotal(
+		"FP-SUB-CL",
+		"Jumlah liabilitas jangka pendek",
+		"Total current liabilities",
+		"+CAT:Liability/Current",
+	),
+	*(
+		_fp_line(code, label_id, label_en, "Liability", "Non-current", other)
+		for code, label_id, label_en, other in (
+			("FP-NCL-BORR", "Pinjaman jangka panjang", "Long-term borrowings", 0),
+			("FP-NCL-LEASE", "Liabilitas sewa jangka panjang", "Non-current lease liabilities", 0),
+			("FP-NCL-EB", "Liabilitas imbalan kerja", "Employee benefit liabilities", 0),
+			("FP-NCL-DTL", "Liabilitas pajak tangguhan", "Deferred tax liabilities", 0),
+			("FP-NCL-PROV", "Provisi jangka panjang", "Non-current provisions", 0),
+			("FP-NCL-OTH", "Liabilitas jangka panjang lain", "Other non-current liabilities", 1),
+		)
+	),
+	_subtotal(
+		"FP-SUB-NCL",
+		"Jumlah liabilitas jangka panjang",
+		"Total non-current liabilities",
+		"+CAT:Liability/Non-current",
+	),
+	_subtotal("FP-SUB-TL", "Jumlah liabilitas", "Total liabilities", "+FP-SUB-CL +FP-SUB-NCL"),
+	*(
+		_fp_line(code, label_id, label_en, "Equity", None, 0)
+		for code, label_id, label_en in (
+			("FP-EQ-CAP", "Modal saham", "Share capital"),
+			("FP-EQ-APIC", "Tambahan modal disetor", "Additional paid-in capital"),
+			("FP-EQ-TREAS", "Saham treasuri", "Treasury shares"),
+			("FP-EQ-OCI", "Penghasilan komprehensif lain", "Other comprehensive income reserves"),
+			("FP-EQ-RE", "Saldo laba", "Retained earnings"),
+			("FP-EQ-OTH", "Komponen ekuitas lain", "Other equity components"),
+		)
+	),
+	_subtotal("FP-SUB-EQ", "Jumlah ekuitas", "Total equity", "+CAT:Equity", mandatory=1),
+	_subtotal(
+		"FP-SUB-TLE",
+		"Jumlah liabilitas dan ekuitas",
+		"Total liabilities and equity",
+		"+FP-SUB-TL +FP-SUB-EQ",
+		mandatory=1,
+	),
+)
+
+# Standard other comprehensive income (PRD-002 Appendix E), presented below profit or loss.
+# Total comprehensive income adds the profit or loss subtotal of the other statement.
+STANDARD_OTHER_COMPREHENSIVE_INCOME_LINES = (
+	*(
+		_oci_line(code, label_id, label_en, 0)
+		for code, label_id, label_en in (
+			(
+				"OCI-NR-REV",
+				"Surplus revaluasi aset tetap",
+				"Revaluation surplus on property, plant and equipment",
+			),
+			(
+				"OCI-NR-EB",
+				"Pengukuran kembali program imbalan pasti",
+				"Remeasurement of defined benefit plans",
+			),
+			(
+				"OCI-NR-FVOCI",
+				"Investasi ekuitas pada nilai wajar melalui PKL",
+				"Equity investments at fair value through other comprehensive income",
+			),
+			(
+				"OCI-NR-TAX",
+				"Pajak penghasilan terkait pos yang tidak akan direklasifikasi",
+				"Income tax relating to items that will not be reclassified",
+			),
+		)
+	),
+	_subtotal(
+		"OCI-SUB-NR",
+		"Jumlah pos yang tidak akan direklasifikasi ke laba rugi",
+		"Items that will not be reclassified to profit or loss",
+		"+OCI-NR-REV +OCI-NR-EB +OCI-NR-FVOCI +OCI-NR-TAX",
+	),
+	*(
+		_oci_line(code, label_id, label_en, 1)
+		for code, label_id, label_en in (
+			("OCI-R-FX", "Selisih kurs penjabaran", "Exchange differences on translation"),
+			("OCI-R-CFH", "Lindung nilai arus kas", "Cash flow hedges"),
+			(
+				"OCI-R-DEBT",
+				"Instrumen utang pada nilai wajar melalui PKL",
+				"Debt instruments at fair value through other comprehensive income",
+			),
+			(
+				"OCI-R-TAX",
+				"Pajak penghasilan terkait pos yang dapat direklasifikasi",
+				"Income tax relating to items that may be reclassified",
+			),
+		)
+	),
+	_subtotal(
+		"OCI-SUB-R",
+		"Jumlah pos yang dapat direklasifikasi ke laba rugi",
+		"Items that may be reclassified to profit or loss",
+		"+OCI-R-FX +OCI-R-CFH +OCI-R-DEBT +OCI-R-TAX",
+	),
+	_subtotal(
+		"OCI-SUB-OCI",
+		"Penghasilan komprehensif lain, setelah pajak",
+		"Other comprehensive income, net of tax",
+		"+OCI-SUB-NR +OCI-SUB-R",
+	),
+	_subtotal(
+		"OCI-SUB-TCI",
+		"Jumlah penghasilan komprehensif",
+		"Total comprehensive income",
+		"+PL-SUB-PL +OCI-SUB-OCI",
+		mandatory=1,
+	),
+)
+
+# Profit or loss first: total comprehensive income refers to its profit or loss subtotal
+STANDARD_LINES = {
+	PROFIT_OR_LOSS: STANDARD_PROFIT_OR_LOSS_LINES,
+	FINANCIAL_POSITION: STANDARD_FINANCIAL_POSITION_LINES,
+	OTHER_COMPREHENSIVE_INCOME: STANDARD_OTHER_COMPREHENSIVE_INCOME_LINES,
+}
+
+
 def ensure_standard_report_lines():
 	"""Insert standard lines that are missing; never overwrite a line the user has changed."""
 	frappe.flags.psak_id_installing_standard_lines = True
 	try:
-		for sequence, line in enumerate(STANDARD_PROFIT_OR_LOSS_LINES, start=1):
-			if frappe.db.exists("PSAK ID Report Line", line["line_code"]):
-				continue
-			frappe.get_doc(
-				{
-					"doctype": "PSAK ID Report Line",
-					"statement": "Profit or Loss",
-					"sequence": sequence * 10,
-					**line,
-				}
-			).insert(ignore_permissions=True)
+		for statement, lines in STANDARD_LINES.items():
+			for sequence, line in enumerate(lines, start=1):
+				if frappe.db.exists("PSAK ID Report Line", line["line_code"]):
+					continue
+				frappe.get_doc(
+					{
+						"doctype": "PSAK ID Report Line",
+						"statement": statement,
+						"sequence": sequence * 10,
+						**line,
+					}
+				).insert(ignore_permissions=True)
 	finally:
 		frappe.flags.psak_id_installing_standard_lines = False
