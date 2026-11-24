@@ -4,6 +4,10 @@ All notable changes to PSAK ID are listed here. The project follows [Semantic Ve
 
 ## [Unreleased]
 
+### Added
+
+- A release published on GitHub is advertised on the Frappe Marketplace: the `publish-marketplace` workflow adds it to the registry from a fork and opens or updates one rolling PR to `frappe/marketplace`. It needs the `MARKETPLACE_PR_TOKEN` secret.
+
 ## [1.0.0] - 2026-11-24
 
 Release 1: the PSAK 118 statement of profit or loss (PRD-001).
