@@ -11,6 +11,15 @@ const REOPEN_ROLES = ["PSAK ID - Accounting - Head", "PSAK ID - CFO"];
 
 frappe.ui.form.on("PSAK ID Financial Statement", {
 	refresh(frm) {
+		// The workspace shortcut opens a new statement for every role; a reader such as the
+		// auditor would land on an empty form they cannot save. Replacing the history entry
+		// keeps Back from returning to it.
+		if (frm.is_new() && !frappe.model.can_create(frm.doctype)) {
+			frappe.route_flags.replace_route = true;
+			frappe.set_route("List", frm.doctype);
+			return;
+		}
+
 		// Lines come from Recompute; only their note numbers are edited by hand
 		frm.set_df_property("lines", "cannot_add_rows", true);
 		frm.set_df_property("lines", "cannot_delete_rows", true);
