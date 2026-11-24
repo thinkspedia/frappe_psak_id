@@ -92,6 +92,13 @@ class PSAKIDFinancialStatement(Document):
 		# Frappe sets the workflow state on cancel only through a workflow action, and Reopen is not one
 		self.workflow_state = CANCELLED
 
+	def get_print_context(self) -> dict:
+		"""What the Print Format PSAK 118 Financial Statement prints (FR-10)."""
+		# Imported here: the print module imports this controller
+		from frappe_psak_id.psak_id.print_statement import get_print_context
+
+		return get_print_context(self)
+
 	def compute(self):
 		"""Fill the lines and the check results from the General Ledger."""
 		result = run_checks(self.company, self.from_date, self.to_date, self.finance_book)
@@ -329,10 +336,10 @@ class PSAKIDFinancialStatement(Document):
 			# Review always starts from the ledger as it is now, never from values computed earlier
 			self.compute()
 			self._validate_ready_for_review()
-			self.prepared_by = frappe.session.user
+			self.prepared_by, self.prepared_on = frappe.session.user, now()
 			self.return_reason = None
 		elif self.workflow_state == APPROVAL_CFO:
-			self.reviewed_by = frappe.session.user
+			self.reviewed_by, self.reviewed_on = frappe.session.user, now()
 			self.return_reason = None
 		elif (old_state, self.workflow_state) in ((UNDER_REVIEW, DRAFT), (APPROVAL_CFO, UNDER_REVIEW)):
 			if not (self.return_reason or "").strip():

@@ -3,6 +3,7 @@
 
 const STATEMENT_METHODS =
 	"frappe_psak_id.psak_id.doctype.psak_id_financial_statement.psak_id_financial_statement";
+const PRINT_METHODS = "frappe_psak_id.psak_id.print_statement";
 const PERIOD_MONTHS = { Monthly: 1, Quarterly: 3, Annual: 12 };
 const RETURN_ACTIONS = ["Return to Draft", "Return to Review"];
 const REOPEN_ROLES = ["PSAK ID - Accounting - Head", "PSAK ID - CFO"];
@@ -38,6 +39,18 @@ frappe.ui.form.on("PSAK ID Financial Statement", {
 			__("PSAK 118 Profit or Loss"),
 			() => frappe.set_route("query-report", "PSAK 118 Profit or Loss", filters),
 			__("View")
+		);
+		frm.add_custom_button(
+			__("PDF"),
+			() =>
+				window.open(
+					frappe.urllib.get_full_url(
+						`/api/method/${PRINT_METHODS}.download_pdf?name=${encodeURIComponent(
+							frm.doc.name
+						)}`
+					)
+				),
+			__("Download")
 		);
 	},
 
