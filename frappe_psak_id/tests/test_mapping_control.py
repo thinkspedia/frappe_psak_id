@@ -115,6 +115,9 @@ class TestMappingControl(IntegrationTestCase):
 			("2027-01-14", cls.sundry, 20_000),
 			("2027-02-10", cls.sales, -500_000),
 			("2027-03-10", cls.admin, 30_000),
+			# Entries that net to nothing under the conflicting mappings
+			("2027-04-10", cls.cogs, 50_000),
+			("2027-04-11", cls.cogs, -50_000),
 		):
 			make_journal_entry(COMPANY, posting_date, account, amount, cls.cash)
 
@@ -147,8 +150,9 @@ class TestMappingControl(IntegrationTestCase):
 		(no_condition,) = self.issues(result, NO_MATCHING_CONDITION)
 		self.assertEqual((no_condition.account, no_condition.amount), (self.interest_income, 5_000))
 
+		# Which of the two lines gets the balance is arbitrary, so the statement cannot go on
 		(conflict,) = self.issues(result, CONFLICTING_MAPPINGS)
-		self.assertEqual(conflict.severity, WARNING)
+		self.assertEqual((conflict.severity, conflict.amount), (BLOCKING, -200_000))
 		self.assertEqual(conflict.priority, 5)
 		self.assertEqual(conflict.mappings, sorted([self.mappings["cogs_main"], self.mappings["cogs_all"]]))
 
@@ -181,6 +185,10 @@ class TestMappingControl(IntegrationTestCase):
 		)
 		self.assertEqual(self.issues(run_checks(COMPANY, "2027-01-01", "2027-01-31"), OTHER_ITEMS), [])
 
+	def test_conflict_without_a_balance_is_a_warning(self):
+		(conflict,) = self.issues(run_checks(COMPANY, "2027-04-01", "2027-04-30"), CONFLICTING_MAPPINGS)
+		self.assertEqual((conflict.severity, conflict.amount), (WARNING, 0))
+
 	def test_account_mapped_to_a_disabled_line(self):
 		frappe.db.set_value("PSAK ID Report Line", "PL-OP-SELL", "disabled", 1)
 		self.addCleanup(frappe.db.set_value, "PSAK ID Report Line", "PL-OP-SELL", "disabled", 0)
@@ -196,7 +204,7 @@ class TestMappingControl(IntegrationTestCase):
 		self.assertIn(self.salary, [row.subject for row in data])
 		self.assertIsNone(message)
 		blocking, warnings, difference, restatement = (item["value"] for item in summary)
-		self.assertEqual((blocking, warnings), (5, 2))
+		self.assertEqual((blocking, warnings), (6, 1))
 		self.assertEqual((difference, restatement), (95_000, 7_000))
 
 	def test_clean_period_has_no_issues(self):

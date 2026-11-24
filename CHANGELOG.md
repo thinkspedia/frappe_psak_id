@@ -8,6 +8,10 @@ All notable changes to PSAK ID are listed here. The project follows [Semantic Ve
 
 - A release published on GitHub is advertised on the Frappe Marketplace: the `publish-marketplace` workflow adds it to the registry from a fork and opens or updates one rolling PR to `frappe/marketplace`. It needs the `MARKETPLACE_PR_TOKEN` secret.
 
+### Changed
+
+- Mapping Control and PSAK ID Financial Statement: conditional mappings of the same priority that put an account's balance on different lines block the statement from being sent for review, since which line gets the balance is arbitrary. They stay a warning when the account's entries in the period net to nothing.
+
 ## [1.0.0] - 2026-11-24
 
 Release 1: the PSAK 118 statement of profit or loss (PRD-001).
