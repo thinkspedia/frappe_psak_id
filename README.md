@@ -48,7 +48,8 @@ PSAK ID adds the PSAK 118 presentation on top of ERPNext's General Ledger. It on
   - entries that match no condition;
   - a difference to ERPNext's Profit and Loss;
   - in the first PSAK 118 year, the restated prior year;
-  - warnings for Other Items above the threshold and conflicting conditions.
+  - conditional mappings of the same priority that put an account's balance on different lines;
+  - warnings for Other Items above the threshold, and for such conflicting conditions when the account's entries net to nothing.
 - **PSAK 118 Profit or Loss**: a report with monthly, quarterly or yearly columns.
   - Comparatives can be the same period last year or the prior year restated with this year's mappings.
   - Filters cover cost center and finance book, with amounts in full, thousands or millions and Indonesian, English or both labels.

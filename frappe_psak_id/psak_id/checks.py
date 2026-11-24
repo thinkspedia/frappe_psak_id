@@ -3,9 +3,11 @@
 Each issue names what is wrong and what to open to fix it. Blocking issues stop a statement from
 being sent for review: accounts with a balance but no report line (BR-02), a difference to
 ERPNext's Profit and Loss (BR-07) and, in the first PSAK 118 year, a restated comparative that
-does not equal the PSAK 201 profit or loss (BR-19). Warnings need a decision but do not block:
-Other Items lines above the company's threshold must be explained in a note (BR-06), and
-conflicting conditional mappings should get distinct priorities.
+does not equal the PSAK 201 profit or loss (BR-19), and conditional mappings of the same priority
+that put an account's balance on different lines, since which of them wins is arbitrary. Warnings
+need a decision but do not block: Other Items lines above the company's threshold must be
+explained in a note (BR-06), and conflicting mappings whose entries net to nothing in the period
+should still get distinct priorities.
 """
 
 import frappe
@@ -99,7 +101,7 @@ def _mapping_issues(statement, period) -> list:
 	issues += [
 		_issue(
 			CONFLICTING_MAPPINGS,
-			WARNING,
+			BLOCKING if flt(row.amount, 2) else WARNING,
 			statement,
 			period,
 			account=row.account,
