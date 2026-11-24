@@ -179,31 +179,45 @@ def _rows(filters, columns, current, comparatives) -> list[dict]:
 			# Not "indent": that key turns the datatable into a collapsible tree
 			indented=bool(show_headings and line.line_type == "Line"),
 			is_profit_or_loss=line.line_code == PROFIT_OR_LOSS_LINE,
-			accounts={},
+			ledger={},
 		)
 		if line.line_type != "Heading":
 			for fieldname in fieldnames:
-				amount, accounts = _column_amount(
+				amount, ledger = _column_amount(
 					fieldname, line.line_code, lines_by_column, current, comparatives
 				)
 				row[fieldname] = flt(amount / unit, 0)
-				row["accounts"][fieldname] = accounts
+				row["ledger"][fieldname] = ledger
 		rows.append(row)
 	return rows
 
 
 def _column_amount(fieldname, line_code, lines_by_column, current, comparatives):
+	"""The amount of one cell and the General Ledger filters behind it (see ``ledger_filters``)."""
 	if fieldname in lines_by_column:
-		line = lines_by_column[fieldname][line_code]
-		return line.amount, line.accounts
-	prefix = "p" if fieldname == "total" else "c"
-	parts = [
-		lines_by_column[f"{prefix}{index}"][line_code]
-		for index in range(len(current if prefix == "p" else comparatives))
-	]
-	return sum(part.amount for part in parts), sorted(
-		{account for part in parts for account in part.accounts}
-	)
+		parts = [lines_by_column[fieldname][line_code]]
+	else:
+		prefix = "p" if fieldname == "total" else "c"
+		parts = [
+			lines_by_column[f"{prefix}{index}"][line_code]
+			for index in range(len(current if prefix == "p" else comparatives))
+		]
+	ledger = {
+		"accounts": sorted({account for part in parts for account in part.accounts}),
+		"filters": {},
+		"exact": True,
+		"by_account": [],
+	}
+	with_entries = [part for part in parts if part.accounts]
+	if with_entries:
+		# A total spans several periods; their filters combine exactly only when they are the same
+		ledger["filters"] = with_entries[0].ledger_filters
+		ledger["exact"] = all(
+			part.ledger_exact and part.ledger_filters == ledger["filters"] for part in with_entries
+		)
+		if len(parts) == 1:
+			ledger["by_account"] = parts[0].ledger_accounts
+	return sum(part.amount for part in parts), ledger
 
 
 def _label_row(filters, label_id, label_en, line_type) -> frappe._dict:

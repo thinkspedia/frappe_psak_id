@@ -44,6 +44,36 @@
 	{%- endif %}
 {%- endmacro -%}
 
+{%- macro keep_with_footnotes(colspan, footnotes) -%}
+	{#- Rows a page break never splits: the last totals go to the next page with their footnotes
+	instead of leaving the footnotes alone on a page. The inner table has the same columns. #}
+	<tr><td class="psak-keep" colspan="{{ colspan }}"><table><tbody>{{ caller() }}</tbody></table>{{ footnotes }}</td></tr>
+{%- endmacro -%}
+
+{%- macro line_row(row) -%}
+	<tr class="{{ 'psak-heading' if row.kind == 'Heading' }} {{ 'psak-subtotal' if row.kind == 'Subtotal' }} {{ 'psak-profit-or-loss' if row.profit_or_loss }}">
+		<td class="psak-label {{ 'psak-indent' if row.indented }}">{{ bilingual(row.label_id, row.label_en) }}</td>
+		<td class="psak-note">{{ (row.note or "") | e }}</td>
+		{%- if row.kind == "Heading" %}
+		<td colspan="{{ amount_count }}"></td>
+		{%- else %}
+		{%- for amount in row.amounts %}
+		<td class="psak-amount">{{ amount }}</td>
+		{%- endfor %}
+		{%- endif %}
+	</tr>
+{%- endmacro -%}
+
+{%- macro statement_footnotes() -%}
+	{%- if fs.restated_note %}
+	<p class="psak-footnote">{{ bilingual(
+		"* Disajikan kembali dengan pemetaan PSAK 118; lihat Rekonsiliasi Transisi.",
+		"* Restated with the PSAK 118 mappings; see the Transition Reconciliation."
+	) }}</p>
+	{%- endif %}
+	{{ rounding_note() }}
+{%- endmacro -%}
+
 <style>
 	.print-format {
 		margin-top: 30mm;
@@ -99,6 +129,7 @@
 		font-weight: bold;
 	}
 	.psak-statement td { vertical-align: top; padding: 1mm; }
+	.psak-statement td.psak-keep { padding: 0; }
 	.psak-statement .psak-label { text-align: start; }
 	.psak-statement .psak-note { text-align: center; width: 12%; }
 	.psak-statement .psak-amount {
@@ -135,28 +166,16 @@
 		<table>
 			{{ amount_header("", "", fs.columns) }}
 			<tbody>
-				{%- for row in fs.lines %}
-				<tr class="{{ 'psak-heading' if row.kind == 'Heading' }} {{ 'psak-subtotal' if row.kind == 'Subtotal' }} {{ 'psak-profit-or-loss' if row.profit_or_loss }}">
-					<td class="psak-label {{ 'psak-indent' if row.indented }}">{{ bilingual(row.label_id, row.label_en) }}</td>
-					<td class="psak-note">{{ (row.note or "") | e }}</td>
-					{%- if row.kind == "Heading" %}
-					<td colspan="{{ amount_count }}"></td>
-					{%- else %}
-					{%- for amount in row.amounts %}
-					<td class="psak-amount">{{ amount }}</td>
-					{%- endfor %}
-					{%- endif %}
-				</tr>
+				{%- for row in fs.lines[:-1] %}
+				{{ line_row(row) }}
 				{%- endfor %}
+				{%- call keep_with_footnotes(amount_count + 2, statement_footnotes()) %}
+				{%- for row in fs.lines[-1:] %}
+				{{ line_row(row) }}
+				{%- endfor %}
+				{%- endcall %}
 			</tbody>
 		</table>
-		{%- if fs.restated_note %}
-		<p class="psak-footnote">{{ bilingual(
-			"* Disajikan kembali dengan pemetaan PSAK 118; lihat Rekonsiliasi Transisi.",
-			"* Restated with the PSAK 118 mappings; see the Transition Reconciliation."
-		) }}</p>
-		{%- endif %}
-		{{ rounding_note() }}
 	</div>
 
 	{%- if fs.natures %}
@@ -181,15 +200,16 @@
 				</tr>
 				{%- endfor %}
 				{%- endfor %}
+				{%- call keep_with_footnotes(amount_count + 1, rounding_note()) %}
 				<tr class="psak-subtotal psak-profit-or-loss">
 					<td class="psak-label">{{ bilingual("Jumlah beban operasi menurut sifat", "Total operating expenses by nature") }}</td>
 					{%- for amount in fs.natures.total %}
 					<td class="psak-amount">{{ amount }}</td>
 					{%- endfor %}
 				</tr>
+				{%- endcall %}
 			</tbody>
 		</table>
-		{{ rounding_note() }}
 	</div>
 	{%- endif %}
 
@@ -211,6 +231,7 @@
 				</tr>
 				{%- endfor %}
 				{%- endfor %}
+				{%- call keep_with_footnotes(2, rounding_note()) %}
 				<tr class="psak-subtotal">
 					<td class="psak-label">{{ bilingual("Laba (rugi) menurut PSAK 201", "Profit (loss) under PSAK 201") }}</td>
 					<td class="psak-amount">{{ fs.transition.psak201 }}</td>
@@ -219,9 +240,9 @@
 					<td class="psak-label">{{ bilingual("Laba (rugi) disajikan kembali menurut PSAK 118", "Profit (loss) restated under PSAK 118") }}</td>
 					<td class="psak-amount">{{ fs.transition.restated }}</td>
 				</tr>
+				{%- endcall %}
 			</tbody>
 		</table>
-		{{ rounding_note() }}
 	</div>
 	{%- endif %}
 

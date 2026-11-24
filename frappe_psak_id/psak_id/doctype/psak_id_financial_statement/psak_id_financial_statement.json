@@ -118,7 +118,7 @@
    "fieldname": "unit",
    "fieldtype": "Select",
    "label": "Unit",
-   "options": "Full\nThousands\nMillions"
+   "options": "\nFull\nThousands\nMillions"
   },
   {
    "fieldname": "currency",
@@ -382,7 +382,7 @@
  "is_submittable": 1,
  "link_display_mode": "Search",
  "links": [],
- "modified": "2026-11-24 11:55:47.823406",
+ "modified": "2026-11-24 19:36:51.734653",
  "modified_by": "Administrator",
  "module": "PSAK ID",
  "name": "PSAK ID Financial Statement",

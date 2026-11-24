@@ -100,7 +100,10 @@ class TestProfitOrLossReport(IntegrationTestCase):
 		self.assertEqual(rows["PL-SUB-OP"].p0, 1_000_567)
 		self.assertEqual(rows["PL-SUB-PL"].p0, 1_000_567)
 		self.assertTrue(rows["PL-SUB-PL"].is_profit_or_loss)
-		self.assertEqual(rows["PL-OP-REV"].accounts["p0"], [self.sales])
+		self.assertEqual(
+			rows["PL-OP-REV"].ledger["p0"],
+			{"accounts": [self.sales], "filters": {}, "exact": True, "by_account": []},
+		)
 		self.assertNotIn("PL-SUB-CONT", rows)
 		self.assertNotIn("PL-DISC", rows)
 		self.assertIsNone(message)
@@ -129,7 +132,7 @@ class TestProfitOrLossReport(IntegrationTestCase):
 		self.assertEqual([column["fieldname"] for column in columns], ["line", "p0", "p1", "total"])
 		self.assertEqual(rows["PL-SUB-PL"].p1, 450_000)
 		self.assertEqual(rows["PL-SUB-PL"].total, 1_450_567)
-		self.assertEqual(sorted(rows["PL-OP-GA"].accounts["total"]), sorted([self.admin, self.salary]))
+		self.assertEqual(rows["PL-OP-GA"].ledger["total"]["accounts"], sorted([self.admin, self.salary]))
 		self.assertEqual(summary[2]["value"], 0)
 
 	def test_restated_comparative_uses_this_years_mappings(self):

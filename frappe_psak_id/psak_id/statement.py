@@ -30,6 +30,8 @@ DISCONTINUED = "Discontinued Operations"
 NOT_MAPPED = "Not Mapped"
 NO_MATCHING_CONDITION = "No Matching Condition"
 DISABLED_LINE = "Disabled Line"
+# Mapping condition columns that ERPNext's General Ledger report can filter on
+LEDGER_FILTER_COLUMNS = ("cost_center", "project")
 
 
 class Condition(NamedTuple):
@@ -127,7 +129,7 @@ def compute_periods(
 
 
 def _statement(result, groups, lines, ordered_lines, mappings, categories, policy):
-	line_amounts, line_accounts, unmapped, conflicts, natures = {}, {}, {}, {}, {}
+	line_amounts, line_groups, unmapped, conflicts, natures = {}, {}, {}, {}, {}
 	ledger_profit_or_loss = 0.0
 	for group in groups:
 		ledger_profit_or_loss += flt(group.amount)
@@ -141,8 +143,9 @@ def _statement(result, groups, lines, ordered_lines, mappings, categories, polic
 				key = (group.account, NO_MATCHING_CONDITION if candidates else NOT_MAPPED, None)
 			unmapped[key] = flt(unmapped.get(key)) + flt(group.amount)
 			continue
+		group.line = line.name
 		line_amounts[line.name] = flt(line_amounts.get(line.name)) + flt(group.amount)
-		line_accounts.setdefault(line.name, set()).add(group.account)
+		line_groups.setdefault(line.name, []).append(group)
 		if mapping.expense_nature:
 			key = (line.name, mapping.expense_nature)
 			natures[key] = flt(natures.get(key)) + flt(group.amount)
@@ -166,7 +169,7 @@ def _statement(result, groups, lines, ordered_lines, mappings, categories, polic
 				category=categories.get(line.name),
 				is_other_items=line.is_other_items,
 				amount=flt(amounts.get(line.name)),
-				accounts=sorted(line_accounts.get(line.name, ())),
+				**ledger_filters(line.name, line_groups.get(line.name, []), groups),
 				hidden=line.name in hidden,
 			)
 			for line in ordered_lines
@@ -191,6 +194,56 @@ def _statement(result, groups, lines, ordered_lines, mappings, categories, polic
 		ledger_difference=flt(profit_or_loss - ledger_profit_or_loss, 2),
 	)
 	return result
+
+
+def ledger_filters(line_code: str, own: list, groups: list) -> dict:
+	"""The General Ledger filters for the entries behind one line (its drill-down).
+
+	``accounts`` are the line's accounts. When a conditional mapping splits one of them between
+	lines, ``ledger_filters`` adds the cost centers or projects this line takes. One set of
+	filters applies to every account, so ``ledger_exact`` is false when the ledger would still
+	show entries that are on another line. ``ledger_accounts`` then gives the filters and amount
+	per account, which are exact unless the split is by party or another accounting dimension
+	(the General Ledger cannot filter on those).
+	"""
+	accounts = sorted({group.account for group in own})
+	filters, exact = _ledger_filters(line_code, own, groups)
+	by_account = []
+	if not exact and len(accounts) > 1:
+		for account in accounts:
+			own_groups = [group for group in own if group.account == account]
+			account_filters, account_exact = _ledger_filters(line_code, own_groups, groups)
+			by_account.append(
+				{
+					"account": account,
+					"amount": flt(sum(flt(group.amount) for group in own_groups), 2),
+					"filters": account_filters,
+					"exact": account_exact,
+				}
+			)
+	return {
+		"accounts": accounts,
+		"ledger_filters": filters,
+		"ledger_exact": exact,
+		"ledger_accounts": by_account,
+	}
+
+
+def _ledger_filters(line_code: str, own: list, groups: list) -> tuple[dict, bool]:
+	accounts = {group.account for group in own}
+	others = [group for group in groups if group.account in accounts and group.get("line") != line_code]
+	filters = {}
+	for column in LEDGER_FILTER_COLUMNS:
+		values = {group.get(column) for group in own}
+		# The General Ledger cannot select entries without a value
+		if None in values or "" in values:
+			continue
+		if any(group.get(column) not in values for group in others):
+			filters[column] = sorted(values)
+	exact = not any(
+		all(group.get(column) in values for column, values in filters.items()) for group in others
+	)
+	return filters, exact
 
 
 def presentation_order(lines: list, categories: dict) -> list:
