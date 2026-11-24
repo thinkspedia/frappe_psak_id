@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PSAK ID VERSION\n"
 "Report-Msgid-Bugs-To: helpdesk@thinkspedia.com\n"
-"POT-Creation-Date: 2026-11-24 11:30+0000\n"
+"POT-Creation-Date: 2026-11-24 11:39+0000\n"
 "PO-Revision-Date: 2026-11-23 12:08+0000\n"
 "Last-Translator: helpdesk@thinkspedia.com\n"
 "Language: id\n"
@@ -95,11 +95,11 @@ msgstr "Dimensi Akuntansi"
 msgid "Accounts that already have a mapping are skipped. Review the new mappings before preparing statements."
 msgstr "Akun yang sudah punya pemetaan dilewati. Tinjau pemetaan baru sebelum menyusun laporan."
 
-#: frappe_psak_id/psak_id/report/psak_id_mapping_control/psak_id_mapping_control.js:71
+#: frappe_psak_id/psak_id/report/psak_id_mapping_control/psak_id_mapping_control.js:68
 msgid "Add Fallback Mapping"
 msgstr "Tambah Pemetaan Fallback"
 
-#: frappe_psak_id/psak_id/report/psak_id_mapping_control/psak_id_mapping_control.js:70
+#: frappe_psak_id/psak_id/report/psak_id_mapping_control/psak_id_mapping_control.js:67
 msgid "Add Mapping"
 msgstr "Tambah Pemetaan"
 
@@ -118,7 +118,7 @@ msgstr "Seluruh Beban Pendanaan di Operasi"
 msgid "All Financing Expenses in Operating can only be ticked when customer financing is a main business activity of the company. Tick Main Business: Customer Financing first."
 msgstr "Seluruh Beban Pendanaan di Operasi hanya bisa dicentang bila pembiayaan pelanggan adalah aktivitas utama perusahaan. Centang dulu Aktivitas Utama: Pembiayaan Pelanggan."
 
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:139
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:141
 #, python-brace-format
 msgid "All checks pass. Computed on {0}."
 msgstr "Semua pemeriksaan lolos. Dihitung pada {0}."
@@ -307,7 +307,7 @@ msgstr "Hasil Pemeriksaan"
 msgid "Checks"
 msgstr "Pemeriksaan"
 
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:133
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:135
 msgid "Checks pass. Other Items lines are above the threshold: explain them in Other Items Breakdown."
 msgstr "Pemeriksaan lolos. Pos Lain-lain di atas ambang: jelaskan di Rincian Lain-lain."
 
@@ -375,7 +375,7 @@ msgstr "Tutup periode {0} s.d. {1} di ERPNext sebelum menyetujui: Accounting Per
 msgid "Company"
 msgstr "Perusahaan"
 
-#: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.js:76
+#: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.js:73
 msgid "Company Default"
 msgstr "Default Perusahaan"
 
@@ -389,7 +389,7 @@ msgstr "Kebijakan Perusahaan"
 #. Label of the comparative (Select) field in DocType 'PSAK ID Financial
 #. Statement'
 #: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.json:112
-#: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.js:48
+#: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.js:45
 msgid "Comparative"
 msgstr "Komparatif"
 
@@ -408,7 +408,7 @@ msgstr "Nilai Komparatif"
 msgid "Computed On"
 msgstr "Dihitung Pada"
 
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:158
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:160
 msgid "Computing the statement from the General Ledger..."
 msgstr "Menghitung laporan dari Buku Besar..."
 
@@ -443,7 +443,7 @@ msgstr "Pemetaan bertentangan"
 #. Option for the 'Condition Type' (Select) field in DocType 'PSAK ID Account
 #. Mapping'
 #: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.json:109
-#: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.js:58
+#: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.js:55
 msgid "Cost Center"
 msgstr "Pusat Biaya"
 
@@ -508,7 +508,7 @@ msgstr "Nonaktif"
 msgid "Discontinued Operations"
 msgstr "Operasi yang Dihentikan"
 
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:64
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:65
 msgid "Download"
 msgstr "Unduh"
 
@@ -529,11 +529,11 @@ msgstr "Laba Rugi ERPNext"
 msgid "Employee Benefits"
 msgstr "Imbalan Kerja"
 
-#: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.js:89
+#: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.js:86
 msgid "English"
 msgstr "Inggris"
 
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:55
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:56
 msgid "Excel"
 msgstr "Excel"
 
@@ -599,8 +599,8 @@ msgstr "Periode Final"
 #. Label of the finance_book (Link) field in DocType 'PSAK ID Financial
 #. Statement'
 #: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.json:104
-#: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.js:67
-#: frappe_psak_id/psak_id/report/psak_id_mapping_control/psak_id_mapping_control.js:37
+#: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.js:64
+#: frappe_psak_id/psak_id/report/psak_id_mapping_control/psak_id_mapping_control.js:34
 msgid "Finance Book"
 msgstr "Buku Keuangan"
 
@@ -671,7 +671,7 @@ msgstr "Dari Tanggal"
 #. Statement'
 #: frappe_psak_id/psak_id/doctype/psak_id_company_policy/psak_id_company_policy.json:140
 #: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.json:121
-#: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.js:77
+#: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.js:74
 msgid "Full"
 msgstr "Penuh"
 
@@ -733,11 +733,11 @@ msgstr "Pendapatan"
 msgid "Income Tax"
 msgstr "Pajak Penghasilan"
 
-#: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.js:88
+#: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.js:85
 msgid "Indonesian"
 msgstr "Indonesia"
 
-#: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.js:87
+#: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.js:84
 msgid "Indonesian and English"
 msgstr "Indonesia dan Inggris"
 
@@ -850,7 +850,7 @@ msgstr "Pos"
 msgid "Line Code"
 msgstr "Kode Pos"
 
-#: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.js:84
+#: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.js:81
 msgid "Line Labels"
 msgstr "Label Pos"
 
@@ -937,7 +937,7 @@ msgstr "Pemetaan"
 #. Label of a Sidebar Item
 #. Label of a Link in the PSAK 118 Workspace
 #. Label of a shortcut in the PSAK 118 Workspace
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:44
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:45
 #: frappe_psak_id/psak_id/sidebar/psak_118/psak_118.json:96
 #: frappe_psak_id/psak_id/workspace/psak_118/psak_118.json:57
 msgid "Mapping Control"
@@ -967,7 +967,7 @@ msgstr "Cocokkan Pada"
 #. Statement'
 #: frappe_psak_id/psak_id/doctype/psak_id_company_policy/psak_id_company_policy.json:140
 #: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.json:121
-#: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.js:79
+#: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.js:76
 msgid "Millions"
 msgstr "Jutaan"
 
@@ -980,7 +980,7 @@ msgstr "Campuran"
 #. Option for the 'Periodicity' (Select) field in DocType 'PSAK ID Financial
 #. Statement'
 #: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.json:81
-#: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.js:39
+#: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.js:36
 msgid "Monthly"
 msgstr "Bulanan"
 
@@ -1024,7 +1024,7 @@ msgstr "Tidak ada kondisi yang cocok"
 #. Option for the 'Comparative' (Select) field in DocType 'PSAK ID Financial
 #. Statement'
 #: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.json:113
-#: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.js:51
+#: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.js:48
 msgid "None"
 msgstr "Tidak Ada"
 
@@ -1099,7 +1099,7 @@ msgstr "Hanya Accounting Head atau CFO yang bisa membuka kembali laporan Final."
 msgid "Only income and expense accounts appear in the statement of profit or loss; {0} is {1}."
 msgstr "Hanya akun pendapatan dan beban yang tampil di laporan laba rugi; {0} adalah {1}."
 
-#: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.js:129
+#: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.js:126
 msgid "Open General Ledger"
 msgstr "Buka Buku Besar"
 
@@ -1107,14 +1107,14 @@ msgstr "Buka Buku Besar"
 msgid "Open Mapping Control"
 msgstr "Buka Kontrol Pemetaan"
 
-#: frappe_psak_id/psak_id/report/psak_id_mapping_control/psak_id_mapping_control.js:72
-#: frappe_psak_id/psak_id/report/psak_id_mapping_control/psak_id_mapping_control.js:73
-#: frappe_psak_id/psak_id/report/psak_id_mapping_control/psak_id_mapping_control.js:74
+#: frappe_psak_id/psak_id/report/psak_id_mapping_control/psak_id_mapping_control.js:69
+#: frappe_psak_id/psak_id/report/psak_id_mapping_control/psak_id_mapping_control.js:70
+#: frappe_psak_id/psak_id/report/psak_id_mapping_control/psak_id_mapping_control.js:71
 msgid "Open Mappings"
 msgstr "Buka Pemetaan"
 
-#: frappe_psak_id/psak_id/report/psak_id_mapping_control/psak_id_mapping_control.js:75
-#: frappe_psak_id/psak_id/report/psak_id_mapping_control/psak_id_mapping_control.js:76
+#: frappe_psak_id/psak_id/report/psak_id_mapping_control/psak_id_mapping_control.js:72
+#: frappe_psak_id/psak_id/report/psak_id_mapping_control/psak_id_mapping_control.js:73
 msgid "Open Profit and Loss"
 msgstr "Buka Laba Rugi"
 
@@ -1184,7 +1184,7 @@ msgstr "Pos Lain-lain di atas ambang"
 msgid "Other Items lines are above the company threshold. Explain what they consist of in Other Items Breakdown."
 msgstr "Pos Lain-lain di atas ambang perusahaan. Jelaskan isinya di Rincian Lain-lain."
 
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:54
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:55
 msgid "PDF"
 msgstr "PDF"
 
@@ -1203,7 +1203,7 @@ msgstr "Pos PSAK 118"
 
 #. Name of a report
 #. Label of a Link in the PSAK 118 Workspace
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:49
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:50
 #: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.json:22
 #: frappe_psak_id/psak_id/workspace/psak_118/psak_118.json:38
 msgid "PSAK 118 Profit or Loss"
@@ -1338,7 +1338,7 @@ msgstr "Periode"
 #. Label of the periodicity (Select) field in DocType 'PSAK ID Financial
 #. Statement'
 #: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.json:80
-#: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.js:36
+#: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.js:33
 msgid "Periodicity"
 msgstr "Periodisitas"
 
@@ -1384,7 +1384,7 @@ msgstr "Laba Rugi Tahun Lalu (PSAK 201)"
 msgid "Prior Year Profit or Loss (Restated)"
 msgstr "Laba Rugi Tahun Lalu (Disajikan Ulang)"
 
-#: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.js:53
+#: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.js:50
 msgid "Prior Year, Restated"
 msgstr "Tahun Lalu, Disajikan Kembali"
 
@@ -1419,7 +1419,7 @@ msgstr "Properti"
 #. Option for the 'Periodicity' (Select) field in DocType 'PSAK ID Financial
 #. Statement'
 #: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.json:81
-#: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.js:40
+#: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.js:37
 msgid "Quarterly"
 msgstr "Kuartalan"
 
@@ -1435,8 +1435,8 @@ msgstr "Kuartalan"
 msgid "Raw Materials and Goods"
 msgstr "Bahan Baku dan Barang"
 
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:87
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:168
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:88
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:170
 msgid "Reason"
 msgstr "Alasan"
 
@@ -1461,7 +1461,7 @@ msgid "Refused"
 msgstr "Ditolak"
 
 #: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:34
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:185
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:187
 msgid "Reopen"
 msgstr "Buka Kembali"
 
@@ -1471,7 +1471,7 @@ msgstr "Buka Kembali"
 msgid "Reopen Reason"
 msgstr "Alasan Buka Kembali"
 
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:184
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:186
 #, python-brace-format
 msgid "Reopen {0}"
 msgstr "Buka Kembali {0}"
@@ -1662,7 +1662,7 @@ msgstr "SAK Syariah"
 #. Option for the 'Comparative' (Select) field in DocType 'PSAK ID Financial
 #. Statement'
 #: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.json:113
-#: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.js:52
+#: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.js:49
 msgid "Same Period Last Year"
 msgstr "Periode yang Sama Tahun Lalu"
 
@@ -1671,7 +1671,7 @@ msgstr "Periode yang Sama Tahun Lalu"
 msgid "Sent back to {0}: {1}"
 msgstr "Dikembalikan ke {0}: {1}"
 
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:146
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:148
 #, python-brace-format
 msgid "Sent back: {0}"
 msgstr "Dikembalikan: {0}"
@@ -1762,11 +1762,11 @@ msgstr "Laporan"
 msgid "Statement of Profit or Loss"
 msgstr "Laporan Laba Rugi"
 
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:61
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:62
 msgid "Structured Data (CSV)"
 msgstr "Data Terstruktur (CSV)"
 
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:57
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:58
 msgid "Structured Data (Excel)"
 msgstr "Data Terstruktur (Excel)"
 
@@ -1790,7 +1790,7 @@ msgstr "Rumus Subtotal"
 msgid "System Manager"
 msgstr "System Manager"
 
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:90
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:91
 msgid "Tell the preparer what to change."
 msgstr "Beri tahu penyusun apa yang perlu diubah."
 
@@ -1910,7 +1910,7 @@ msgstr "Rumus subtotal merujuk {0}, yang bukan pos {1}."
 msgid "The subtotal formulas refer to each other in a loop: {0}."
 msgstr "Rumus subtotal saling merujuk dalam lingkaran: {0}."
 
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:171
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:173
 msgid "This version is cancelled and kept. A new version is created to correct, review and approve again."
 msgstr "Versi ini dibatalkan dan tetap disimpan. Versi baru dibuat untuk dikoreksi, direview, dan disetujui lagi."
 
@@ -1920,7 +1920,7 @@ msgstr "Versi ini dibatalkan dan tetap disimpan. Versi baru dibuat untuk dikorek
 #. Statement'
 #: frappe_psak_id/psak_id/doctype/psak_id_company_policy/psak_id_company_policy.json:140
 #: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.json:121
-#: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.js:78
+#: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.js:75
 msgid "Thousands"
 msgstr "Ribuan"
 
@@ -1956,9 +1956,9 @@ msgstr "Judul"
 
 #. Label of the to_date (Date) field in DocType 'PSAK ID Financial Statement'
 #: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.json:94
-#: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.js:27
+#: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.js:26
 #: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.py:67
-#: frappe_psak_id/psak_id/report/psak_id_mapping_control/psak_id_mapping_control.js:28
+#: frappe_psak_id/psak_id/report/psak_id_mapping_control/psak_id_mapping_control.js:27
 #: frappe_psak_id/psak_id/report/psak_id_mapping_control/psak_id_mapping_control.py:45
 msgid "To Date"
 msgstr "Sampai Tanggal"
@@ -1989,7 +1989,7 @@ msgstr "Rekonsiliasi Transisi"
 
 #. Label of the unit (Select) field in DocType 'PSAK ID Financial Statement'
 #: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.json:120
-#: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.js:73
+#: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.js:70
 msgid "Unit"
 msgstr "Satuan"
 
@@ -2026,8 +2026,8 @@ msgstr "Biasanya tanggal penerapan PSAK 118 perusahaan."
 msgid "Valid From"
 msgstr "Berlaku Mulai"
 
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:46
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:51
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:47
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:52
 msgid "View"
 msgstr "Lihat"
 
@@ -2073,7 +2073,7 @@ msgstr "Alasan terakhir laporan dikembalikan untuk diubah."
 msgid "Workflow State"
 msgstr "Status Workflow"
 
-#: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.js:41
+#: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.js:38
 msgid "Yearly"
 msgstr "Tahunan"
 
@@ -2126,7 +2126,7 @@ msgstr "{0} dan {1} lainnya"
 msgid "{0} applies PSAK 118 from {1}. In that first year the comparative is the prior year restated with this year's mappings: choose Restated Prior Year."
 msgstr "{0} menerapkan PSAK 118 sejak {1}. Pada tahun pertama itu komparatifnya adalah tahun lalu yang disajikan ulang dengan pemetaan tahun ini: pilih Tahun Lalu Disajikan Ulang."
 
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:128
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:130
 #, python-brace-format
 msgid "{0} checks fail. The statement cannot be sent for review."
 msgstr "{0} pemeriksaan gagal. Laporan belum bisa diajukan review."

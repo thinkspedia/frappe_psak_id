@@ -38,8 +38,9 @@ frappe.ui.form.on("PSAK ID Financial Statement", {
 			company: frm.doc.company,
 			from_date: frm.doc.from_date,
 			to_date: frm.doc.to_date,
-			finance_book: frm.doc.finance_book,
 		};
+		// An empty value would reach the report as the text "undefined" and fail its Link check
+		if (frm.doc.finance_book) filters.finance_book = frm.doc.finance_book;
 		frm.add_custom_button(
 			__("Mapping Control"),
 			() => frappe.set_route("query-report", "PSAK ID Mapping Control", filters),
@@ -117,7 +118,8 @@ function set_to_date(frm) {
 	const months = PERIOD_MONTHS[frm.doc.periodicity];
 	if (!frm.doc.from_date || !months) return;
 	const last_month = frappe.datetime.add_months(frm.doc.from_date, months - 1);
-	frm.set_value("to_date", frappe.datetime.month_end(last_month));
+	// frappe.datetime.month_end() ignores its argument and returns the end of the current month
+	frm.set_value("to_date", frappe.datetime.obj_to_str(moment(last_month).endOf("month")));
 }
 
 function show_check_results(frm) {

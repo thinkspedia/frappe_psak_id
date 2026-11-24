@@ -17,18 +17,15 @@ frappe.query_reports[PSAK_118_PL] = {
 			fieldname: "from_date",
 			label: __("From Date"),
 			fieldtype: "Date",
-			default: frappe.datetime.month_start(
-				frappe.datetime.add_months(frappe.datetime.get_today(), -1)
-			),
+			// Last month. frappe.datetime.month_start() and month_end() ignore their argument.
+			default: frappe.datetime.obj_to_str(moment().subtract(1, "month").startOf("month")),
 			reqd: 1,
 		},
 		{
 			fieldname: "to_date",
 			label: __("To Date"),
 			fieldtype: "Date",
-			default: frappe.datetime.month_end(
-				frappe.datetime.add_months(frappe.datetime.get_today(), -1)
-			),
+			default: frappe.datetime.obj_to_str(moment().subtract(1, "month").endOf("month")),
 			reqd: 1,
 		},
 		{
