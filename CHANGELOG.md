@@ -4,6 +4,10 @@ All notable changes to PSAK ID are listed here. The project follows [Semantic Ve
 
 ## [Unreleased]
 
+## [1.0.0] - 2026-11-24
+
+Release 1: the PSAK 118 statement of profit or loss (PRD-001).
+
 ### Fixed
 
 - PSAK 118 Profit or Loss: clicking an amount whose account a conditional mapping splits between lines opens the General Ledger for that line's cost centers or projects, so it shows the entries behind the amount instead of every entry of the account. When one set of filters cannot select the line's entries (its other accounts need the cost centers the split leaves out), a dialog lists the line's accounts with their amounts and opens the General Ledger for one of them. Where the General Ledger cannot select them at all (a split by party or another accounting dimension, or a total over several periods), an alert says that it also shows entries of other lines.
