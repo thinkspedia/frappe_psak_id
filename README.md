@@ -26,7 +26,7 @@ PSAK ID adds the PSAK 118 presentation on top of ERPNext's General Ledger. It on
 
 ## Scope
 
-> Release 1 is complete on `develop` and goes out as version 1.0.0. Releases 2 and 3 are planned.
+> Release 1 is out as version 1.0.0. Releases 2 and 3 are planned.
 
 | Release | Scope |
 |---|---|
