@@ -39,7 +39,7 @@ PSAK ID adds the PSAK 118 presentation on top of ERPNext's General Ledger. It on
 | Frappe / ERPNext | Branch | Python |
 |---|---|---|
 | v16 | `version-16` | 3.14 |
-| v15 | `version-15` | 3.10+ |
+| v15 | `version-15` | 3.11+ |
 
 ERPNext is required.
 
