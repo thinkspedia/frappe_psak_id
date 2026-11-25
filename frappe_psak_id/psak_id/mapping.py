@@ -3,6 +3,9 @@
 A template turns into ordinary PSAK ID Account Mappings, one per account the template matches,
 each recording the template and its version. Accounts that already have a mapping are left as they
 are, so applying a template again, or a second template, only fills the gaps.
+
+A template applies to the root types it has rows for: a row without one is for income and expense
+accounts, so a profit or loss template leaves the balance sheet alone.
 """
 
 import re
@@ -11,7 +14,15 @@ import frappe
 from frappe import _
 from frappe.utils import getdate, strip_html
 
-from frappe_psak_id.psak_id.statement import check_read_access
+from frappe_psak_id.psak_id.statement import PROFIT_OR_LOSS_ROOT_TYPES, check_read_access
+
+# What each kind of row compares its pattern with
+_MATCH_FIELDS = {"Name": "account_name", "Number": "account_number", "Account Type": "account_type"}
+
+
+def row_root_types(row) -> tuple:
+	"""The root types of the accounts a template row applies to."""
+	return (row.root_type,) if row.root_type else PROFIT_OR_LOSS_ROOT_TYPES
 
 
 def pattern_regex(pattern: str) -> re.Pattern:
@@ -23,9 +34,9 @@ def pattern_regex(pattern: str) -> re.Pattern:
 def match_row(account, rows: list):
 	"""The first template row whose pattern matches the account, or None."""
 	for row, regex in rows:
-		if row.root_type and row.root_type != account.root_type:
+		if account.root_type not in row_root_types(row):
 			continue
-		value = account.account_number if row.match_on == "Number" else account.account_name
+		value = account.get(_MATCH_FIELDS.get(row.match_on, "account_name"))
 		if value and regex.match(value.strip()):
 			return row
 	return None
@@ -33,7 +44,7 @@ def match_row(account, rows: list):
 
 @frappe.whitelist()
 def apply_template(template: str, company: str, valid_from: str) -> dict:
-	"""Map the company's unmapped income and expense accounts with the template.
+	"""Map the company's unmapped accounts of the root types the template has rows for.
 
 	Returns the accounts mapped (``created``), already mapped (``skipped``), matched by no row
 	(``unmatched``) and refused by the mapping's validation (``failed``, with the reason).
@@ -55,9 +66,9 @@ def apply_template(template: str, company: str, valid_from: str) -> dict:
 			"company": company,
 			"is_group": 0,
 			"disabled": 0,
-			"root_type": ("in", ("Income", "Expense")),
+			"root_type": ("in", sorted({root for row, _regex in rows for root in row_root_types(row)})),
 		},
-		fields=["name", "account_name", "account_number", "root_type"],
+		fields=["name", "account_name", "account_number", "account_type", "root_type"],
 		order_by="lft",
 	)
 
@@ -86,6 +97,7 @@ def apply_template(template: str, company: str, valid_from: str) -> dict:
 				"priority": 10,
 				"expense_nature": expense_nature,
 				"is_final_tax": row.is_final_tax,
+				"oci_line": row.oci_line if account.root_type == "Equity" else None,
 				"source_template": template.name,
 				"source_template_version": template.template_version,
 			}

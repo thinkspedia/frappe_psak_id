@@ -2,6 +2,24 @@
 // For license information, please see license.txt
 
 frappe.ui.form.on("PSAK ID Mapping Template", {
+	setup(frm) {
+		frm.set_query("report_line", "rows", (doc, cdt, cdn) => {
+			const root_type = locals[cdt][cdn].root_type;
+			const balance_sheet = ["Asset", "Liability", "Equity"].includes(root_type);
+			return {
+				filters: {
+					line_type: "Line",
+					disabled: 0,
+					statement: balance_sheet ? "Financial Position" : "Profit or Loss",
+					...(balance_sheet ? { category: root_type } : {}),
+				},
+			};
+		});
+		frm.set_query("oci_line", "rows", () => ({
+			filters: { line_type: "Line", disabled: 0, statement: "Other Comprehensive Income" },
+		}));
+	},
+
 	refresh(frm) {
 		if (frm.is_new() || !frappe.model.can_create("PSAK ID Account Mapping")) return;
 		frm.add_custom_button(__("Apply to Company"), () => apply_to_company(frm));

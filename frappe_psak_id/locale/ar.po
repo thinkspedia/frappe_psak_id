@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PSAK ID VERSION\n"
 "Report-Msgid-Bugs-To: helpdesk@thinkspedia.com\n"
-"POT-Creation-Date: 2026-11-25 00:35+0000\n"
+"POT-Creation-Date: 2026-11-25 00:52+0000\n"
 "PO-Revision-Date: 2026-11-23 12:08+0000\n"
 "Last-Translator: helpdesk@thinkspedia.com\n"
 "Language: ar\n"
@@ -20,8 +20,8 @@ msgstr ""
 
 #. Description of the 'Account Pattern' (Data) field in DocType 'PSAK ID
 #. Mapping Template Row'
-#: frappe_psak_id/psak_id/doctype/psak_id_mapping_template_row/psak_id_mapping_template_row.json:39
-msgid "* matches any text, case is ignored. Example: *interest income* or 41*."
+#: frappe_psak_id/psak_id/doctype/psak_id_mapping_template_row/psak_id_mapping_template_row.json:40
+msgid "* matches any text, case is ignored. Example: *interest income* or 41*. With Match On Account Type, the account type, e.g. Bank."
 msgstr ""
 
 #. Header text in the PSAK 118 Workspace
@@ -81,8 +81,14 @@ msgstr ""
 
 #. Label of the account_pattern (Data) field in DocType 'PSAK ID Mapping
 #. Template Row'
-#: frappe_psak_id/psak_id/doctype/psak_id_mapping_template_row/psak_id_mapping_template_row.json:43
+#: frappe_psak_id/psak_id/doctype/psak_id_mapping_template_row/psak_id_mapping_template_row.json:44
 msgid "Account Pattern"
+msgstr ""
+
+#. Option for the 'Match On' (Select) field in DocType 'PSAK ID Mapping
+#. Template Row'
+#: frappe_psak_id/psak_id/doctype/psak_id_mapping_template_row/psak_id_mapping_template_row.json:35
+msgid "Account Type"
 msgstr ""
 
 #: frappe_psak_id/psak_id/report/psak_id_mapping_control/psak_id_mapping_control.py:62
@@ -107,7 +113,7 @@ msgstr ""
 msgid "Accounting Dimension"
 msgstr ""
 
-#: frappe_psak_id/psak_id/doctype/psak_id_mapping_template/psak_id_mapping_template.js:33
+#: frappe_psak_id/psak_id/doctype/psak_id_mapping_template/psak_id_mapping_template.js:51
 msgid "Accounts that already have a mapping are skipped. Review the new mappings before preparing statements."
 msgstr ""
 
@@ -159,7 +165,7 @@ msgstr ""
 #. Template Row'
 #: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.json:159
 #: frappe_psak_id/psak_id/doctype/psak_id_expense_nature_line/psak_id_expense_nature_line.json:24
-#: frappe_psak_id/psak_id/doctype/psak_id_mapping_template_row/psak_id_mapping_template_row.json:61
+#: frappe_psak_id/psak_id/doctype/psak_id_mapping_template_row/psak_id_mapping_template_row.json:62
 msgid "Amortisation"
 msgstr ""
 
@@ -201,19 +207,19 @@ msgstr ""
 
 #. Label of the root_type (Select) field in DocType 'PSAK ID Mapping Template
 #. Row'
-#: frappe_psak_id/psak_id/doctype/psak_id_mapping_template_row/psak_id_mapping_template_row.json:24
+#: frappe_psak_id/psak_id/doctype/psak_id_mapping_template_row/psak_id_mapping_template_row.json:25
 msgid "Applies To"
 msgstr ""
 
-#: frappe_psak_id/psak_id/doctype/psak_id_mapping_template/psak_id_mapping_template.js:38
+#: frappe_psak_id/psak_id/doctype/psak_id_mapping_template/psak_id_mapping_template.js:56
 msgid "Apply"
 msgstr ""
 
-#: frappe_psak_id/psak_id/doctype/psak_id_mapping_template/psak_id_mapping_template.js:7
+#: frappe_psak_id/psak_id/doctype/psak_id_mapping_template/psak_id_mapping_template.js:25
 msgid "Apply to Company"
 msgstr ""
 
-#: frappe_psak_id/psak_id/doctype/psak_id_mapping_template/psak_id_mapping_template.js:13
+#: frappe_psak_id/psak_id/doctype/psak_id_mapping_template/psak_id_mapping_template.js:31
 #, python-brace-format
 msgid "Apply {0} to a Company"
 msgstr ""
@@ -236,7 +242,10 @@ msgstr ""
 msgid "Approved On"
 msgstr ""
 
+#. Option for the 'Applies To' (Select) field in DocType 'PSAK ID Mapping
+#. Template Row'
 #. Option for the 'Category' (Select) field in DocType 'PSAK ID Report Line'
+#: frappe_psak_id/psak_id/doctype/psak_id_mapping_template_row/psak_id_mapping_template_row.json:26
 #: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.json:75
 msgid "Asset"
 msgstr ""
@@ -359,7 +368,7 @@ msgstr ""
 msgid "Choose the accounting dimension of the condition."
 msgstr ""
 
-#: frappe_psak_id/psak_id/mapping.py:46
+#: frappe_psak_id/psak_id/mapping.py:57
 msgid "Choose the date the mappings are valid from."
 msgstr ""
 
@@ -411,7 +420,7 @@ msgstr ""
 #: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.json:42
 #: frappe_psak_id/psak_id/doctype/psak_id_company_policy/psak_id_company_policy.json:43
 #: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.json:71
-#: frappe_psak_id/psak_id/doctype/psak_id_mapping_template/psak_id_mapping_template.js:17
+#: frappe_psak_id/psak_id/doctype/psak_id_mapping_template/psak_id_mapping_template.js:35
 #: frappe_psak_id/psak_id/report/psak_118_financial_position/psak_118_financial_position.js:10
 #: frappe_psak_id/psak_id/report/psak_118_financial_position/psak_118_financial_position.py:54
 #: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.js:10
@@ -503,7 +512,7 @@ msgstr ""
 msgid "Cost center {0} does not belong to {1}."
 msgstr ""
 
-#: frappe_psak_id/psak_id/doctype/psak_id_mapping_template/psak_id_mapping_template.js:45
+#: frappe_psak_id/psak_id/doctype/psak_id_mapping_template/psak_id_mapping_template.js:63
 msgid "Creating mappings..."
 msgstr ""
 
@@ -544,7 +553,7 @@ msgstr ""
 #. Template Row'
 #: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.json:159
 #: frappe_psak_id/psak_id/doctype/psak_id_expense_nature_line/psak_id_expense_nature_line.json:24
-#: frappe_psak_id/psak_id/doctype/psak_id_mapping_template_row/psak_id_mapping_template_row.json:61
+#: frappe_psak_id/psak_id/doctype/psak_id_mapping_template_row/psak_id_mapping_template_row.json:62
 msgid "Depreciation"
 msgstr ""
 
@@ -588,7 +597,7 @@ msgstr ""
 #. Template Row'
 #: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.json:159
 #: frappe_psak_id/psak_id/doctype/psak_id_expense_nature_line/psak_id_expense_nature_line.json:24
-#: frappe_psak_id/psak_id/doctype/psak_id_mapping_template_row/psak_id_mapping_template_row.json:61
+#: frappe_psak_id/psak_id/doctype/psak_id_mapping_template_row/psak_id_mapping_template_row.json:62
 msgid "Employee Benefits"
 msgstr ""
 
@@ -597,7 +606,10 @@ msgstr ""
 msgid "English"
 msgstr ""
 
+#. Option for the 'Applies To' (Select) field in DocType 'PSAK ID Mapping
+#. Template Row'
 #. Option for the 'Category' (Select) field in DocType 'PSAK ID Report Line'
+#: frappe_psak_id/psak_id/doctype/psak_id_mapping_template_row/psak_id_mapping_template_row.json:26
 #: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.json:75
 msgid "Equity"
 msgstr ""
@@ -608,13 +620,19 @@ msgstr ""
 msgid "Equity Component"
 msgstr ""
 
+#. Description of the 'OCI Line' (Link) field in DocType 'PSAK ID Mapping
+#. Template Row'
+#: frappe_psak_id/psak_id/doctype/psak_id_mapping_template_row/psak_id_mapping_template_row.json:74
+msgid "Equity accounts only: the other comprehensive income line their movements are presented in."
+msgstr ""
+
 #: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:56
 msgid "Excel"
 msgstr ""
 
 #. Option for the 'Applies To' (Select) field in DocType 'PSAK ID Mapping
 #. Template Row'
-#: frappe_psak_id/psak_id/doctype/psak_id_mapping_template_row/psak_id_mapping_template_row.json:25
+#: frappe_psak_id/psak_id/doctype/psak_id_mapping_template_row/psak_id_mapping_template_row.json:26
 msgid "Expense"
 msgstr ""
 
@@ -626,7 +644,7 @@ msgstr ""
 #. Template Row'
 #: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.json:158
 #: frappe_psak_id/psak_id/doctype/psak_id_expense_nature_line/psak_id_expense_nature_line.json:23
-#: frappe_psak_id/psak_id/doctype/psak_id_mapping_template_row/psak_id_mapping_template_row.json:60
+#: frappe_psak_id/psak_id/doctype/psak_id_mapping_template_row/psak_id_mapping_template_row.json:61
 msgid "Expense Nature"
 msgstr ""
 
@@ -648,7 +666,7 @@ msgstr ""
 #. Label of the is_final_tax (Check) field in DocType 'PSAK ID Mapping Template
 #. Row'
 #: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.json:167
-#: frappe_psak_id/psak_id/doctype/psak_id_mapping_template_row/psak_id_mapping_template_row.json:69
+#: frappe_psak_id/psak_id/doctype/psak_id_mapping_template_row/psak_id_mapping_template_row.json:70
 msgid "Final Tax"
 msgstr ""
 
@@ -804,7 +822,7 @@ msgstr ""
 #. Template Row'
 #: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.json:159
 #: frappe_psak_id/psak_id/doctype/psak_id_expense_nature_line/psak_id_expense_nature_line.json:24
-#: frappe_psak_id/psak_id/doctype/psak_id_mapping_template_row/psak_id_mapping_template_row.json:61
+#: frappe_psak_id/psak_id/doctype/psak_id_mapping_template_row/psak_id_mapping_template_row.json:62
 msgid "Impairment Losses (Reversals)"
 msgstr ""
 
@@ -816,7 +834,7 @@ msgstr ""
 
 #. Option for the 'Applies To' (Select) field in DocType 'PSAK ID Mapping
 #. Template Row'
-#: frappe_psak_id/psak_id/doctype/psak_id_mapping_template_row/psak_id_mapping_template_row.json:25
+#: frappe_psak_id/psak_id/doctype/psak_id_mapping_template_row/psak_id_mapping_template_row.json:26
 msgid "Income"
 msgstr ""
 
@@ -848,7 +866,7 @@ msgstr ""
 #. Template Row'
 #: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.json:159
 #: frappe_psak_id/psak_id/doctype/psak_id_expense_nature_line/psak_id_expense_nature_line.json:24
-#: frappe_psak_id/psak_id/doctype/psak_id_mapping_template_row/psak_id_mapping_template_row.json:61
+#: frappe_psak_id/psak_id/doctype/psak_id_mapping_template_row/psak_id_mapping_template_row.json:62
 msgid "Inventory Write-downs (Reversals)"
 msgstr ""
 
@@ -913,7 +931,7 @@ msgstr ""
 
 #. Description of the 'Applies To' (Select) field in DocType 'PSAK ID Mapping
 #. Template Row'
-#: frappe_psak_id/psak_id/doctype/psak_id_mapping_template_row/psak_id_mapping_template_row.json:20
+#: frappe_psak_id/psak_id/doctype/psak_id_mapping_template_row/psak_id_mapping_template_row.json:21
 msgid "Leave empty to match income and expense accounts."
 msgstr ""
 
@@ -933,7 +951,10 @@ msgstr ""
 msgid "Letter head printed on the first page of PDF statements."
 msgstr ""
 
+#. Option for the 'Applies To' (Select) field in DocType 'PSAK ID Mapping
+#. Template Row'
 #. Option for the 'Category' (Select) field in DocType 'PSAK ID Report Line'
+#: frappe_psak_id/psak_id/doctype/psak_id_mapping_template_row/psak_id_mapping_template_row.json:26
 #: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.json:75
 msgid "Liability"
 msgstr ""
@@ -1058,7 +1079,7 @@ msgstr ""
 
 #. Label of the match_on (Select) field in DocType 'PSAK ID Mapping Template
 #. Row'
-#: frappe_psak_id/psak_id/doctype/psak_id_mapping_template_row/psak_id_mapping_template_row.json:33
+#: frappe_psak_id/psak_id/doctype/psak_id_mapping_template_row/psak_id_mapping_template_row.json:34
 msgid "Match On"
 msgstr ""
 
@@ -1093,7 +1114,7 @@ msgstr ""
 
 #. Option for the 'Match On' (Select) field in DocType 'PSAK ID Mapping
 #. Template Row'
-#: frappe_psak_id/psak_id/doctype/psak_id_mapping_template_row/psak_id_mapping_template_row.json:34
+#: frappe_psak_id/psak_id/doctype/psak_id_mapping_template_row/psak_id_mapping_template_row.json:35
 msgid "Name"
 msgstr ""
 
@@ -1146,7 +1167,7 @@ msgstr ""
 msgid "Not mapped"
 msgstr ""
 
-#: frappe_psak_id/psak_id/doctype/psak_id_mapping_template/psak_id_mapping_template.js:84
+#: frappe_psak_id/psak_id/doctype/psak_id_mapping_template/psak_id_mapping_template.js:102
 msgid "Not matched: map these by hand"
 msgstr ""
 
@@ -1166,7 +1187,7 @@ msgstr ""
 
 #. Option for the 'Match On' (Select) field in DocType 'PSAK ID Mapping
 #. Template Row'
-#: frappe_psak_id/psak_id/doctype/psak_id_mapping_template_row/psak_id_mapping_template_row.json:34
+#: frappe_psak_id/psak_id/doctype/psak_id_mapping_template_row/psak_id_mapping_template_row.json:35
 msgid "Number"
 msgstr ""
 
@@ -1177,7 +1198,9 @@ msgid "Number of the note that explains this line, e.g. 21."
 msgstr ""
 
 #. Label of the oci_line (Link) field in DocType 'PSAK ID Account Mapping'
+#. Label of the oci_line (Link) field in DocType 'PSAK ID Mapping Template Row'
 #: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.json:206
+#: frappe_psak_id/psak_id/doctype/psak_id_mapping_template_row/psak_id_mapping_template_row.json:77
 msgid "OCI Line"
 msgstr ""
 
@@ -1228,7 +1251,7 @@ msgstr ""
 msgid "Open General Ledger: {0}"
 msgstr ""
 
-#: frappe_psak_id/psak_id/doctype/psak_id_mapping_template/psak_id_mapping_template.js:88
+#: frappe_psak_id/psak_id/doctype/psak_id_mapping_template/psak_id_mapping_template.js:106
 msgid "Open Mapping Control"
 msgstr ""
 
@@ -1268,7 +1291,7 @@ msgstr ""
 #. Template Row'
 #: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.json:159
 #: frappe_psak_id/psak_id/doctype/psak_id_expense_nature_line/psak_id_expense_nature_line.json:24
-#: frappe_psak_id/psak_id/doctype/psak_id_mapping_template_row/psak_id_mapping_template_row.json:61
+#: frappe_psak_id/psak_id/doctype/psak_id_mapping_template_row/psak_id_mapping_template_row.json:62
 msgid "Other"
 msgstr ""
 
@@ -1435,7 +1458,7 @@ msgid "PSAK ID Mapping Template"
 msgstr ""
 
 #. Name of a DocType
-#: frappe_psak_id/psak_id/doctype/psak_id_mapping_template_row/psak_id_mapping_template_row.json:80
+#: frappe_psak_id/psak_id/doctype/psak_id_mapping_template_row/psak_id_mapping_template_row.json:89
 msgid "PSAK ID Mapping Template Row"
 msgstr ""
 
@@ -1566,7 +1589,7 @@ msgstr ""
 #. Template Row'
 #: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.json:159
 #: frappe_psak_id/psak_id/doctype/psak_id_expense_nature_line/psak_id_expense_nature_line.json:24
-#: frappe_psak_id/psak_id/doctype/psak_id_mapping_template_row/psak_id_mapping_template_row.json:61
+#: frappe_psak_id/psak_id/doctype/psak_id_mapping_template_row/psak_id_mapping_template_row.json:62
 msgid "Raw Materials and Goods"
 msgstr ""
 
@@ -1591,7 +1614,7 @@ msgstr ""
 msgid "Recorded on every mapping the template creates."
 msgstr ""
 
-#: frappe_psak_id/psak_id/doctype/psak_id_mapping_template/psak_id_mapping_template.js:85
+#: frappe_psak_id/psak_id/doctype/psak_id_mapping_template/psak_id_mapping_template.js:103
 msgid "Refused"
 msgstr ""
 
@@ -1635,7 +1658,7 @@ msgstr ""
 #. Row'
 #: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.json:74
 #: frappe_psak_id/psak_id/doctype/psak_id_financial_statement_line/psak_id_financial_statement_line.json:26
-#: frappe_psak_id/psak_id/doctype/psak_id_mapping_template_row/psak_id_mapping_template_row.json:51
+#: frappe_psak_id/psak_id/doctype/psak_id_mapping_template_row/psak_id_mapping_template_row.json:52
 msgid "Report Line"
 msgstr ""
 
@@ -1733,29 +1756,55 @@ msgstr ""
 msgid "Root Type"
 msgstr ""
 
-#: frappe_psak_id/psak_id/doctype/psak_id_mapping_template/psak_id_mapping_template.py:43
+#: frappe_psak_id/psak_id/doctype/psak_id_mapping_template/psak_id_mapping_template.py:53
 #, python-brace-format
 msgid "Row {0} repeats the pattern of row {1}; only the first one would ever match."
 msgstr ""
 
-#: frappe_psak_id/psak_id/doctype/psak_id_mapping_template/psak_id_mapping_template.py:23
+#: frappe_psak_id/psak_id/doctype/psak_id_mapping_template/psak_id_mapping_template.py:80
+#, python-brace-format
+msgid "Row {0}: a financial position line needs Applies To set to Asset, Liability or Equity."
+msgstr ""
+
+#: frappe_psak_id/psak_id/doctype/psak_id_mapping_template/psak_id_mapping_template.py:29
 #, python-brace-format
 msgid "Row {0}: enter the account pattern."
 msgstr ""
 
-#: frappe_psak_id/psak_id/doctype/psak_id_mapping_template/psak_id_mapping_template.py:35
+#: frappe_psak_id/psak_id/doctype/psak_id_mapping_template/psak_id_mapping_template.py:44
 #, python-brace-format
 msgid "Row {0}: final income tax (PPh final) is not income tax under PSAK 212. Map it to the category of the income it is levied on."
 msgstr ""
 
-#: frappe_psak_id/psak_id/doctype/psak_id_mapping_template/psak_id_mapping_template.py:28
+#: frappe_psak_id/psak_id/doctype/psak_id_mapping_template/psak_id_mapping_template.py:64
 #, python-brace-format
-msgid "Row {0}: map to a profit or loss line, not to a heading or subtotal."
+msgid "Row {0}: map to a line of the profit or loss or the financial position, not to a heading or subtotal."
 msgstr ""
 
-#: frappe_psak_id/psak_id/doctype/psak_id_mapping_template/psak_id_mapping_template.py:31
+#: frappe_psak_id/psak_id/doctype/psak_id_mapping_template/psak_id_mapping_template.py:89
+#, python-brace-format
+msgid "Row {0}: only equity accounts have an OCI line."
+msgstr ""
+
+#: frappe_psak_id/psak_id/doctype/psak_id_mapping_template/psak_id_mapping_template.py:40
+#: frappe_psak_id/psak_id/doctype/psak_id_mapping_template/psak_id_mapping_template.py:97
 #, python-brace-format
 msgid "Row {0}: report line {1} is disabled."
+msgstr ""
+
+#: frappe_psak_id/psak_id/doctype/psak_id_mapping_template/psak_id_mapping_template.py:92
+#, python-brace-format
+msgid "Row {0}: the OCI line must be a line of {1}."
+msgstr ""
+
+#: frappe_psak_id/psak_id/doctype/psak_id_mapping_template/psak_id_mapping_template.py:72
+#, python-brace-format
+msgid "Row {0}: {1} accounts map to a financial position line of category {1}."
+msgstr ""
+
+#: frappe_psak_id/psak_id/doctype/psak_id_mapping_template/psak_id_mapping_template.py:35
+#, python-brace-format
+msgid "Row {0}: {1} is not an account type."
 msgstr ""
 
 #. Label of the section_rows (Section Break) field in DocType 'PSAK ID Mapping
@@ -1862,7 +1911,7 @@ msgstr ""
 msgid "Shows all expenses from financing liabilities in Operating. The subtotal Profit or Loss before Financing and Income Taxes is then not presented."
 msgstr ""
 
-#: frappe_psak_id/psak_id/doctype/psak_id_mapping_template/psak_id_mapping_template.js:86
+#: frappe_psak_id/psak_id/doctype/psak_id_mapping_template/psak_id_mapping_template.js:104
 msgid "Skipped"
 msgstr ""
 
@@ -1930,7 +1979,7 @@ msgstr ""
 msgid "Tell the preparer what to change."
 msgstr ""
 
-#: frappe_psak_id/psak_id/doctype/psak_id_mapping_template/psak_id_mapping_template.js:80
+#: frappe_psak_id/psak_id/doctype/psak_id_mapping_template/psak_id_mapping_template.js:98
 msgid "Template Applied"
 msgstr ""
 
@@ -2199,13 +2248,13 @@ msgstr ""
 msgid "Unmapped balance sheet account"
 msgstr ""
 
-#: frappe_psak_id/psak_id/doctype/psak_id_mapping_template/psak_id_mapping_template.js:29
+#: frappe_psak_id/psak_id/doctype/psak_id_mapping_template/psak_id_mapping_template.js:47
 msgid "Usually the PSAK 118 adoption date of the company."
 msgstr ""
 
 #. Label of the valid_from (Date) field in DocType 'PSAK ID Account Mapping'
 #: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.json:91
-#: frappe_psak_id/psak_id/doctype/psak_id_mapping_template/psak_id_mapping_template.js:26
+#: frappe_psak_id/psak_id/doctype/psak_id_mapping_template/psak_id_mapping_template.js:44
 msgid "Valid From"
 msgstr ""
 
@@ -2385,7 +2434,7 @@ msgstr ""
 msgid "{0} is used in the subtotal formula of {1}. Change those formulas first."
 msgstr ""
 
-#: frappe_psak_id/psak_id/doctype/psak_id_mapping_template/psak_id_mapping_template.js:75
+#: frappe_psak_id/psak_id/doctype/psak_id_mapping_template/psak_id_mapping_template.js:93
 #, python-brace-format
 msgid "{0} mappings created, {1} accounts skipped (already mapped), {2} not matched."
 msgstr ""
