@@ -19,12 +19,13 @@ from frappe.query_builder import Case, Criterion
 from frappe.query_builder.functions import Sum
 from frappe.utils import flt, getdate
 
-from frappe_psak_id.psak_id.report_lines import parse_subtotal_formula
+from frappe_psak_id.psak_id.report_lines import PROFIT_OR_LOSS, parse_subtotal_formula
 
 PROFIT_OR_LOSS_LINE = "PL-SUB-PL"
 BEFORE_FINANCING_LINE = "PL-SUB-PBFT"
 CONTINUING_OPERATIONS_LINE = "PL-SUB-CONT"
 DISCONTINUED = "Discontinued Operations"
+PROFIT_OR_LOSS_ROOT_TYPES = ("Income", "Expense")
 
 # Why a GL group has no report line; the Mapping Control report explains each one
 NOT_MAPPED = "Not Mapped"
@@ -84,9 +85,9 @@ def compute_periods(
 			frappe.throw(_("The periods of a statement must not overlap."), StatementError)
 	mapping_date = getdate(mapping_date) if mapping_date else periods[-1][1]
 
-	policy = _get_policy(company)
-	lines = _get_lines()
-	mappings = _get_mappings(company, mapping_date)
+	policy = get_policy(company)
+	lines = get_lines(PROFIT_OR_LOSS)
+	mappings = get_mappings(company, mapping_date, PROFIT_OR_LOSS_ROOT_TYPES)
 	categories = {
 		line.name: effective_category(line, policy) for line in lines.values() if line.line_type == "Line"
 	}
@@ -317,11 +318,17 @@ def effective_category(line, policy) -> str:
 
 
 def evaluate_lines(lines, line_amounts: dict, categories: dict) -> dict:
-	"""Amounts of every line: mapped amounts for lines, formulas for subtotals."""
+	"""Amounts of every line: mapped amounts for lines, formulas for subtotals.
+
+	A category term adds the lines presented in that category, or with a classification
+	(``CAT:Asset/Current``) only the lines of that classification.
+	"""
 	by_code = {line.name: line for line in lines}
 	category_totals = {}
 	for code, category in categories.items():
-		category_totals[category] = flt(category_totals.get(category)) + flt(line_amounts.get(code))
+		classification = by_code[code].get("classification") if code in by_code else None
+		for key in (category, (category, classification)):
+			category_totals[key] = flt(category_totals.get(key)) + flt(line_amounts.get(code))
 
 	amounts = {}
 
@@ -334,7 +341,12 @@ def evaluate_lines(lines, line_amounts: dict, categories: dict) -> dict:
 		elif line.line_type == "Subtotal":
 			value = 0.0
 			for term in parse_subtotal_formula(line.subtotal_formula):
-				part = category_totals.get(term.ref, 0.0) if term.kind == "category" else amount_of(term.ref)
+				if term.kind == "line":
+					part = amount_of(term.ref)
+				elif term.classification:
+					part = category_totals.get((term.ref, term.classification), 0.0)
+				else:
+					part = category_totals.get(term.ref, 0.0)
 				value += term.sign * flt(part)
 		else:
 			value = flt(line_amounts.get(code))
@@ -363,7 +375,7 @@ def check_read_access(company: str):
 		)
 
 
-def _get_policy(company):
+def get_policy(company):
 	policy = frappe.db.get_value(
 		"PSAK ID Company Policy",
 		company,
@@ -392,16 +404,17 @@ def _get_policy(company):
 	return policy
 
 
-def _get_lines() -> dict:
+def get_lines(statement: str) -> dict:
 	rows = frappe.get_all(
 		"PSAK ID Report Line",
-		filters={"statement": "Profit or Loss"},
+		filters={"statement": statement},
 		fields=[
 			"name",
 			"label_id",
 			"label_en",
 			"line_type",
 			"category",
+			"classification",
 			"sequence",
 			"subtotal_formula",
 			"follows_operating",
@@ -412,19 +425,18 @@ def _get_lines() -> dict:
 	return {row.name: row for row in rows}
 
 
-def _get_mappings(company: str, to_date) -> dict[str, list[Mapping]]:
-	"""Mappings in force at the end of the period, grouped by account.
+def get_mappings(company: str, to_date, root_types: tuple) -> dict[str, list[Mapping]]:
+	"""Mappings in force at the end of the period of accounts of ``root_types``, grouped by account.
 
 	For each account and condition only the latest start date counts, so a reclassification from a
 	later date replaces the earlier rule instead of competing with it.
 	"""
 	rows = frappe.get_all(
 		"PSAK ID Account Mapping",
-		# Balance sheet accounts never reach the statement of profit or loss
 		filters={
 			"company": company,
 			"valid_from": ("<=", to_date),
-			"root_type": ("in", ("Income", "Expense")),
+			"root_type": ("in", root_types),
 		},
 		fields=[
 			"name",
@@ -497,15 +509,21 @@ def include_default_book(company: str, finance_book: str | None) -> bool:
 	return not (finance_book and default_book and finance_book != default_book)
 
 
-def _get_gl_groups(company, periods, cost_center, finance_book, with_default_book, columns):
-	gle = frappe.qb.DocType("GL Entry")
-	account = frappe.qb.DocType("Account")
+def gl_group_columns(gle, columns) -> list:
+	"""GL Entry columns to group by: the account and the dimensions mapping conditions read."""
 	group_columns = [gle.account]
 	for column in columns:
 		if column == "party":
 			group_columns += [gle.party_type, gle.party]
 		else:
 			group_columns.append(gle[column])
+	return group_columns
+
+
+def _get_gl_groups(company, periods, cost_center, finance_book, with_default_book, columns):
+	gle = frappe.qb.DocType("GL Entry")
+	account = frappe.qb.DocType("Account")
+	group_columns = gl_group_columns(gle, columns)
 
 	period = Case()
 	for index, (start, end) in enumerate(periods):
@@ -522,7 +540,7 @@ def _get_gl_groups(company, periods, cost_center, finance_book, with_default_boo
 		.on(account.name == gle.account)
 		.select(*group_columns, period, (Sum(gle.credit) - Sum(gle.debit)).as_("amount"))
 		.where(gle.company == company)
-		.where(account.root_type.isin(["Income", "Expense"]))
+		.where(account.root_type.isin(PROFIT_OR_LOSS_ROOT_TYPES))
 		.where(Criterion.any([gle.posting_date[start:end] for start, end in periods]))
 		.where(gle.is_cancelled == 0)
 		.where(gle.voucher_type != "Period Closing Voucher")
