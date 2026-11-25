@@ -13,6 +13,7 @@ from frappe.utils import add_days, add_months, add_years, escape_html, flt, form
 
 from frappe_psak_id.psak_id.statement import (
 	PROFIT_OR_LOSS_LINE,
+	TOTAL_COMPREHENSIVE_INCOME_LINE,
 	StatementError,
 	check_read_access,
 	compute_periods,
@@ -34,6 +35,9 @@ CATEGORY_LABELS = {
 	"Income Tax": ("Pajak Penghasilan", "Income Tax"),
 	"Discontinued Operations": ("Operasi yang Dihentikan", "Discontinued Operations"),
 }
+OCI_HEADING = ("Penghasilan Komprehensif Lain", "Other Comprehensive Income")
+# Closing amounts, double underlined
+TOTAL_LINES = (PROFIT_OR_LOSS_LINE, TOTAL_COMPREHENSIVE_INCOME_LINE)
 
 
 def execute(filters: dict | None = None):
@@ -160,9 +164,25 @@ def _rows(filters, columns, current, comparatives) -> list[dict]:
 	show_headings = frappe.db.get_value("PSAK ID Company Policy", filters.company, "show_category_headings")
 
 	lines_by_column = {
-		fieldname: {line.line_code: line for line in statement.lines}
+		fieldname: {line.line_code: line for line in (*statement.lines, *statement.oci_lines)}
 		for fieldname, statement in statements.items()
 	}
+
+	def line_row(line, indented):
+		row = _label_row(filters, line.label_id, line.label_en, line_type=line.line_type)
+		row.update(
+			line_code=line.line_code,
+			# Not "indent": that key turns the datatable into a collapsible tree
+			indented=indented,
+			is_total=line.line_code in TOTAL_LINES,
+			ledger={},
+		)
+		for fieldname in fieldnames:
+			amount, ledger = _column_amount(fieldname, line.line_code, lines_by_column, current, comparatives)
+			row[fieldname] = flt(amount / unit, 0)
+			row["ledger"][fieldname] = ledger
+		return row
+
 	rows, heading = [], None
 	for line in current[0].lines:
 		presented = [lines_by_column[fieldname][line.line_code] for fieldname in statements]
@@ -172,23 +192,13 @@ def _rows(filters, columns, current, comparatives) -> list[dict]:
 		if show_headings and line.line_type == "Line" and line.category != heading:
 			heading = line.category
 			rows.append(_label_row(filters, *CATEGORY_LABELS[heading], line_type="Heading"))
+		rows.append(line_row(line, bool(show_headings and line.line_type == "Line")))
 
-		row = _label_row(filters, line.label_id, line.label_en, line_type=line.line_type)
-		row.update(
-			line_code=line.line_code,
-			# Not "indent": that key turns the datatable into a collapsible tree
-			indented=bool(show_headings and line.line_type == "Line"),
-			is_profit_or_loss=line.line_code == PROFIT_OR_LOSS_LINE,
-			ledger={},
-		)
-		if line.line_type != "Heading":
-			for fieldname in fieldnames:
-				amount, ledger = _column_amount(
-					fieldname, line.line_code, lines_by_column, current, comparatives
-				)
-				row[fieldname] = flt(amount / unit, 0)
-				row["ledger"][fieldname] = ledger
-		rows.append(row)
+	# Below profit or loss, once any equity account is mapped to an OCI line (FR-24)
+	if current[0].has_other_comprehensive_income:
+		rows.append(_label_row(filters, *OCI_HEADING, line_type="Heading"))
+		for line in current[0].oci_lines:
+			rows.append(line_row(line, bool(show_headings and line.line_type == "Line")))
 	return rows
 
 

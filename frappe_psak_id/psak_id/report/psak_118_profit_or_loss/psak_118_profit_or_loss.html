@@ -49,7 +49,7 @@
 	.psak-statement .psak-en { display: block; font-style: italic; color: #555; }
 	.psak-statement tr.psak-strong td { font-weight: bold; }
 	.psak-statement tr.psak-subtotal td.psak-amount { border-top: 1px solid #000; }
-	.psak-statement tr.psak-profit-or-loss td.psak-amount { border-bottom: 3px double #000; }
+	.psak-statement tr.psak-total td.psak-amount { border-bottom: 3px double #000; }
 	.psak-statement .psak-footnote { margin-top: 12px; font-size: 8.5pt; color: #555; }
 </style>
 <div class="psak-statement">
@@ -75,7 +75,7 @@
 		</thead>
 		<tbody>
 			{% for (var i = 0; i < original_data.length; i++) { var row = original_data[i]; %}
-				<tr class="{%= row.line_type !== 'Line' ? 'psak-strong' : '' %} {%= row.line_type === 'Subtotal' ? 'psak-subtotal' : '' %} {%= row.is_profit_or_loss ? 'psak-profit-or-loss' : '' %}">
+				<tr class="{%= row.line_type !== 'Line' ? 'psak-strong' : '' %} {%= row.line_type === 'Subtotal' ? 'psak-subtotal' : '' %} {%= row.is_total ? 'psak-total' : '' %}">
 					<td class="{%= row.indented ? 'psak-indent' : '' %}">
 						{%= frappe.utils.escape_html(row.line || "") %}
 						{% if (row.label_alt) { %}<span class="psak-en">{%= frappe.utils.escape_html(row.label_alt) %}</span>{% } %}

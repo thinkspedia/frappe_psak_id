@@ -99,7 +99,7 @@ class TestProfitOrLossReport(IntegrationTestCase):
 		self.assertEqual(rows["PL-OP-GA"].p0, -234_000)
 		self.assertEqual(rows["PL-SUB-OP"].p0, 1_000_567)
 		self.assertEqual(rows["PL-SUB-PL"].p0, 1_000_567)
-		self.assertTrue(rows["PL-SUB-PL"].is_profit_or_loss)
+		self.assertTrue(rows["PL-SUB-PL"].is_total)
 		self.assertEqual(
 			rows["PL-OP-REV"].ledger["p0"],
 			{"accounts": [self.sales], "filters": {}, "exact": True, "by_account": []},
