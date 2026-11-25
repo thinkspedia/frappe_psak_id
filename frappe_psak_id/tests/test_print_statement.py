@@ -47,6 +47,7 @@ class TestPrintStatement(IntegrationTestCase):
 		salary = get_account(COMPANY, "Salary")
 		sundry = make_account(COMPANY, "Print Sundry", "Indirect Expenses")
 		frappe.db.delete("PSAK ID Account Mapping", {"company": COMPANY})
+		make_mapping(COMPANY, cash, "FP-CA-CASH")
 		make_mapping(COMPANY, sales, "PL-OP-REV")
 		make_mapping(COMPANY, salary, "PL-OP-GA", expense_nature="Employee Benefits")
 		make_mapping(COMPANY, sundry, "PL-OP-OTH", expense_nature="Other")

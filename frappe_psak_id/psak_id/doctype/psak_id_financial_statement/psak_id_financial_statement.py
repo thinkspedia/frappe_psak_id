@@ -1,12 +1,14 @@
 # Copyright (c) 2026, Thinkspedia and contributors
 # For license information, please see license.txt
 
-"""A PSAK 118 statement of profit or loss for one company and period, reviewed and made final.
+"""The PSAK 118 financial statements of one company and period, reviewed and made final as one
+package (BR-42): the statement of financial position, profit or loss and other comprehensive
+income.
 
-Recompute fills the lines from the statement engine and records the checks of the Mapping
+Recompute fills the lines from the statement engines and records the checks of the Mapping
 Control. The workflow (fixture ``PSAK ID Financial Statement``) moves it from Draft through
 Under Review and Approval CFO to Final; this controller enforces what each step needs: the
-checks pass before review (BR-02, BR-06, BR-07, BR-19), the period is closed in ERPNext before
+checks pass before review (BR-02, BR-06, BR-07, BR-19, BR-30, BR-31), the period is closed in ERPNext before
 the CFO approves (BR-13), and the approved values still match the ledger. A final statement keeps
 its values (BR-14) and is only reopened with a reason, which cancels it and creates an amendment
 (BR-08).
@@ -29,7 +31,21 @@ from frappe.utils import (
 )
 
 from frappe_psak_id.compat import accounting_period_filters
-from frappe_psak_id.psak_id.checks import BLOCKING, OTHER_ITEMS, is_transition_period, run_checks
+from frappe_psak_id.psak_id.checks import (
+	BLOCKING,
+	CURRENT,
+	OTHER_ITEMS,
+	RESTATED,
+	financial_position_issues,
+	is_transition_period,
+	run_checks,
+)
+from frappe_psak_id.psak_id.financial_position import compute_financial_position, prior_year_end
+from frappe_psak_id.psak_id.report_lines import (
+	FINANCIAL_POSITION,
+	OTHER_COMPREHENSIVE_INCOME,
+	PROFIT_OR_LOSS,
+)
 from frappe_psak_id.psak_id.statement import (
 	DISABLED_LINE,
 	NO_MATCHING_CONDITION,
@@ -104,16 +120,55 @@ class PSAKIDFinancialStatement(Document):
 		result = run_checks(self.company, self.from_date, self.to_date, self.finance_book)
 		current, comparative = result.current, self._comparative_statement(result)
 
+		position, prior_position = self._positions()
+
 		notes = {row.report_line: row.note_no for row in self.lines if row.note_no}
-		prior_lines = {line.line_code: line for line in comparative.lines} if comparative else {}
 		self.set("lines", [])
-		for line in current.lines:
+		# In the order of the package: financial position, then profit or loss and its OCI
+		self._append_lines(FINANCIAL_POSITION, position.lines, prior_position, notes)
+		self._append_lines(PROFIT_OR_LOSS, current.lines, comparative, notes)
+		if current.has_other_comprehensive_income or (
+			comparative and comparative.has_other_comprehensive_income
+		):
+			self._append_lines(OTHER_COMPREHENSIVE_INCOME, current.oci_lines, comparative, notes, "oci_lines")
+
+		self._set_nature_lines(current, comparative)
+		self._set_transition_lines(result.restated)
+
+		issues = result.issues + financial_position_issues(position, CURRENT)
+		# The restated comparative is classified with this period's mappings, so its gaps are this
+		# statement's to fix; it has no field, the message is built from this flag
+		self.flags.restated_position = None
+		if prior_position and self.comparative == RESTATED_PRIOR_YEAR:
+			issues += financial_position_issues(prior_position, RESTATED)
+			self.flags.restated_position = prior_position
+		self.unmapped_count = len({issue.account for issue in issues if issue.check in UNMAPPED_CHECKS})
+		self.erpnext_pl_difference = current.ledger_difference
+		self.erpnext_bs_difference = position.ledger_difference
+		self.restatement_difference = result.restated.ledger_difference if result.restated else 0
+		self.blocking_issues = len([issue for issue in issues if issue.severity == BLOCKING])
+		self.other_items_warnings = "\n".join(
+			_("{0}: {1} is above the threshold of {2}.").format(
+				issue.report_line, self._money(abs(issue.amount)), self._money(issue.threshold)
+			)
+			for issue in issues
+			if issue.check == OTHER_ITEMS
+		)
+		self.check_messages = "\n".join(self._blocking_messages())
+		self.computed_on = now()
+
+	def _append_lines(self, statement, lines, comparative, notes, comparative_lines="lines"):
+		prior_lines = (
+			{line.line_code: line for line in comparative.get(comparative_lines) or []} if comparative else {}
+		)
+		for line in lines:
 			prior = prior_lines.get(line.line_code)
-			if line.hidden and (not prior or prior.hidden):
+			if line.get("hidden") and (not prior or prior.get("hidden")):
 				continue
 			self.append(
 				"lines",
 				{
+					"statement": statement,
 					"report_line": line.line_code,
 					"label_id": line.label_id,
 					"label_en": line.label_en,
@@ -126,23 +181,20 @@ class PSAKIDFinancialStatement(Document):
 				},
 			)
 
-		self._set_nature_lines(current, comparative)
-		self._set_transition_lines(result.restated)
-
-		issues = result.issues
-		self.unmapped_count = len({issue.account for issue in issues if issue.check in UNMAPPED_CHECKS})
-		self.erpnext_pl_difference = current.ledger_difference
-		self.restatement_difference = result.restated.ledger_difference if result.restated else 0
-		self.blocking_issues = len([issue for issue in issues if issue.severity == BLOCKING])
-		self.other_items_warnings = "\n".join(
-			_("{0}: {1} is above the threshold of {2}.").format(
-				issue.report_line, self._money(abs(issue.amount)), self._money(issue.threshold)
-			)
-			for issue in issues
-			if issue.check == OTHER_ITEMS
+	def _positions(self):
+		"""The statement of financial position on the end date and, with a comparative, on the end of
+		the prior fiscal year; restated with this period's mappings in the first PSAK 118 year (FR-31)."""
+		position = compute_financial_position(self.company, self.to_date, self.finance_book)
+		if self.comparative == NO_COMPARATIVE:
+			return position, None
+		mapping_date = self.to_date if self.comparative == RESTATED_PRIOR_YEAR else None
+		prior = compute_financial_position(
+			self.company,
+			prior_year_end(self.company, self.to_date),
+			self.finance_book,
+			mapping_date=mapping_date,
 		)
-		self.check_messages = "\n".join(self._blocking_messages())
-		self.computed_on = now()
+		return position, prior
 
 	def _set_nature_lines(self, current, comparative):
 		"""Operating expenses by nature per function line, for a statement presented by function or
@@ -255,6 +307,21 @@ class PSAKIDFinancialStatement(Document):
 					"The profit or loss differs from ERPNext's Profit and Loss by {0}. Open Mapping Control to "
 					"find the accounts."
 				).format(self._money(self.erpnext_pl_difference))
+			)
+		if flt(self.erpnext_bs_difference):
+			messages.append(
+				_(
+					"The statement of financial position differs from ERPNext's Balance Sheet by {0}. Open "
+					"Mapping Control to find the accounts."
+				).format(self._money(self.erpnext_bs_difference))
+			)
+		restated = self.flags.restated_position
+		if restated and restated.ledger_difference:
+			messages.append(
+				_(
+					"The restated statement of financial position on {0} differs from ERPNext's Balance Sheet "
+					"by {1}. Map the prior year's accounts in Mapping Control."
+				).format(formatdate(restated.to_date), self._money(restated.ledger_difference))
 			)
 		if flt(self.restatement_difference):
 			messages.append(
@@ -394,6 +461,14 @@ class PSAKIDFinancialStatement(Document):
 
 class StatementNotReady(frappe.ValidationError):
 	pass
+
+
+def statement_lines(doc, statement: str = PROFIT_OR_LOSS) -> list:
+	"""The lines of one statement of the package.
+
+	Lines saved before the package existed have no statement and are all profit or loss lines.
+	"""
+	return [line for line in doc.lines if (line.statement or PROFIT_OR_LOSS) == statement]
 
 
 def strip_text(html) -> str:

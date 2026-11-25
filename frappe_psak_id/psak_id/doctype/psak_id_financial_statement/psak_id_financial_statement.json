@@ -25,6 +25,7 @@
   "computed_on",
   "column_break_checks",
   "erpnext_pl_difference",
+  "erpnext_bs_difference",
   "restatement_difference",
   "check_messages",
   "other_items_warnings",
@@ -375,6 +376,15 @@
    "label": "Reviewed On",
    "no_copy": 1,
    "read_only": 1
+  },
+  {
+   "description": "Total assets, and total liabilities and equity, less ERPNext's Balance Sheet on the end date. Must be zero.",
+   "fieldname": "erpnext_bs_difference",
+   "fieldtype": "Currency",
+   "label": "Difference to ERPNext Balance Sheet",
+   "no_copy": 1,
+   "options": "currency",
+   "read_only": 1
   }
  ],
  "grid_page_length": 50,
@@ -382,7 +392,7 @@
  "is_submittable": 1,
  "link_display_mode": "Search",
  "links": [],
- "modified": "2026-11-24 22:15:56.488802",
+ "modified": "2026-11-25 09:18:19.259092",
  "modified_by": "Administrator",
  "module": "PSAK ID",
  "name": "PSAK ID Financial Statement",

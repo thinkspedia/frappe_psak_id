@@ -9,8 +9,9 @@ need a decision but do not block: Other Items lines above the company's threshol
 explained in a note (BR-06), and conflicting mappings whose entries net to nothing in the period
 should still get distinct priorities.
 
-The statement of financial position adds one more blocking check: every balance sheet account with
-a balance on the reporting date has a mapping in force then (BR-30).
+The statement of financial position adds blocking checks: every balance sheet account with a
+balance on the reporting date has a mapping in force then (BR-30), and the statement balances and
+equals ERPNext's Balance Sheet (BR-31).
 """
 
 import frappe
@@ -27,6 +28,7 @@ OTHER_ITEMS = "Other Items Above Threshold"
 ERPNEXT_DIFFERENCE = "Difference to ERPNext"
 RESTATEMENT_DIFFERENCE = "Restatement Difference"
 UNMAPPED_BALANCE = "Unmapped Balance Sheet Account"
+BALANCE_SHEET_DIFFERENCE = "Difference to ERPNext Balance Sheet"
 
 CURRENT = "Current"
 RESTATED = "Restated"
@@ -87,6 +89,21 @@ def balance_sheet_issues(company: str, to_date, finance_book: str | None = None)
 		for row in sorted(get_account_balances(company, to_date, finance_book), key=lambda row: row.account)
 		if row.account not in mapped
 	]
+
+
+def financial_position_issues(position, period=CURRENT) -> list:
+	"""Unmapped accounts, conflicting mappings and the difference to ERPNext's Balance Sheet of a
+	computed statement of financial position (BR-30, BR-31).
+
+	Stricter than ``balance_sheet_issues``: an account whose mappings exist but none applies, or
+	whose line is disabled, is not on the statement either.
+	"""
+	issues = _mapping_issues(position, period)
+	if position.ledger_difference:
+		issues.append(
+			_issue(BALANCE_SHEET_DIFFERENCE, BLOCKING, position, period, amount=position.ledger_difference)
+		)
+	return issues
 
 
 def is_transition_period(company: str, from_date, to_date) -> bool:

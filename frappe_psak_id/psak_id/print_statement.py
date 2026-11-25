@@ -19,6 +19,7 @@ from frappe.utils.pdf import get_pdf
 from pypdf import PdfReader, PdfWriter
 
 from frappe_psak_id.psak_id.doctype.psak_id_financial_statement.psak_id_financial_statement import (
+	statement_lines,
 	strip_text,
 )
 from frappe_psak_id.psak_id.report.psak_118_profit_or_loss.psak_118_profit_or_loss import (
@@ -247,7 +248,7 @@ def _amounts(row, divisor: int, has_comparative: bool) -> list[str]:
 
 def _lines(doc, divisor: int, has_comparative: bool, show_headings) -> list[frappe._dict]:
 	rows, heading = [], None
-	for line in doc.lines:
+	for line in statement_lines(doc):
 		if show_headings and line.line_type == "Line" and line.category != heading:
 			heading = line.category
 			label_id, label_en = CATEGORY_LABELS.get(heading, (heading, heading))
@@ -336,7 +337,7 @@ def _other_items(doc, divisor: int, has_comparative: bool) -> frappe._dict | Non
 			label_en=line.label_en or line.label_id,
 			amounts=_amounts(line, divisor, has_comparative),
 		)
-		for line in doc.lines
+		for line in statement_lines(doc)
 		if line.is_other_items
 	]
 	# Text Editor content is sanitised by Frappe when the statement is saved
