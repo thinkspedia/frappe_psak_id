@@ -127,7 +127,7 @@ frappe.query_reports[PSAK_118_PL] = {
 				"Open General Ledger"
 			)}">${text}</a>`;
 		}
-		if (data.is_profit_or_loss) {
+		if (data.is_total) {
 			return `<strong style="border-bottom: 3px double; padding-bottom: 1px">${text}</strong>`;
 		}
 		return strong ? `<strong>${text}</strong>` : text;

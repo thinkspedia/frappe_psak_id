@@ -24,6 +24,7 @@ from frappe_psak_id.psak_id.statement import (
 	DISABLED_LINE,
 	NO_MATCHING_CONDITION,
 	NOT_MAPPED,
+	PERIOD_CLOSING_VOUCHER,
 	PROFIT_OR_LOSS_ROOT_TYPES,
 	compute,
 	evaluate_lines,
@@ -38,7 +39,6 @@ from frappe_psak_id.psak_id.statement import (
 )
 
 BALANCE_SHEET_ROOT_TYPES = ("Asset", "Liability", "Equity")
-PERIOD_CLOSING_VOUCHER = "Period Closing Voucher"
 
 RETAINED_EARNINGS_LINE = "FP-EQ-RE"
 TOTAL_ASSETS_LINE = "FP-SUB-TA"

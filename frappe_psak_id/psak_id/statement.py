@@ -18,14 +18,22 @@ from frappe import _
 from frappe.query_builder import Case, Criterion
 from frappe.query_builder.functions import Sum
 from frappe.utils import flt, getdate
+from pypika.terms import ExistsCriterion
 
-from frappe_psak_id.psak_id.report_lines import PROFIT_OR_LOSS, parse_subtotal_formula
+from frappe_psak_id.psak_id.report_lines import (
+	OTHER_COMPREHENSIVE_INCOME,
+	PROFIT_OR_LOSS,
+	parse_subtotal_formula,
+)
 
 PROFIT_OR_LOSS_LINE = "PL-SUB-PL"
 BEFORE_FINANCING_LINE = "PL-SUB-PBFT"
 CONTINUING_OPERATIONS_LINE = "PL-SUB-CONT"
 DISCONTINUED = "Discontinued Operations"
 PROFIT_OR_LOSS_ROOT_TYPES = ("Income", "Expense")
+OTHER_COMPREHENSIVE_INCOME_LINE = "OCI-SUB-OCI"
+TOTAL_COMPREHENSIVE_INCOME_LINE = "OCI-SUB-TCI"
+PERIOD_CLOSING_VOUCHER = "Period Closing Voucher"
 
 # Why a GL group has no report line; the Mapping Control report explains each one
 NOT_MAPPED = "Not Mapped"
@@ -95,20 +103,30 @@ def compute_periods(
 		[line for line in sorted(lines.values(), key=lambda line: line.sequence) if not line.disabled],
 		categories,
 	)
+	with_default_book = include_default_book(company, finance_book)
 	groups = _get_gl_groups(
 		company,
 		periods,
 		cost_center,
 		finance_book,
-		include_default_book(company, finance_book),
+		with_default_book,
 		columns=sorted({m.condition.column for ms in mappings.values() for m in ms if m.condition}),
 	)
 	groups_by_period = {}
 	for group in groups:
 		groups_by_period.setdefault(group.period, []).append(group)
 
+	# Other comprehensive income belongs to the entity as a whole, so a statement of one cost
+	# center has none
+	oci_accounts = {} if cost_center else get_oci_accounts(company, mapping_date)
+	oci_lines = get_lines(OTHER_COMPREHENSIVE_INCOME)
+	oci_groups_by_period = {}
+	if oci_accounts:
+		for group in _get_oci_groups(company, periods, finance_book, with_default_book, list(oci_accounts)):
+			oci_groups_by_period.setdefault(group.period, []).append(group)
+
 	currency = frappe.get_cached_value("Company", company, "default_currency")
-	return [
+	statements = [
 		_statement(
 			frappe._dict(
 				company=company,
@@ -127,6 +145,11 @@ def compute_periods(
 		)
 		for index, (start, end) in enumerate(periods)
 	]
+	for index, statement in enumerate(statements):
+		_add_other_comprehensive_income(
+			statement, oci_groups_by_period.get(index, []), oci_lines, oci_accounts
+		)
+	return statements
 
 
 def _statement(result, groups, lines, ordered_lines, mappings, categories, policy):
@@ -195,6 +218,55 @@ def _statement(result, groups, lines, ordered_lines, mappings, categories, polic
 		ledger_difference=flt(profit_or_loss - ledger_profit_or_loss, 2),
 	)
 	return result
+
+
+def _add_other_comprehensive_income(statement, groups, lines, oci_accounts):
+	"""Other comprehensive income of the period and total comprehensive income (BR-38).
+
+	Movements of equity accounts with an OCI line are presented on that line, income positive.
+	A line that is disabled after its accounts were mapped leaves them unmapped, like a profit or
+	loss line.
+	"""
+	line_amounts, line_groups = {}, {}
+	for group in groups:
+		line = lines.get(oci_accounts[group.account])
+		if not line or line.disabled:
+			statement.unmapped.append(
+				frappe._dict(
+					account=group.account,
+					reason=DISABLED_LINE,
+					report_line=oci_accounts[group.account],
+					amount=flt(group.amount),
+				)
+			)
+			continue
+		group.line = line.name
+		line_amounts[line.name] = flt(line_amounts.get(line.name)) + flt(group.amount)
+		line_groups.setdefault(line.name, []).append(group)
+
+	amounts = evaluate_lines(
+		lines.values(), line_amounts, {}, known={PROFIT_OR_LOSS_LINE: statement.profit_or_loss}
+	)
+	statement.update(
+		has_other_comprehensive_income=bool(oci_accounts),
+		oci_lines=[
+			frappe._dict(
+				line_code=line.name,
+				label_id=line.label_id,
+				label_en=line.label_en,
+				line_type=line.line_type,
+				category=None,
+				is_other_items=line.is_other_items,
+				amount=flt(amounts.get(line.name)),
+				**ledger_filters(line.name, line_groups.get(line.name, []), groups),
+				hidden=False,
+			)
+			for line in sorted(lines.values(), key=lambda line: line.sequence)
+			if not line.disabled
+		],
+		other_comprehensive_income=flt(amounts.get(OTHER_COMPREHENSIVE_INCOME_LINE)),
+		total_comprehensive_income=flt(amounts.get(TOTAL_COMPREHENSIVE_INCOME_LINE)),
+	)
 
 
 def ledger_filters(line_code: str, own: list, groups: list) -> dict:
@@ -317,11 +389,12 @@ def effective_category(line, policy) -> str:
 	return line.category
 
 
-def evaluate_lines(lines, line_amounts: dict, categories: dict) -> dict:
+def evaluate_lines(lines, line_amounts: dict, categories: dict, known: dict | None = None) -> dict:
 	"""Amounts of every line: mapped amounts for lines, formulas for subtotals.
 
 	A category term adds the lines presented in that category, or with a classification
-	(``CAT:Asset/Current``) only the lines of that classification.
+	(``CAT:Asset/Current``) only the lines of that classification. ``known`` gives the amounts of
+	lines of another statement that a formula refers to.
 	"""
 	by_code = {line.name: line for line in lines}
 	category_totals = {}
@@ -330,7 +403,7 @@ def evaluate_lines(lines, line_amounts: dict, categories: dict) -> dict:
 		for key in (category, (category, classification)):
 			category_totals[key] = flt(category_totals.get(key)) + flt(line_amounts.get(code))
 
-	amounts = {}
+	amounts = dict(known or {})
 
 	def amount_of(code):
 		if code in amounts:
@@ -543,13 +616,68 @@ def _get_gl_groups(company, periods, cost_center, finance_book, with_default_boo
 		.where(account.root_type.isin(PROFIT_OR_LOSS_ROOT_TYPES))
 		.where(Criterion.any([gle.posting_date[start:end] for start, end in periods]))
 		.where(gle.is_cancelled == 0)
-		.where(gle.voucher_type != "Period Closing Voucher")
+		.where(gle.voucher_type != PERIOD_CLOSING_VOUCHER)
 		.where(gle.finance_book.isin(books) | gle.finance_book.isnull())
 		.groupby(*group_columns, period)
 	)
 	if cost_center:
 		query = query.where(gle.cost_center.isin(_with_descendants("Cost Center", cost_center)))
 	return query.run(as_dict=True)
+
+
+def get_oci_accounts(company: str, to_date) -> dict:
+	"""Equity accounts whose latest mapping in force on ``to_date`` names an OCI line, with that line."""
+	rows = frappe.get_all(
+		"PSAK ID Account Mapping",
+		filters={"company": company, "valid_from": ("<=", to_date), "root_type": "Equity"},
+		fields=["account", "oci_line"],
+		order_by="valid_from desc, priority asc",
+	)
+	latest = {}
+	for row in rows:
+		latest.setdefault(row.account, row.oci_line)
+	return {account: line for account, line in latest.items() if line}
+
+
+def _get_oci_groups(company, periods, finance_book, with_default_book, accounts):
+	"""Credit minus debit of OCI accounts per period, without Period Closing Vouchers and without
+	vouchers that only move amounts between equity accounts (a transfer between components)."""
+	gle = frappe.qb.DocType("GL Entry")
+	other = frappe.qb.DocType("GL Entry").as_("other")
+	other_account = frappe.qb.DocType("Account").as_("other_account")
+	outside_equity = ExistsCriterion(
+		frappe.qb.from_(other)
+		.join(other_account)
+		.on(other_account.name == other.account)
+		.select(other.name)
+		.where(other.voucher_type == gle.voucher_type)
+		.where(other.voucher_no == gle.voucher_no)
+		.where(other.is_cancelled == 0)
+		.where(other_account.root_type != "Equity")
+	)
+
+	period = Case()
+	for index, (start, end) in enumerate(periods):
+		period = period.when(gle.posting_date[start:end], index)
+	period = period.as_("period")
+
+	books = [finance_book or ""]
+	if with_default_book:
+		books.append(frappe.get_cached_value("Company", company, "default_finance_book") or "")
+
+	return (
+		frappe.qb.from_(gle)
+		.select(gle.account, period, (Sum(gle.credit) - Sum(gle.debit)).as_("amount"))
+		.where(gle.company == company)
+		.where(gle.account.isin(accounts))
+		.where(Criterion.any([gle.posting_date[start:end] for start, end in periods]))
+		.where(gle.is_cancelled == 0)
+		.where(gle.voucher_type != PERIOD_CLOSING_VOUCHER)
+		.where(gle.finance_book.isin(books) | gle.finance_book.isnull())
+		.where(outside_equity)
+		.groupby(gle.account, period)
+		.run(as_dict=True)
+	)
 
 
 def _hidden_lines(lines, amounts: dict, categories: dict, policy) -> set:
