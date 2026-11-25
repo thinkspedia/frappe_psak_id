@@ -99,7 +99,7 @@ def compute_periods(
 		periods,
 		cost_center,
 		finance_book,
-		_include_default_book(company, finance_book),
+		include_default_book(company, finance_book),
 		columns=sorted({m.condition.column for ms in mappings.values() for m in ms if m.condition}),
 	)
 	groups_by_period = {}
@@ -420,7 +420,12 @@ def _get_mappings(company: str, to_date) -> dict[str, list[Mapping]]:
 	"""
 	rows = frappe.get_all(
 		"PSAK ID Account Mapping",
-		filters={"company": company, "valid_from": ("<=", to_date)},
+		# Balance sheet accounts never reach the statement of profit or loss
+		filters={
+			"company": company,
+			"valid_from": ("<=", to_date),
+			"root_type": ("in", ("Income", "Expense")),
+		},
 		fields=[
 			"name",
 			"account",
@@ -485,14 +490,14 @@ def _dimension_columns() -> dict:
 	}
 
 
-def _include_default_book(company: str, finance_book: str | None) -> bool:
+def include_default_book(company: str, finance_book: str | None) -> bool:
 	# Same choice as ERPNext's report default: the company's default book is included unless
 	# another book is asked for (ERPNext refuses to combine two different books)
 	default_book = frappe.get_cached_value("Company", company, "default_finance_book")
 	return not (finance_book and default_book and finance_book != default_book)
 
 
-def _get_gl_groups(company, periods, cost_center, finance_book, include_default_book, columns):
+def _get_gl_groups(company, periods, cost_center, finance_book, with_default_book, columns):
 	gle = frappe.qb.DocType("GL Entry")
 	account = frappe.qb.DocType("Account")
 	group_columns = [gle.account]
@@ -508,7 +513,7 @@ def _get_gl_groups(company, periods, cost_center, finance_book, include_default_
 	period = period.as_("period")
 
 	books = [finance_book or ""]
-	if include_default_book:
+	if with_default_book:
 		books.append(frappe.get_cached_value("Company", company, "default_finance_book") or "")
 
 	query = (

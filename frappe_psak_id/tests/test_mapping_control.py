@@ -8,7 +8,9 @@ from frappe_psak_id.psak_id.checks import (
 	OTHER_ITEMS,
 	RESTATED,
 	RESTATEMENT_DIFFERENCE,
+	UNMAPPED_BALANCE,
 	WARNING,
+	balance_sheet_issues,
 	is_transition_period,
 	other_items_threshold,
 	run_checks,
@@ -42,6 +44,7 @@ class TestMappingControl(IntegrationTestCase):
 		cls.interest_income = make_account(COMPANY, "Interest Income", "Indirect Income")
 		cls.sundry = make_account(COMPANY, "Sundry Expenses", "Indirect Expenses")
 		cls.legacy = make_account(COMPANY, "Legacy Expenses", "Indirect Expenses")
+		cls.deposit = make_account(COMPANY, "Control Deposit", "Current Assets")
 		cls.main = frappe.get_cached_value("Company", COMPANY, "cost_center")
 		cls.root = frappe.db.get_value(
 			"Cost Center", {"company": COMPANY, "is_group": 1}, "name", order_by="lft asc"
@@ -70,6 +73,7 @@ class TestMappingControl(IntegrationTestCase):
 		frappe.db.delete("PSAK ID Account Mapping", {"company": COMPANY})
 		cls.mappings = {}
 		for key, account, line, extra in (
+			("cash", cls.cash, "FP-CA-CASH", {}),
 			("sales", cls.sales, "PL-OP-REV", {}),
 			("admin", cls.admin, "PL-OP-SELL", {"expense_nature": "Other"}),
 			("sundry", cls.sundry, "PL-OP-OTH", {"expense_nature": "Other"}),
@@ -118,6 +122,8 @@ class TestMappingControl(IntegrationTestCase):
 			# Entries that net to nothing under the conflicting mappings
 			("2027-04-10", cls.cogs, 50_000),
 			("2027-04-11", cls.cogs, -50_000),
+			# A balance sheet account with no mapping; profit or loss is untouched
+			("2027-03-05", cls.deposit, 40_000),
 		):
 			make_journal_entry(COMPANY, posting_date, account, amount, cls.cash)
 
@@ -214,3 +220,37 @@ class TestMappingControl(IntegrationTestCase):
 		self.assertEqual(data, [])
 		self.assertTrue(message)
 		self.assertEqual(summary[0]["indicator"], "Green")
+
+	def test_balance_sheet_account_with_a_balance_needs_a_mapping(self):
+		self.assertEqual(balance_sheet_issues(COMPANY, "2027-02-28"), [])
+
+		(unmapped,) = balance_sheet_issues(COMPANY, "2027-03-31")
+		self.assertEqual(
+			(unmapped.check, unmapped.severity, unmapped.account, unmapped.amount),
+			(UNMAPPED_BALANCE, BLOCKING, self.deposit, 40_000),
+		)
+		self.assertEqual(str(unmapped.to_date), "2027-03-31")
+
+		# A mapping from a later date is not in force on the reporting date
+		mapping = frappe.get_doc(
+			{
+				"doctype": "PSAK ID Account Mapping",
+				"company": COMPANY,
+				"account": self.deposit,
+				"report_line": "FP-CA-FIN",
+				"valid_from": "2027-04-01",
+				"priority": 10,
+			}
+		).insert()
+		self.addCleanup(frappe.delete_doc, "PSAK ID Account Mapping", mapping.name)
+		self.assertEqual(len(balance_sheet_issues(COMPANY, "2027-03-31")), 1)
+		self.assertEqual(balance_sheet_issues(COMPANY, "2027-04-30"), [])
+
+	def test_report_lists_unmapped_balance_sheet_accounts(self):
+		_columns, data, message, _chart, summary = execute(
+			{"company": COMPANY, "from_date": "2027-03-01", "to_date": "2027-03-31"}
+		)
+		(row,) = [row for row in data if row.check == UNMAPPED_BALANCE]
+		self.assertEqual((row.subject, row.amount, row.severity), (self.deposit, 40_000, BLOCKING))
+		self.assertIsNone(message)
+		self.assertEqual(summary[0]["indicator"], "Red")

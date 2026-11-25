@@ -28,6 +28,7 @@ class TestPSAKIDAccountMapping(IntegrationTestCase):
 		make_account(cls.company, "Interest Income", "Indirect Income")
 		make_account(cls.company, "Interest Expense", "Indirect Expenses")
 		make_account(cls.company, "Tax Expense", "Indirect Expenses")
+		make_account(cls.company, "Revaluation Reserve", "Equity")
 
 	def setUp(self):
 		frappe.db.delete("PSAK ID Account Mapping", {"company": self.company})
@@ -51,10 +52,9 @@ class TestPSAKIDAccountMapping(IntegrationTestCase):
 		self.assertEqual(mapping.category, "Operating")
 		self.assertTrue(mapping.name.startswith("PSAK-MAP-"))
 
-	def test_account_must_be_a_profit_or_loss_leaf_of_the_company(self):
+	def test_account_must_be_a_leaf_of_the_company(self):
 		cases = {
 			"group": dict(account=get_account(self.company, "Direct Income")),
-			"asset": dict(account=get_account(self.company, "Cash")),
 			"other company": dict(account=get_account(self.other_company, "Sales")),
 		}
 		for case, values in cases.items():
@@ -136,3 +136,48 @@ class TestPSAKIDAccountMapping(IntegrationTestCase):
 			self._mapping("Sales", "PL-OP-REV").insert()
 		self._mapping("Sales", "PL-OP-REV", priority=20).insert()
 		self._mapping("Sales", "PL-OP-REV", valid_from="2028-01-01").insert()
+
+	def test_report_line_must_be_of_the_account_statement_and_category(self):
+		cash = self._mapping("Cash", "FP-CA-CASH").insert()
+		self.assertEqual((cash.root_type, cash.category), ("Asset", "Asset"))
+		creditors = self._mapping("Creditors", "FP-CL-AP").insert()
+		self.assertEqual((creditors.root_type, creditors.category), ("Liability", "Liability"))
+
+		cases = {
+			"asset to a profit or loss line": ("Cash", "PL-OP-REV"),
+			"asset to a liability line": ("Debtors", "FP-CL-AP"),
+			"liability to an equity line": ("Creditors", "FP-EQ-OTH"),
+			"income to a financial position line": ("Sales", "FP-CA-OTH"),
+			"equity to an OCI line": ("Capital Stock", "OCI-NR-REV"),
+		}
+		for case, (account, line) in cases.items():
+			with self.subTest(case), self.assertRaises(frappe.ValidationError):
+				self._mapping(account, line).insert()
+
+	def test_balance_sheet_mapping_keeps_no_profit_or_loss_fields(self):
+		mapping = self._mapping("Debtors", "FP-CA-AR", expense_nature="Other", is_final_tax=1).insert()
+		self.assertFalse(mapping.expense_nature)
+		self.assertFalse(mapping.is_final_tax)
+		self.assertFalse(mapping.equity_component)
+
+	def test_equity_component_defaults_to_the_report_line(self):
+		capital = self._mapping("Capital Stock", "FP-EQ-CAP").insert()
+		self.assertEqual(capital.equity_component, "FP-EQ-CAP")
+
+		dividends = self._mapping("Dividends Paid", "FP-EQ-RE", equity_component="FP-EQ-OTH").insert()
+		self.assertEqual(dividends.equity_component, "FP-EQ-OTH")
+
+		for line in ("FP-CL-AP", "FP-SUB-EQ"):
+			with self.subTest(line), self.assertRaises(frappe.ValidationError):
+				self._mapping("Retained Earnings", "FP-EQ-RE", equity_component=line).insert()
+
+	def test_oci_line_only_for_equity_and_only_an_oci_line(self):
+		reserve = self._mapping("Revaluation Reserve", "FP-EQ-OCI", oci_line="OCI-NR-REV").insert()
+		self.assertEqual(reserve.oci_line, "OCI-NR-REV")
+
+		for line in ("PL-OP-REV", "OCI-SUB-NR"):
+			with self.subTest(line), self.assertRaises(frappe.ValidationError):
+				self._mapping("Retained Earnings", "FP-EQ-RE", oci_line=line).insert()
+
+		cash = self._mapping("Cash", "FP-CA-CASH", oci_line="OCI-NR-REV").insert()
+		self.assertFalse(cash.oci_line)

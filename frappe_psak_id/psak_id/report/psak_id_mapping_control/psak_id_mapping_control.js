@@ -65,6 +65,7 @@ frappe.query_reports[PSAK_MAPPING_CONTROL] = {
 	fix_label(data) {
 		return {
 			"Not Mapped": __("Add Mapping"),
+			"Unmapped Balance Sheet Account": __("Add Mapping"),
 			"No Matching Condition": __("Add Fallback Mapping"),
 			"Disabled Line": __("Open Mappings"),
 			"Conflicting Mappings": __("Open Mappings"),
@@ -78,6 +79,7 @@ frappe.query_reports[PSAK_MAPPING_CONTROL] = {
 		const company = report.get_filter_value("company");
 		switch (data.check) {
 			case "Not Mapped":
+			case "Unmapped Balance Sheet Account":
 			case "No Matching Condition":
 				frappe.new_doc(PSAK_MAPPING, { company, account: data.account });
 				break;

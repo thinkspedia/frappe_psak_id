@@ -8,11 +8,15 @@ that put an account's balance on different lines, since which of them wins is ar
 need a decision but do not block: Other Items lines above the company's threshold must be
 explained in a note (BR-06), and conflicting mappings whose entries net to nothing in the period
 should still get distinct priorities.
+
+The statement of financial position adds one more blocking check: every balance sheet account with
+a balance on the reporting date has a mapping in force then (BR-30).
 """
 
 import frappe
 from frappe.utils import add_years, flt, getdate
 
+from frappe_psak_id.psak_id.financial_position import get_account_balances, mapped_accounts
 from frappe_psak_id.psak_id.statement import compute_periods
 
 BLOCKING = "Blocking"
@@ -22,6 +26,7 @@ CONFLICTING_MAPPINGS = "Conflicting Mappings"
 OTHER_ITEMS = "Other Items Above Threshold"
 ERPNEXT_DIFFERENCE = "Difference to ERPNext"
 RESTATEMENT_DIFFERENCE = "Restatement Difference"
+UNMAPPED_BALANCE = "Unmapped Balance Sheet Account"
 
 CURRENT = "Current"
 RESTATED = "Restated"
@@ -59,6 +64,29 @@ def run_checks(company: str, from_date, to_date, finance_book: str | None = None
 			_issue(RESTATEMENT_DIFFERENCE, BLOCKING, restated, RESTATED, amount=restated.ledger_difference)
 		)
 	return frappe._dict(issues=issues, current=current, restated=restated)
+
+
+def balance_sheet_issues(company: str, to_date, finance_book: str | None = None) -> list:
+	"""Balance sheet accounts with a balance on ``to_date`` but no mapping in force then (BR-30).
+
+	The amount is the balance as presented: debit balances of assets, credit balances of
+	liabilities and equity are positive.
+	"""
+	to_date = getdate(to_date)
+	mapped = mapped_accounts(company, to_date)
+	statement = frappe._dict(from_date=to_date, to_date=to_date)
+	return [
+		_issue(
+			UNMAPPED_BALANCE,
+			BLOCKING,
+			statement,
+			CURRENT,
+			account=row.account,
+			amount=flt(row.balance if row.root_type == "Asset" else -row.balance, 2),
+		)
+		for row in sorted(get_account_balances(company, to_date, finance_book), key=lambda row: row.account)
+		if row.account not in mapped
+	]
 
 
 def is_transition_period(company: str, from_date, to_date) -> bool:

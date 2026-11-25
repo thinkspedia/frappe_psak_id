@@ -17,6 +17,8 @@ from frappe_psak_id.psak_id.checks import (
 	ERPNEXT_DIFFERENCE,
 	OTHER_ITEMS,
 	RESTATED,
+	UNMAPPED_BALANCE,
+	balance_sheet_issues,
 	run_checks,
 )
 from frappe_psak_id.psak_id.statement import (
@@ -32,6 +34,7 @@ def execute(filters: dict | None = None):
 	filters = frappe._dict(filters or {})
 	_validate(filters)
 	result = run_checks(filters.company, filters.from_date, filters.to_date, filters.finance_book)
+	result.issues += balance_sheet_issues(filters.company, filters.to_date, filters.finance_book)
 	currency = result.current.currency
 	labels = _line_labels()
 	data = [_row(issue, currency, labels, index) for index, issue in enumerate(result.issues)]
@@ -74,10 +77,18 @@ def _row(issue, currency, labels, index) -> frappe._dict:
 	period = f"{formatdate(issue.from_date)} \u2013 {formatdate(issue.to_date)}"
 	if issue.period == RESTATED:
 		period = _("{0} (restated)").format(period)
+	if issue.check == UNMAPPED_BALANCE:
+		period = _("At {0}").format(formatdate(issue.to_date))
 
 	if issue.check == NOT_MAPPED:
 		label = _("Unmapped account")
 		detail = _("Has a balance but no mapping in force at the end of the period. Map it to a line.")
+	elif issue.check == UNMAPPED_BALANCE:
+		label = _("Unmapped balance sheet account")
+		detail = _(
+			"Has a balance at the end of the period but no mapping in force then. Map it to a financial "
+			"position line."
+		)
 	elif issue.check == NO_MATCHING_CONDITION:
 		label = _("No matching condition")
 		detail = _(
