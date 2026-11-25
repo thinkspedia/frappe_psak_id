@@ -1,11 +1,17 @@
 import frappe
 
 from frappe_psak_id.psak_id.mapping import apply_template, match_row, pattern_regex
-from frappe_psak_id.psak_id.mapping_templates import STANDARD_TEMPLATE_VERSION, STANDARD_TEMPLATES
+from frappe_psak_id.psak_id.mapping_templates import (
+	PROFIT_OR_LOSS_TEMPLATE_VERSION,
+	STANDARD_TEMPLATE_VERSION,
+	STANDARD_TEMPLATES,
+)
 from frappe_psak_id.tests.utils import IntegrationTestCase, get_account, make_account, make_company
 
 COMPANY = "_Test PSAK Template Company"
+BALANCE_SHEET_COMPANY = "_Test PSAK Template Balance Sheet Company"
 SERVICES = "Services (Standard)"
+SERVICES_1_1 = "Services (Standard 1.1)"
 STAFF_USER = "psak-template-staff@example.com"
 
 
@@ -28,8 +34,15 @@ class TestPatterns(IntegrationTestCase):
 				row("*penjualan*", "PL-OP-REV", "Income"),
 				row("*penjualan*", "PL-OP-SELL", "Expense"),
 				row("6*", "PL-OP-GA", match_on="Number"),
+				row("Bank", "FP-CA-CASH", "Asset", match_on="Account Type"),
 			)
 		]
+		bank = frappe._dict(account_name="BCA 123", account_type="Bank", root_type="Asset")
+		self.assertEqual(match_row(bank, rows).report_line, "FP-CA-CASH")
+		# A row without a root type is for income and expense accounts only
+		bank.update(account_number="6200", account_type=None)
+		self.assertIsNone(match_row(bank, rows))
+
 		account = frappe._dict(account_name="Beban Penjualan", account_number="6100", root_type="Expense")
 		self.assertEqual(match_row(account, rows).report_line, "PL-OP-SELL")
 		account.account_name = "Beban Kantor"
@@ -56,12 +69,14 @@ class TestMappingTemplate(IntegrationTestCase):
 	def test_standard_templates_are_installed(self):
 		for template in STANDARD_TEMPLATES:
 			doc = frappe.get_doc("PSAK ID Mapping Template", template["template_name"])
-			self.assertEqual(doc.template_version, STANDARD_TEMPLATE_VERSION)
+			self.assertEqual(doc.template_version, template["template_version"])
 			self.assertEqual(len(doc.rows), len(template["rows"]))
-		self.assertEqual(
-			sorted(template["industry"] for template in STANDARD_TEMPLATES),
-			["Investment Holding", "Manufacturing", "Property", "Services", "Trading"],
-		)
+		industries = ["Investment Holding", "Manufacturing", "Property", "Services", "Trading"]
+		for version in (PROFIT_OR_LOSS_TEMPLATE_VERSION, STANDARD_TEMPLATE_VERSION):
+			self.assertEqual(
+				sorted(t["industry"] for t in STANDARD_TEMPLATES if t["template_version"] == version),
+				industries,
+			)
 
 	def test_subtotals_final_tax_as_income_tax_and_repeated_patterns_are_refused(self):
 		with self.assertRaises(frappe.ValidationError):
@@ -70,6 +85,26 @@ class TestMappingTemplate(IntegrationTestCase):
 			self.make_template(("*pph final*", "PL-TAX", {"is_final_tax": 1})).insert()
 		with self.assertRaises(frappe.ValidationError):
 			self.make_template(("*sales*", "PL-OP-REV", {}), ("*Sales* ", "PL-OP-OTH", {})).insert()
+
+	def test_balance_sheet_rows_need_a_line_of_their_root_type(self):
+		for rows in (
+			# A financial position line needs the root type it is for
+			[("*cash*", "FP-CA-CASH", {})],
+			[("*cash*", "FP-CL-AP", {"root_type": "Asset"})],
+			[("*cash*", "PL-OP-OTH", {"root_type": "Asset"})],
+			# Only equity rows have an OCI line, and it is a line of that statement
+			[("*reserve*", "FP-CA-OTH", {"root_type": "Asset", "oci_line": "OCI-NR-REV"})],
+			[("*reserve*", "FP-EQ-OCI", {"root_type": "Equity", "oci_line": "FP-EQ-RE"})],
+			[("Bnak", "FP-CA-CASH", {"root_type": "Asset", "match_on": "Account Type"})],
+		):
+			with self.assertRaises(frappe.ValidationError, msg=rows):
+				self.make_template(*rows).insert()
+
+		template = self.make_template(
+			("Bank", "FP-CA-CASH", {"root_type": "Asset", "match_on": "Account Type"}),
+			("*reserve*", "FP-EQ-OCI", {"root_type": "Equity", "oci_line": "OCI-NR-REV"}),
+		).insert()
+		self.assertEqual(len(template.rows), 2)
 
 
 class TestApplyTemplate(IntegrationTestCase):
@@ -150,8 +185,10 @@ class TestApplyTemplate(IntegrationTestCase):
 		self.assertEqual(str(created.valid_from), "2027-01-01")
 		self.assertEqual(
 			(created.source_template, created.source_template_version),
-			(SERVICES, STANDARD_TEMPLATE_VERSION),
+			(SERVICES, PROFIT_OR_LOSS_TEMPLATE_VERSION),
 		)
+		# A profit or loss template leaves the balance sheet alone
+		self.assertNotIn(get_account(COMPANY, "Cash"), mappings)
 
 		again = apply_template(SERVICES, COMPANY, "2027-01-01")
 		self.assertEqual(again.created, [])
@@ -171,3 +208,68 @@ class TestApplyTemplate(IntegrationTestCase):
 		self.addCleanup(frappe.set_user, "Administrator")
 		with self.assertRaises(frappe.PermissionError):
 			apply_template(SERVICES, COMPANY, "2027-01-01")
+
+
+class TestApplyBalanceSheetTemplate(IntegrationTestCase):
+	@classmethod
+	def setUpClass(cls):
+		super().setUpClass()
+		make_company(BALANCE_SHEET_COMPANY, "_TPB")
+		frappe.db.delete("PSAK ID Account Mapping", {"company": BALANCE_SHEET_COMPANY})
+
+	def test_template_maps_every_balance_sheet_account_of_the_standard_chart(self):
+		result = apply_template(SERVICES_1_1, BALANCE_SHEET_COMPANY, "2027-01-01")
+		self.assertEqual(result.failed, [])
+		balance_sheet = frappe.get_all(
+			"Account",
+			filters={
+				"company": BALANCE_SHEET_COMPANY,
+				"is_group": 0,
+				"root_type": ("in", ("Asset", "Liability", "Equity")),
+			},
+			pluck="name",
+		)
+		self.assertTrue(balance_sheet)
+		self.assertEqual(set(balance_sheet) & set(result.unmatched), set())
+
+		mappings = {
+			row.account: row
+			for row in frappe.get_all(
+				"PSAK ID Account Mapping",
+				filters={"company": BALANCE_SHEET_COMPANY},
+				fields=["account", "report_line", "oci_line", "source_template_version"],
+			)
+		}
+		expected = {
+			"Cash": "FP-CA-CASH",
+			"Debtors": "FP-CA-AR",
+			"Stock In Hand": "FP-CA-INV",
+			"Buildings": "FP-NCA-PPE",
+			"Accumulated Depreciation": "FP-NCA-PPE",
+			"Software": "FP-NCA-INTANG",
+			# Typed Payable in the standard chart, but an asset
+			"Employee Advances": "FP-CA-PREP",
+			"Earnest Money": "FP-CA-FIN",
+			"Creditors": "FP-CL-AP",
+			"Payroll Payable": "FP-CL-ACCR",
+			"Customer Advances": "FP-CL-CONTRACT",
+			"Secured Loans": "FP-CL-BORR",
+			"Long-term Provisions": "FP-NCL-PROV",
+			"Short-term Provisions": "FP-CL-PROV",
+			"Employee Benefits Obligation": "FP-NCL-EB",
+			"Capital Stock": "FP-EQ-CAP",
+			"Dividends Paid": "FP-EQ-RE",
+			"Opening Balance Equity": "FP-EQ-OTH",
+			"Revaluation Surplus": "FP-EQ-OCI",
+		}
+		for account_name, line in expected.items():
+			account = get_account(BALANCE_SHEET_COMPANY, account_name)
+			# The v15 standard chart has no Software account
+			if account in balance_sheet:
+				self.assertEqual(mappings[account].report_line, line, account_name)
+		revaluation = mappings[get_account(BALANCE_SHEET_COMPANY, "Revaluation Surplus")]
+		self.assertEqual(revaluation.oci_line, "OCI-NR-REV")
+		self.assertEqual(revaluation.source_template_version, STANDARD_TEMPLATE_VERSION)
+		self.assertIsNone(mappings[get_account(BALANCE_SHEET_COMPANY, "Cash")].oci_line)
+		# The income and expense rows of version 1.0 are part of version 1.1
+		self.assertEqual(mappings[get_account(BALANCE_SHEET_COMPANY, "Salary")].report_line, "PL-OP-GA")
