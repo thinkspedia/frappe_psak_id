@@ -8,6 +8,7 @@ except ImportError:  # Frappe v15
 __all__ = [
 	"IntegrationTestCase",
 	"erpnext_net_profit",
+	"erpnext_total_assets",
 	"get_account",
 	"make_account",
 	"make_company",
@@ -175,3 +176,28 @@ def erpnext_net_profit(
 		if row.get("account") == profit_row:
 			return flt(row.get("total"), 2)
 	return 0.0
+
+
+def erpnext_total_assets(company: str, from_date, to_date, finance_book: str | None = None) -> float:
+	"""Total Asset of ERPNext's own Balance Sheet on ``to_date``; ``from_date`` is the start of the
+	fiscal year, which ERPNext needs to build its period. Liabilities, equity and the provisional
+	profit or loss of that report always add up to the same amount."""
+	from erpnext.accounts.report.balance_sheet.balance_sheet import execute
+	from frappe.utils import flt
+
+	default_book = frappe.get_cached_value("Company", company, "default_finance_book")
+	filters = frappe._dict(
+		company=company,
+		filter_based_on="Date Range",
+		period_start_date=from_date,
+		period_end_date=to_date,
+		periodicity="Yearly",
+		accumulated_values=1,
+		presentation_currency=frappe.get_cached_value("Company", company, "default_currency"),
+		finance_book=finance_book,
+		include_default_book_entries=int(
+			not (finance_book and default_book and finance_book != default_book)
+		),
+	)
+	# The report summary starts with Total Asset on v15 and v16
+	return flt(execute(filters)[4][0]["value"], 2)
