@@ -20,6 +20,10 @@ MANDATORY = (
 	"FP-SUB-EQ",
 	"FP-SUB-TLE",
 	"OCI-SUB-TCI",
+	"CF-SUB-OP",
+	"CF-SUB-INV",
+	"CF-SUB-FIN",
+	"CF-SUB-CLOSE",
 )
 
 
@@ -246,3 +250,50 @@ class TestPSAKIDReportLine(IntegrationTestCase):
 		first.subtotal_formula = "+_T-OCI-B"
 		with self.assertRaises(frappe.ValidationError):
 			first.save()
+
+	def test_cash_flow_starts_from_operating_profit(self):
+		start = frappe.get_doc("PSAK ID Report Line", "CF-OP-START")
+		self.assertEqual((start.category, start.source_line), ("Operating", "PL-SUB-OP"))
+		self.assertEqual(
+			frappe.db.get_value("PSAK ID Report Line", "CF-SUB-CLOSE", "subtotal_formula"),
+			"+CF-SUB-NET +CF-FX +CF-OPEN",
+		)
+
+	def test_cash_flow_line_takes_only_activity_categories_or_none(self):
+		with self.assertRaises(frappe.ValidationError):
+			self._line(
+				line_code="_T-CF-TAX", statement="Cash Flow", line_type="Line", category="Income Tax"
+			).insert()
+
+		line = self._line(line_code="_T-CF-NONE", statement="Cash Flow", line_type="Line").insert()
+		self.assertFalse(line.category)
+
+	def test_source_line_comes_from_another_statement(self):
+		for code, source in (("_T-CF-SELF", "_T-CF-SELF"), ("_T-CF-SAME", "CF-SUB-OP")):
+			with self.subTest(source=source), self.assertRaises(frappe.ValidationError):
+				self._line(
+					line_code=code,
+					statement="Cash Flow",
+					line_type="Line",
+					category="Operating",
+					source_line=source,
+				).insert()
+
+		self._line(line_code="_T-PL-HEAD", line_type="Heading").insert()
+		with self.assertRaises(frappe.ValidationError):
+			self._line(
+				line_code="_T-CF-HEAD",
+				statement="Cash Flow",
+				line_type="Line",
+				category="Operating",
+				source_line="_T-PL-HEAD",
+			).insert()
+
+		subtotal = self._line(
+			line_code="_T-CF-SUB",
+			statement="Cash Flow",
+			line_type="Subtotal",
+			subtotal_formula="+CF-SUB-OP",
+			source_line="PL-SUB-OP",
+		).insert()
+		self.assertIsNone(subtotal.source_line)

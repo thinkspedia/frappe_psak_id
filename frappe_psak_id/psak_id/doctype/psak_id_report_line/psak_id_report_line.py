@@ -9,6 +9,7 @@ from frappe_psak_id.psak_id.report_lines import (
 	CLASSIFIED_CATEGORIES,
 	FINANCIAL_POSITION,
 	NEVER_OPERATING_LINES,
+	OPTIONAL_CATEGORY_STATEMENTS,
 	OTHER_COMPREHENSIVE_INCOME,
 	PROFIT_OR_LOSS,
 	STATEMENT_CATEGORIES,
@@ -24,6 +25,7 @@ class PSAKIDReportLine(NestedSet):
 		self._validate_follows_operating()
 		if self.line_type == "Line":
 			self._validate_category()
+			self._validate_source_line()
 		if self.line_type == "Subtotal":
 			self._validate_subtotal_formula()
 
@@ -46,10 +48,12 @@ class PSAKIDReportLine(NestedSet):
 			self.reclassifiable = 0
 		if self.line_type != "Subtotal":
 			self.subtotal_formula = None
+		if self.line_type != "Line":
+			self.source_line = None
 
 	def _validate_category(self):
 		categories = STATEMENT_CATEGORIES.get(self.statement, ())
-		if not categories:
+		if not categories or (not self.category and self.statement in OPTIONAL_CATEGORY_STATEMENTS):
 			return
 		if not self.category:
 			frappe.throw(_("Choose the PSAK 118 category of this line."), frappe.MandatoryError)
@@ -64,6 +68,23 @@ class PSAKIDReportLine(NestedSet):
 				_("Choose whether this {0} line is current or non-current.").format(_(self.category)),
 				frappe.MandatoryError,
 			)
+
+	def _validate_source_line(self):
+		if not self.source_line:
+			return
+		if self.source_line == self.line_code:
+			frappe.throw(_("A line cannot take its amount from itself."))
+		source = frappe.db.get_value(self.doctype, self.source_line, ["statement", "line_type"], as_dict=True)
+		if not source:
+			return
+		if source.statement == self.statement:
+			frappe.throw(
+				_("The source line {0} must belong to another statement than {1}.").format(
+					self.source_line, _(self.statement)
+				)
+			)
+		if source.line_type == "Heading":
+			frappe.throw(_("{0} is a heading and has no amount to add.").format(self.source_line))
 
 	def _validate_mandatory_flag(self):
 		# Only the standard lines shipped with the app carry the flag, and it can never be removed
