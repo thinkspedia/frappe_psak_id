@@ -1,13 +1,15 @@
 # Copyright (c) 2026, Thinkspedia and contributors
 # For license information, please see license.txt
 
-"""What the PDF of a PSAK ID Financial Statement shows (FR-10, Export Layout Standard).
+"""What the PDF of a PSAK ID Financial Statement shows (FR-10, FR-30, Export Layout Standard).
 
 The Print Format ``PSAK 118 Financial Statement`` renders the template
-``templates/print_formats/psak_118_financial_statement.html`` from this context. The PDF is
-bilingual by design, Indonesian with English below, whatever the reader's interface language:
-the wording follows PSAK, so it is fixed here instead of translated. Amounts are scaled to the
-statement's unit and rounded for display only (BR-22).
+``templates/print_formats/psak_118_financial_statement.html`` from this context: each statement of
+the package on its own pages, the statement of financial position first, then profit or loss and
+other comprehensive income, then the notes. The PDF is bilingual by design, Indonesian with
+English below, whatever the reader's interface language: the wording follows PSAK, so it is fixed
+here instead of translated. Amounts are scaled to the statement's unit and rounded for display
+only (BR-22).
 """
 
 import io
@@ -22,11 +24,25 @@ from frappe_psak_id.psak_id.doctype.psak_id_financial_statement.psak_id_financia
 	statement_lines,
 	strip_text,
 )
+from frappe_psak_id.psak_id.financial_position import (
+	TOTAL_ASSETS_LINE,
+	TOTAL_LIABILITIES_AND_EQUITY_LINE,
+	prior_year_end,
+)
+from frappe_psak_id.psak_id.report.psak_118_financial_position.psak_118_financial_position import (
+	HEADING_LABELS,
+)
 from frappe_psak_id.psak_id.report.psak_118_profit_or_loss.psak_118_profit_or_loss import (
 	CATEGORY_LABELS,
+	OCI_HEADING,
+	TOTAL_LINES,
 	UNITS,
 )
-from frappe_psak_id.psak_id.statement import PROFIT_OR_LOSS_LINE
+from frappe_psak_id.psak_id.report_lines import (
+	FINANCIAL_POSITION,
+	OTHER_COMPREHENSIVE_INCOME,
+	PROFIT_OR_LOSS,
+)
 
 DOCTYPE = "PSAK ID Financial Statement"
 PRINT_FORMAT = "PSAK 118 Financial Statement"
@@ -48,8 +64,8 @@ OVERLAY_PAGE = (
 )
 RUNNING_HEADER_HTML = """<div style="position: absolute; top: 12mm; left: 20mm; width: 170mm;
 	font-family: 'DejaVu Sans', sans-serif; font-size: 9pt; border-bottom: 1px solid #000;
-	padding-bottom: 1mm;"><b>{company}</b><br>Laporan Laba Rugi (lanjutan) /
-	<i>Statement of Profit or Loss (continued)</i></div>"""
+	padding-bottom: 1mm;"><b>{company}</b><br>Laporan Keuangan (lanjutan) /
+	<i>Financial Statements (continued)</i></div>"""
 WATERMARK_HTML = """<div style="position: absolute; top: 110mm; left: 0; width: 210mm; text-align: center;
 	font-family: 'DejaVu Sans', sans-serif; font-size: {size}pt; font-weight: bold;
 	color: rgba(190, 0, 0, 0.12); -webkit-transform: rotate(-35deg);">{text}</div>"""
@@ -82,6 +98,14 @@ MONTHS_EN = (
 	"November",
 	"December",
 )
+FINANCIAL_POSITION_TITLE = ("Laporan Posisi Keuangan", "Statement of Financial Position")
+PROFIT_OR_LOSS_TITLE = ("Laporan Laba Rugi", "Statement of Profit or Loss")
+PROFIT_OR_LOSS_AND_OCI_TITLE = (
+	"Laporan Laba Rugi dan Penghasilan Komprehensif Lain",
+	"Statement of Profit or Loss and Other Comprehensive Income",
+)
+# Closing amounts of each statement, double underlined
+FINANCIAL_POSITION_TOTALS = (TOTAL_ASSETS_LINE, TOTAL_LIABILITIES_AND_EQUITY_LINE)
 # Who signs each step of the workflow, in the words of the Approval Sheet (BR-15)
 APPROVAL_STEPS = (
 	("prepared_by", "prepared_on", ("Disusun oleh", "Prepared by"), ("Akuntansi", "Accounting")),
@@ -158,6 +182,9 @@ def get_print_context(doc) -> frappe._dict:
 	has_comparative = doc.comparative != "None"
 	end = getdate(doc.to_date)
 
+	show_headings = policy.show_category_headings
+	has_oci = bool(statement_lines(doc, OTHER_COMPREHENSIVE_INCOME))
+
 	return frappe._dict(
 		company=doc.company,
 		watermark=_watermark(doc),
@@ -166,7 +193,9 @@ def get_print_context(doc) -> frappe._dict:
 		rounded=divisor != 1,
 		columns=_columns(doc, has_comparative),
 		restated_note=bool(doc.is_transition and has_comparative),
-		lines=_lines(doc, divisor, has_comparative, policy.show_category_headings),
+		position=_position(doc, divisor, has_comparative, show_headings),
+		title=PROFIT_OR_LOSS_AND_OCI_TITLE if has_oci else PROFIT_OR_LOSS_TITLE,
+		lines=_format_rows(profit_or_loss_rows(doc, show_headings), divisor, has_comparative),
 		natures=_natures(doc, divisor, has_comparative),
 		transition=_transition(doc, divisor),
 		other_items=_other_items(doc, divisor, has_comparative),
@@ -231,11 +260,7 @@ def _columns(doc, has_comparative: bool) -> list[tuple[str, str]]:
 	columns = [_period_label(start, end)]
 	if has_comparative:
 		label_id, label_en = _period_label(start.replace(year=start.year - 1), end.replace(year=end.year - 1))
-		if doc.comparative == "Restated Prior Year":
-			# The asterisk points to the transition reconciliation, printed only in the first year
-			mark = "*" if doc.is_transition else ""
-			label_id, label_en = f"{label_id} (Disajikan kembali{mark})", f"{label_en} (Restated{mark})"
-		columns.append((label_id, label_en))
+		columns.append(_restated_label(doc, label_id, label_en))
 	return columns
 
 
@@ -246,25 +271,124 @@ def _amounts(row, divisor: int, has_comparative: bool) -> list[str]:
 	return amounts
 
 
-def _lines(doc, divisor: int, has_comparative: bool, show_headings) -> list[frappe._dict]:
+def financial_position_rows(doc, show_headings) -> list[frappe._dict]:
+	"""The statement of financial position as presented: lines under a heading per category and
+	classification when the policy shows headings. Empty for a statement saved before the package."""
+	lines = statement_lines(doc, FINANCIAL_POSITION)
+	classifications = line_classifications() if lines else {}
+	return _presented_rows(
+		lines,
+		show_headings,
+		# Equity has no classification, stored empty
+		lambda line: (line.category, classifications.get(line.report_line) or None),
+		HEADING_LABELS,
+		FINANCIAL_POSITION_TOTALS,
+	)
+
+
+def profit_or_loss_rows(doc, show_headings) -> list[frappe._dict]:
+	"""The statement of profit or loss as presented, continued with other comprehensive income
+	under its own heading when the statement has it (FR-24)."""
+	rows = _presented_rows(
+		statement_lines(doc, PROFIT_OR_LOSS),
+		show_headings,
+		lambda line: line.category,
+		CATEGORY_LABELS,
+		TOTAL_LINES,
+	)
+	oci_lines = statement_lines(doc, OTHER_COMPREHENSIVE_INCOME)
+	if oci_lines:
+		rows.append(_heading_row(OCI_HEADING))
+		rows += _presented_rows(oci_lines, show_headings, lambda line: None, {}, TOTAL_LINES)
+	return rows
+
+
+def line_classifications() -> dict:
+	"""Current or non-current per financial position line, which the statement lines do not keep."""
+	return dict(
+		frappe.get_all(
+			"PSAK ID Report Line",
+			filters={"statement": FINANCIAL_POSITION},
+			fields=["name", "classification"],
+			as_list=True,
+		)
+	)
+
+
+def _presented_rows(lines, show_headings, heading_key, heading_labels, totals) -> list[frappe._dict]:
 	rows, heading = [], None
-	for line in statement_lines(doc):
-		if show_headings and line.line_type == "Line" and line.category != heading:
-			heading = line.category
-			label_id, label_en = CATEGORY_LABELS.get(heading, (heading, heading))
-			rows.append(frappe._dict(label_id=label_id, label_en=label_en, kind="Heading", amounts=[]))
+	for line in lines:
+		key = heading_key(line)
+		if show_headings and line.line_type == "Line" and key != heading and key in heading_labels:
+			heading = key
+			rows.append(_heading_row(heading_labels[key]))
 		rows.append(
 			frappe._dict(
 				label_id=line.label_id or line.label_en,
 				label_en=line.label_en or line.label_id,
-				note=line.note_no or "",
 				kind=line.line_type,
 				indented=bool(show_headings and line.line_type == "Line"),
-				profit_or_loss=line.report_line == PROFIT_OR_LOSS_LINE,
-				amounts=[] if line.line_type == "Heading" else _amounts(line, divisor, has_comparative),
+				total=line.report_line in totals,
+				line=line,
 			)
 		)
 	return rows
+
+
+def _heading_row(labels) -> frappe._dict:
+	return frappe._dict(label_id=labels[0], label_en=labels[1], kind="Heading", line=None)
+
+
+def _format_rows(rows, divisor: int, has_comparative: bool) -> list[frappe._dict]:
+	return [
+		frappe._dict(
+			row,
+			note=(row.line.note_no or "") if row.line else "",
+			amounts=[] if row.kind == "Heading" else _amounts(row.line, divisor, has_comparative),
+		)
+		for row in rows
+	]
+
+
+def _position(doc, divisor: int, has_comparative: bool, show_headings) -> frappe._dict | None:
+	rows = financial_position_rows(doc, show_headings)
+	if not rows:
+		return None
+	return frappe._dict(
+		period=_as_at_phrase(getdate(doc.to_date)),
+		columns=position_columns(doc, has_comparative),
+		lines=_format_rows(rows, divisor, has_comparative),
+	)
+
+
+def position_columns(doc, has_comparative: bool) -> list[tuple[str, str]]:
+	"""The reporting date and, as comparative, the end of the prior fiscal year."""
+	end = getdate(doc.to_date)
+	columns = [_date_label(end)]
+	if has_comparative:
+		label_id, label_en = _date_label(prior_year_end(doc.company, end))
+		columns.append(_restated_label(doc, label_id, label_en))
+	return columns
+
+
+def _date_label(day) -> tuple[str, str]:
+	return (
+		f"{day.day} {MONTHS_ID[day.month - 1]} {day.year}",
+		f"{day.day} {MONTHS_EN[day.month - 1]} {day.year}",
+	)
+
+
+def _as_at_phrase(day) -> tuple[str, str]:
+	label_id, label_en = _date_label(day)
+	return f"Pada {label_id}", f"As at {label_en}"
+
+
+def _restated_label(doc, label_id: str, label_en: str) -> tuple[str, str]:
+	if doc.comparative != "Restated Prior Year":
+		return label_id, label_en
+	# The asterisk points to the transition reconciliation, printed only in the first year
+	mark = "*" if doc.is_transition else ""
+	return f"{label_id} (Disajikan kembali{mark})", f"{label_en} (Restated{mark})"
 
 
 def _natures(doc, divisor: int, has_comparative: bool) -> frappe._dict | None:
@@ -337,7 +461,8 @@ def _other_items(doc, divisor: int, has_comparative: bool) -> frappe._dict | Non
 			label_en=line.label_en or line.label_id,
 			amounts=_amounts(line, divisor, has_comparative),
 		)
-		for line in statement_lines(doc)
+		# The Other Items threshold (BR-06) applies to profit or loss
+		for line in statement_lines(doc, PROFIT_OR_LOSS)
 		if line.is_other_items
 	]
 	# Text Editor content is sanitised by Frappe when the statement is saved

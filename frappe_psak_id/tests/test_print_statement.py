@@ -92,7 +92,20 @@ class TestPrintStatement(IntegrationTestCase):
 		lines = {row.label_en: row for row in context.lines}
 		self.assertEqual(lines["Revenue"].amounts, ["1.235", "800"])
 		self.assertEqual(lines["General and administrative expenses"].amounts, ["(300)", "-"])
-		self.assertTrue(lines["Profit or loss"].profit_or_loss)
+		self.assertTrue(lines["Profit or loss"].total)
+		self.assertEqual(context.title, ("Laporan Laba Rugi", "Statement of Profit or Loss"))
+		# The financial position comes first, on the end date and the prior fiscal year end
+		self.assertEqual(context.position.period, ("Pada 30 Juni 2026", "As at 30 June 2026"))
+		self.assertEqual(
+			context.position.columns,
+			[
+				("30 Juni 2026", "30 June 2026"),
+				("31 Desember 2025 (Disajikan kembali*)", "31 December 2025 (Restated*)"),
+			],
+		)
+		position = {row.label_en: row for row in context.position.lines}
+		self.assertEqual(position["Cash and cash equivalents"].amounts, ["2.109", "1.200"])
+		self.assertTrue(position["Total assets"].total)
 		self.assertEqual(
 			[(group.label_en, group.amounts) for group in context.natures.groups],
 			[("Employee Benefits", ["(300)", "-"]), ("Other", ["(25)", "-"])],
@@ -105,6 +118,8 @@ class TestPrintStatement(IntegrationTestCase):
 		html = frappe.get_print(doc.doctype, doc.name, print_format=PRINT_FORMAT, doc=doc)
 		for text in (
 			"Tidak diaudit",
+			"Laporan Posisi Keuangan",
+			"Pada 30 Juni 2026",
 			"Laporan Laba Rugi",
 			"Beban Operasi menurut Sifat",
 			"Rekonsiliasi Transisi PSAK 201 ke PSAK 118",
@@ -115,6 +130,19 @@ class TestPrintStatement(IntegrationTestCase):
 		):
 			self.assertIn(text, html)
 		self.assertNotIn("Disetujui secara elektronik", html)
+		# FR-30: financial position, profit or loss, then the notes in their order
+		order = [
+			html.index(text)
+			for text in (
+				"Laporan Posisi Keuangan",
+				"Statement of Profit or Loss",
+				"Beban Operasi menurut Sifat",
+				"Rincian Pos Lain-lain",
+				"Rekonsiliasi Transisi PSAK 201 ke PSAK 118",
+				"Lembar Persetujuan",
+			)
+		]
+		self.assertEqual(order, sorted(order))
 
 	def test_final_statement_prints_who_approved_it(self):
 		# Each test has its own month: the statements of a test class stay until it ends
@@ -163,8 +191,9 @@ class TestPrintStatement(IntegrationTestCase):
 		response = frappe.local.response
 		self.assertEqual((response.type, response.filename), ("pdf", "PSAK118__TPP_2026-07_Final.pdf"))
 		pages = [page.extract_text() for page in PdfReader(io.BytesIO(response.filecontent)).pages]
-		self.assertGreaterEqual(len(pages), 5)
+		self.assertGreaterEqual(len(pages), 6)
 		# The letter head opens page 1; the running header and page numbers come after
+		self.assertIn("Laporan Posisi Keuangan", pages[0])
 		self.assertNotIn("(lanjutan)", pages[0])
 		self.assertIn(f"Halaman 1 dari {len(pages)}", pages[0])
 		self.assertIn("(lanjutan)", pages[1])

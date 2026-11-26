@@ -66,8 +66,10 @@ class TestExportStatement(IntegrationTestCase):
 		self.assertEqual(response.filename, "PSAK118__TPX_2026-06_Draft.xlsx")
 		workbook = load_workbook(io.BytesIO(response.filecontent))
 		self.assertEqual(
-			workbook.sheetnames, ["Laba Rugi", "Beban per Sifat", "Rekonsiliasi Transisi", "Info"]
+			workbook.sheetnames,
+			["Posisi Keuangan", "Laba Rugi", "Beban per Sifat", "Rekonsiliasi Transisi", "Info"],
 		)
+		assert_sheet_adds_up(self, workbook["Posisi Keuangan"], statement_lines(doc, "Financial Position"))
 
 		sheet = workbook["Laba Rugi"]
 		self.assertEqual(sheet["A1"].value, COMPANY)
@@ -106,7 +108,7 @@ class TestExportStatement(IntegrationTestCase):
 
 	def test_structured_data_has_one_row_per_line(self):
 		doc = self.statement
-		lines = [line for line in statement_lines(doc) if line.line_type != "Heading"]
+		lines = [line for line in doc.lines if line.line_type != "Heading"]
 
 		export_structured(doc.name, "csv")
 		response = frappe.local.response
@@ -120,6 +122,11 @@ class TestExportStatement(IntegrationTestCase):
 			("1234567.0", "800000.0", "800000.0"),
 		)
 		self.assertEqual((revenue["period_from"], revenue["period_to"]), ("2026-06-01", "2026-06-30"))
+		self.assertEqual(revenue["statement"], "Profit or Loss")
+		cash = next(row for row in rows if row["line_code"] == "FP-CA-CASH")
+		# A position has no PSAK 201 amount: the transition reconciliation is of profit or loss
+		self.assertEqual((cash["statement"], cash["psak201_amount"]), ("Financial Position", ""))
+		self.assertEqual(rows[0]["statement"], "Financial Position")
 
 		export_structured(doc.name, "xlsx")
 		sheet = load_workbook(io.BytesIO(frappe.local.response.filecontent)).active
@@ -127,16 +134,47 @@ class TestExportStatement(IntegrationTestCase):
 		self.assertEqual(sheet.max_row, len(lines) + 1)
 
 	def test_a_hidden_subtotal_is_replaced_by_its_own_terms(self):
-		doc = frappe._dict(
-			lines=[
-				frappe._dict(report_line="REV", line_type="Line", category="Operating"),
-				frappe._dict(report_line="FIN", line_type="Line", category="Financing"),
-			]
-		)
+		lines = [
+			frappe._dict(report_line="REV", line_type="Line", category="Operating"),
+			frappe._dict(report_line="FIN", line_type="Line", category="Financing"),
+		]
 		formulas = {"PBT": "+HIDDEN +CAT:Financing", "HIDDEN": "+CAT:Operating -GONE"}
 		self.assertEqual(
-			subtotal_terms(doc, {"REV", "FIN", "PBT"}, formulas, "PBT"), [(1, "REV"), (1, "FIN")]
+			subtotal_terms(lines, {"REV", "FIN", "PBT"}, formulas, "PBT"), [(1, "REV"), (1, "FIN")]
 		)
+
+	def test_a_category_term_takes_the_lines_of_its_classification(self):
+		lines = [
+			frappe._dict(report_line="CASH", line_type="Line", category="Asset"),
+			frappe._dict(report_line="PPE", line_type="Line", category="Asset"),
+		]
+		classifications = {"CASH": "Current", "PPE": "Non-current"}
+		formulas = {"CA": "+CAT:Asset/Current", "TA": "+CAT:Asset"}
+		self.assertEqual(
+			subtotal_terms(lines, {"CASH", "PPE"}, formulas, "CA", classifications), [(1, "CASH")]
+		)
+		self.assertEqual(
+			subtotal_terms(lines, {"CASH", "PPE"}, formulas, "TA", classifications),
+			[(1, "CASH"), (1, "PPE")],
+		)
+
+
+def assert_sheet_adds_up(test, sheet, lines, columns=((4, "amount"), (5, "comparative_amount"))):
+	"""Every line of a statement sheet gives the statement amount, subtotals as formulas."""
+	rows = {sheet.cell(row, 2).value: row for row in range(1, sheet.max_row + 1)}
+	subtotals = 0
+	for line in lines:
+		if line.line_type == "Heading":
+			continue
+		row = rows[line.label_en]
+		for column, field in columns:
+			cell = sheet.cell(row, column)
+			# A subtotal of lines all left off the statement is a plain zero
+			if line.line_type == "Subtotal" and flt(line.get(field)):
+				subtotals += 1
+				test.assertTrue(str(cell.value).startswith("="), line.report_line)
+			test.assertAlmostEqual(evaluate(sheet, cell.value), flt(line.get(field)), places=2)
+	test.assertTrue(subtotals)
 
 
 def evaluate(sheet, value) -> float:

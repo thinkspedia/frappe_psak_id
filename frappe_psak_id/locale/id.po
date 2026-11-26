@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PSAK ID VERSION\n"
 "Report-Msgid-Bugs-To: helpdesk@thinkspedia.com\n"
-"POT-Creation-Date: 2026-11-25 03:58+0000\n"
+"POT-Creation-Date: 2026-11-26 00:32+0000\n"
 "PO-Revision-Date: 2026-11-23 12:08+0000\n"
 "Last-Translator: helpdesk@thinkspedia.com\n"
 "Language: id\n"
@@ -356,7 +356,7 @@ msgstr "Pemeriksaan"
 msgid "Checks pass. Other Items lines are above the threshold: explain them in Other Items Breakdown."
 msgstr "Pemeriksaan lolos. Pos Lain-lain di atas ambang: jelaskan di Rincian Lain-lain."
 
-#: frappe_psak_id/psak_id/export_statement.py:88
+#: frappe_psak_id/psak_id/export_statement.py:121
 msgid "Choose Excel or CSV."
 msgstr "Pilih Excel atau CSV."
 
