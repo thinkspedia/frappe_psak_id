@@ -72,6 +72,7 @@ frappe.query_reports[PSAK_MAPPING_CONTROL] = {
 			"Other Items Above Threshold": __("Open Mappings"),
 			"Difference to ERPNext": __("Open Profit and Loss"),
 			"Restatement Difference": __("Open Profit and Loss"),
+			"Difference to ERPNext Balance Sheet": __("Open Balance Sheet"),
 		}[data.check];
 	},
 
@@ -91,6 +92,7 @@ frappe.query_reports[PSAK_MAPPING_CONTROL] = {
 				frappe.set_route("List", PSAK_MAPPING, { company, report_line: data.report_line });
 				break;
 			default:
+				// A balance sheet difference spans the fiscal year up to the date it is on
 				frappe.route_options = {
 					company,
 					filter_based_on: "Date Range",
@@ -99,7 +101,12 @@ frappe.query_reports[PSAK_MAPPING_CONTROL] = {
 					periodicity: "Yearly",
 					finance_book: report.get_filter_value("finance_book") || "",
 				};
-				frappe.set_route("query-report", "Profit and Loss Statement");
+				frappe.set_route(
+					"query-report",
+					data.check === "Difference to ERPNext Balance Sheet"
+						? "Balance Sheet"
+						: "Profit and Loss Statement"
+				);
 		}
 	},
 };

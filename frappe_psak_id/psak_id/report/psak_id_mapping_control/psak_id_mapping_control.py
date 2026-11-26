@@ -12,12 +12,15 @@ from frappe import _
 from frappe.utils import fmt_money, formatdate, getdate
 
 from frappe_psak_id.psak_id.checks import (
+	BALANCE_SHEET_DIFFERENCE,
 	BLOCKING,
 	CONFLICTING_MAPPINGS,
+	CURRENT,
 	ERPNEXT_DIFFERENCE,
 	OTHER_ITEMS,
 	RESTATED,
 	UNMAPPED_BALANCE,
+	balance_sheet_difference_issues,
 	balance_sheet_issues,
 	run_checks,
 )
@@ -35,6 +38,10 @@ def execute(filters: dict | None = None):
 	_validate(filters)
 	result = run_checks(filters.company, filters.from_date, filters.to_date, filters.finance_book)
 	result.issues += balance_sheet_issues(filters.company, filters.to_date, filters.finance_book)
+	# The restated comparative is checked in the first PSAK 118 year, as for profit or loss
+	result.issues += balance_sheet_difference_issues(
+		filters.company, filters.to_date, filters.finance_book, restated=bool(result.restated)
+	)
 	currency = result.current.currency
 	labels = _line_labels()
 	data = [_row(issue, currency, labels, index) for index, issue in enumerate(result.issues)]
@@ -77,8 +84,10 @@ def _row(issue, currency, labels, index) -> frappe._dict:
 	period = f"{formatdate(issue.from_date)} \u2013 {formatdate(issue.to_date)}"
 	if issue.period == RESTATED:
 		period = _("{0} (restated)").format(period)
-	if issue.check == UNMAPPED_BALANCE:
+	if issue.check in (UNMAPPED_BALANCE, BALANCE_SHEET_DIFFERENCE):
 		period = _("At {0}").format(formatdate(issue.to_date))
+		if issue.period == RESTATED:
+			period = _("{0} (restated)").format(period)
 
 	if issue.check == NOT_MAPPED:
 		label = _("Unmapped account")
@@ -110,8 +119,15 @@ def _row(issue, currency, labels, index) -> frappe._dict:
 			"Above the threshold of {0}. Explain it in a note of the statement, or map its accounts to "
 			"more specific lines."
 		).format(fmt_money(issue.threshold, currency=currency))
+	elif issue.check == BALANCE_SHEET_DIFFERENCE:
+		label = _("Difference to ERPNext Balance Sheet")
+		detail = _(
+			"The statement of financial position differs from ERPNext's Balance Sheet by this amount. "
+			"Map the balance sheet accounts listed above. Profit or loss accounts left unmapped since "
+			"the start of the fiscal year also leave their profit out of retained earnings."
+		)
 	elif issue.check == ERPNEXT_DIFFERENCE:
-		label = _("Difference to ERPNext")
+		label = _("Difference to ERPNext Profit and Loss")
 		detail = _(
 			"The profit or loss differs from ERPNext's Profit and Loss by this amount. Map the accounts "
 			"listed above; nothing is absorbed into a line."
@@ -127,6 +143,7 @@ def _row(issue, currency, labels, index) -> frappe._dict:
 		# Position in the report data, for the Fix link: the datatable may sort the rows
 		row_index=index,
 		check=issue.check,
+		period=issue.period,
 		check_label=label,
 		severity=issue.severity,
 		severity_label=_("Blocking") if issue.severity == BLOCKING else _("Warning"),
@@ -169,13 +186,31 @@ def _summary(result, data) -> list[dict]:
 			"indicator": "Orange" if warnings else "Green",
 		},
 		{
-			"label": _("Difference to ERPNext"),
+			"label": _("Difference to ERPNext Profit and Loss"),
 			"value": result.current.ledger_difference,
 			"datatype": "Currency",
 			"currency": currency,
 			"indicator": "Red" if result.current.ledger_difference else "Green",
 		},
 	]
+	for period, label in (
+		(CURRENT, _("Difference to ERPNext Balance Sheet")),
+		(RESTATED, _("Restated Balance Sheet Difference")),
+	):
+		if period == RESTATED and not result.restated:
+			continue
+		difference = sum(
+			row.amount for row in data if row.check == BALANCE_SHEET_DIFFERENCE and row.period == period
+		)
+		summary.append(
+			{
+				"label": label,
+				"value": difference,
+				"datatype": "Currency",
+				"currency": currency,
+				"indicator": "Red" if difference else "Green",
+			}
+		)
 	if result.restated:
 		summary.append(
 			{

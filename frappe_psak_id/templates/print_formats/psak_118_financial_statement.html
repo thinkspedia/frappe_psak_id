@@ -47,8 +47,9 @@
 {%- endmacro -%}
 
 {%- macro keep_with_footnotes(colspan, footnotes) -%}
-	{#- Rows a page break never splits: the last totals go to the next page with their footnotes
-	instead of leaving the footnotes alone on a page. The inner table has the same columns. #}
+	{#- Rows a page break never splits: the last rows go to the next page with their footnotes
+	instead of leaving the footnotes or the final total alone on a page. The inner table has the
+	same columns. #}
 	<tr><td class="psak-keep" colspan="{{ colspan }}"><table><tbody>{{ caller() }}</tbody></table>{{ footnotes }}</td></tr>
 {%- endmacro -%}
 
@@ -80,11 +81,12 @@
 	<table>
 		{{ amount_header("", "", columns) }}
 		<tbody>
-			{%- for row in rows[:-1] %}
+			{#- The last rows move with the final total, so a page never holds the total alone #}
+			{%- for row in rows[:-3] %}
 			{{ line_row(row) }}
 			{%- endfor %}
 			{%- call keep_with_footnotes(amount_count + 2, statement_footnotes()) %}
-			{%- for row in rows[-1:] %}
+			{%- for row in rows[-3:] %}
 			{{ line_row(row) }}
 			{%- endfor %}
 			{%- endcall %}

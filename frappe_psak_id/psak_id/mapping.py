@@ -12,7 +12,7 @@ import re
 
 import frappe
 from frappe import _
-from frappe.utils import getdate, strip_html
+from frappe.utils import add_days, getdate, strip_html
 
 from frappe_psak_id.psak_id.statement import PROFIT_OR_LOSS_ROOT_TYPES, check_read_access
 
@@ -40,6 +40,28 @@ def match_row(account, rows: list):
 		if value and regex.match(value.strip()):
 			return row
 	return None
+
+
+def final_until(company: str):
+	"""End date of the company's last final statement, or None: mappings in force then stay as they
+	are (BR-09)."""
+	return frappe.db.get_value(
+		"PSAK ID Financial Statement",
+		{"company": company, "docstatus": 1},
+		"to_date",
+		order_by="to_date desc",
+	)
+
+
+@frappe.whitelist()
+def default_valid_from(company: str):
+	"""The date new mappings of the company start by default: the PSAK 118 adoption date, or the day
+	after its last final statement when that is later, since earlier mappings are refused."""
+	check_read_access(company)
+	adoption_date = frappe.db.get_value("PSAK ID Company Policy", company, "adoption_date")
+	final = final_until(company)
+	dates = [getdate(date) for date in (adoption_date, add_days(final, 1) if final else None) if date]
+	return max(dates) if dates else None
 
 
 @frappe.whitelist()

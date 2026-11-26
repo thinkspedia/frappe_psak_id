@@ -6,6 +6,7 @@ from frappe import _
 from frappe.model.document import Document
 from frappe.utils import formatdate, getdate
 
+from frappe_psak_id.psak_id.mapping import final_until as get_final_until
 from frappe_psak_id.psak_id.report_lines import FINANCIAL_POSITION, OTHER_COMPREHENSIVE_INCOME, PROFIT_OR_LOSS
 
 # Condition types whose value is always a document of the same type
@@ -229,12 +230,7 @@ class PSAKIDAccountMapping(Document):
 		previous = None if deleting else self.get_doc_before_save()
 		if previous and not any(self.has_value_changed(field) for field in _CLASSIFICATION_FIELDS):
 			return
-		final_until = frappe.db.get_value(
-			"PSAK ID Financial Statement",
-			{"company": self.company, "docstatus": 1},
-			"to_date",
-			order_by="to_date desc",
-		)
+		final_until = get_final_until(self.company)
 		if not final_until:
 			return
 		dates = [self.valid_from] + ([previous.valid_from] if previous else [])

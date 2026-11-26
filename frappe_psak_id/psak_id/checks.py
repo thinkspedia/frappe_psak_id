@@ -17,7 +17,12 @@ equals ERPNext's Balance Sheet (BR-31).
 import frappe
 from frappe.utils import add_years, flt, getdate
 
-from frappe_psak_id.psak_id.financial_position import get_account_balances, mapped_accounts
+from frappe_psak_id.psak_id.financial_position import (
+	compute_financial_position,
+	get_account_balances,
+	mapped_accounts,
+	prior_year_end,
+)
 from frappe_psak_id.psak_id.statement import compute_periods
 
 BLOCKING = "Blocking"
@@ -88,6 +93,25 @@ def balance_sheet_issues(company: str, to_date, finance_book: str | None = None)
 		)
 		for row in sorted(get_account_balances(company, to_date, finance_book), key=lambda row: row.account)
 		if row.account not in mapped
+	]
+
+
+def balance_sheet_difference_issues(
+	company: str, to_date, finance_book: str | None = None, restated: bool = False
+) -> list:
+	"""The difference of the statement of financial position to ERPNext's Balance Sheet on
+	``to_date`` and, with ``restated``, on the prior fiscal year end classified with the mappings in
+	force on ``to_date``, as the restated comparative of the statement is (BR-31, FR-31)."""
+	positions = [(compute_financial_position(company, to_date, finance_book), CURRENT)]
+	if restated:
+		prior = compute_financial_position(
+			company, prior_year_end(company, to_date), finance_book, mapping_date=to_date
+		)
+		positions.append((prior, RESTATED))
+	return [
+		_issue(BALANCE_SHEET_DIFFERENCE, BLOCKING, position, period, amount=position.ledger_difference)
+		for position, period in positions
+		if position.ledger_difference
 	]
 
 

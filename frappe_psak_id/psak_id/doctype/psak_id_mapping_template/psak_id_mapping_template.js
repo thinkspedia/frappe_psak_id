@@ -37,14 +37,16 @@ function apply_to_company(frm) {
 				options: "Company",
 				reqd: 1,
 				default: frappe.defaults.get_user_default("Company"),
-				onchange: () => set_adoption_date(dialog),
+				onchange: () => set_valid_from(dialog),
 			},
 			{
 				fieldname: "valid_from",
 				label: __("Valid From"),
 				fieldtype: "Date",
 				reqd: 1,
-				description: __("Usually the PSAK 118 adoption date of the company."),
+				description: __(
+					"Usually the PSAK 118 adoption date of the company, or the day after its last final statement."
+				),
 			},
 			{
 				fieldtype: "HTML",
@@ -66,17 +68,18 @@ function apply_to_company(frm) {
 		},
 	});
 	dialog.show();
-	set_adoption_date(dialog);
+	set_valid_from(dialog);
 }
 
-function set_adoption_date(dialog) {
+function set_valid_from(dialog) {
 	const company = dialog.get_value("company");
 	if (!company) return;
-	frappe.db.get_value("PSAK ID Company Policy", company, "adoption_date").then(({ message }) => {
-		if (message && message.adoption_date) {
-			dialog.set_value("valid_from", message.adoption_date);
-		}
-	});
+	// Mappings in force in a final period are refused, so start after it
+	frappe
+		.call("frappe_psak_id.psak_id.mapping.default_valid_from", { company })
+		.then(({ message }) => {
+			if (message) dialog.set_value("valid_from", message);
+		});
 }
 
 function show_result(result, company) {
