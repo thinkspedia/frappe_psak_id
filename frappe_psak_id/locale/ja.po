@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PSAK ID VERSION\n"
 "Report-Msgid-Bugs-To: helpdesk@thinkspedia.com\n"
-"POT-Creation-Date: 2026-11-26 18:19+0000\n"
+"POT-Creation-Date: 2026-11-26 18:39+0000\n"
 "PO-Revision-Date: 2026-11-23 12:08+0000\n"
 "Last-Translator: helpdesk@thinkspedia.com\n"
 "Language: ja\n"
@@ -2240,7 +2240,7 @@ msgstr ""
 msgid "The period is not closed"
 msgstr ""
 
-#: frappe_psak_id/psak_id/cash_flow.py:73
+#: frappe_psak_id/psak_id/cash_flow.py:98
 #: frappe_psak_id/psak_id/report/psak_118_cash_flows/psak_118_cash_flows.py:61
 #: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.py:76
 #: frappe_psak_id/psak_id/report/psak_id_mapping_control/psak_id_mapping_control.py:60
@@ -2574,6 +2574,7 @@ msgid "{0} already maps this account with the same condition, priority and start
 msgstr ""
 
 #: frappe_psak_id/psak_id/report/psak_118_cash_flows/psak_118_cash_flows.py:162
+#: frappe_psak_id/psak_id/report/psak_118_cash_flows/psak_118_cash_flows.py:181
 #: frappe_psak_id/psak_id/report/psak_118_financial_position/psak_118_financial_position.py:160
 #: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.py:282
 #, python-brace-format
@@ -2674,6 +2675,11 @@ msgstr ""
 #: frappe_psak_id/psak_id/doctype/psak_id_mapping_template/psak_id_mapping_template.js:119
 #, python-brace-format
 msgid "{0} mappings created, {1} accounts skipped (already mapped), {2} not matched."
+msgstr ""
+
+#: frappe_psak_id/psak_id/report/psak_118_cash_flows/psak_118_cash_flows.py:184
+#, python-brace-format
+msgid "{0} vouchers are non-cash transactions of investing or financing activities ({1}). They are left out of the cash flows and disclosed as non-cash transactions."
 msgstr ""
 
 #: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.py:151

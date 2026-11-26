@@ -1,6 +1,6 @@
 import frappe
 
-from frappe_psak_id.psak_id.cash_flow import NO_CASH_FLOW_LINE, compute_cash_flows
+from frappe_psak_id.psak_id.cash_flow import NO_CASH_FLOW_LINE, REVALUATION, compute_cash_flows
 from frappe_psak_id.psak_id.report.psak_118_cash_flows.psak_118_cash_flows import execute
 from frappe_psak_id.psak_id.statement import NOT_MAPPED
 from frappe_psak_id.tests.utils import (
@@ -32,6 +32,11 @@ def _set_up_company() -> frappe._dict:
 		admin=get_account(COMPANY, "Administrative Expenses"),
 		disposal=make_account(COMPANY, "Gain on Disposal of Assets", "Indirect Income"),
 		interest=make_account(COMPANY, "Interest Income", "Indirect Income"),
+		right_of_use=make_account(COMPANY, "Right-of-use Assets", "Fixed Assets"),
+		lease=make_account(COMPANY, "Lease Liabilities", "Current Liabilities"),
+		exchange=make_account(COMPANY, "Unrealized Exchange Gain", "Indirect Income"),
+		interest_expense=make_account(COMPANY, "Interest Expense", "Indirect Expenses"),
+		accrued_interest=make_account(COMPANY, "Accrued Interest", "Current Liabilities"),
 	)
 	if not frappe.db.exists("PSAK ID Company Policy", COMPANY):
 		frappe.get_doc({"doctype": "PSAK ID Company Policy", "company": COMPANY}).insert()
@@ -56,6 +61,15 @@ def _set_up_company() -> frappe._dict:
 		(accounts.admin, "PL-OP-SELL", {"expense_nature": "Other"}),
 		(accounts.disposal, "PL-OP-OTH", {"cash_flow_line": "CF-INV-PPE-SELL"}),
 		(accounts.interest, "PL-INV-INC", {"cash_flow_line": "CF-INV-INT"}),
+		(
+			accounts.right_of_use,
+			"FP-NCA-ROU",
+			{"cash_flow_line": "CF-INV-PPE-BUY", "cash_flow_line_decrease": "CF-OP-DEP"},
+		),
+		(accounts.lease, "FP-CL-LEASE", {"cash_flow_line": "CF-FIN-LEASE"}),
+		(accounts.exchange, "PL-OP-OTH", {}),
+		(accounts.interest_expense, "PL-FIN-INT", {"cash_flow_line": "CF-FIN-INT"}),
+		(accounts.accrued_interest, "FP-CL-ACCR", {"cash_flow_line": "CF-FIN-INT"}),
 	):
 		frappe.get_doc(
 			{
@@ -71,11 +85,13 @@ def _set_up_company() -> frappe._dict:
 	return accounts
 
 
-def _sell_building(accounts, posting_date: str, proceeds: float, carrying_amount: float):
+def _post(posting_date: str, rows: tuple, voucher_type: str = "Journal Entry"):
+	"""Submit a Journal Entry of (account, debit, credit) rows."""
 	cost_center = frappe.get_cached_value("Company", COMPANY, "cost_center")
 	je = frappe.get_doc(
 		{
 			"doctype": "Journal Entry",
+			"voucher_type": voucher_type,
 			"company": COMPANY,
 			"posting_date": posting_date,
 			"accounts": [
@@ -85,16 +101,24 @@ def _sell_building(accounts, posting_date: str, proceeds: float, carrying_amount
 					"credit_in_account_currency": credit,
 					"cost_center": cost_center,
 				}
-				for account, debit, credit in (
-					(accounts.cash, proceeds, 0),
-					(accounts.building, 0, carrying_amount),
-					(accounts.disposal, 0, proceeds - carrying_amount),
-				)
+				for account, debit, credit in rows
 			],
 		}
 	)
 	je.insert()
 	je.submit()
+	return je
+
+
+def _sell_building(accounts, posting_date: str, proceeds: float, carrying_amount: float):
+	_post(
+		posting_date,
+		(
+			(accounts.cash, proceeds, 0),
+			(accounts.building, 0, carrying_amount),
+			(accounts.disposal, 0, proceeds - carrying_amount),
+		),
+	)
 
 
 class TestCashFlows(IntegrationTestCase):
@@ -212,3 +236,48 @@ class TestCashFlows(IntegrationTestCase):
 		self.assertIsNone(message)
 		self.assertEqual(summary[-1]["value"], 0)
 		self.assertEqual(summary[-1]["indicator"], "Green")
+
+	def test_non_cash_transaction_is_left_out_and_listed(self):
+		a = self.accounts
+		lease = make_journal_entry(COMPANY, "2031-05-05", a.right_of_use, 120_000, a.lease)
+		make_journal_entry(COMPANY, "2031-05-20", a.lease, 10_000, a.cash)
+
+		statement = compute_cash_flows(COMPANY, "2031-05-01", "2031-05-31")
+		lines = _lines(statement)
+		# The right-of-use asset is not a purchase for cash; only the lease payment is a cash flow
+		self.assertEqual(lines["CF-INV-PPE-BUY"], 0)
+		self.assertEqual(lines["CF-FIN-LEASE"], -10_000)
+		self.assertEqual(
+			[(row.voucher_no, row.account, row.amount) for row in statement.non_cash],
+			[(lease.name, a.lease, -120_000), (lease.name, a.right_of_use, 120_000)],
+		)
+		self.assertEqual(statement.cash_difference, 0)
+
+	def test_revaluation_of_cash_is_the_exchange_rate_effect(self):
+		a = self.accounts
+		_post("2031-06-30", ((a.cash, 7_000, 0), (a.exchange, 0, 7_000)), voucher_type=REVALUATION)
+
+		statement = compute_cash_flows(COMPANY, "2031-06-01", "2031-06-30")
+		lines = _lines(statement)
+		self.assertEqual(lines["CF-OP-START"], 7_000)
+		self.assertEqual(lines["CF-OP-FX"], -7_000)
+		self.assertEqual(lines["CF-SUB-OP"], 0)
+		self.assertEqual(lines["CF-FX"], 7_000)
+		self.assertEqual(statement.cash_difference, 0)
+
+	def test_interest_follows_the_main_business_activity(self):
+		a = self.accounts
+		make_journal_entry(COMPANY, "2031-07-10", a.interest_expense, 4_000, a.accrued_interest)
+		make_journal_entry(COMPANY, "2031-07-20", a.accrued_interest, 3_000, a.cash)
+
+		lines = _lines(compute_cash_flows(COMPANY, "2031-07-01", "2031-07-31"))
+		self.assertEqual((lines["CF-SUB-OP"], lines["CF-FIN-INT"]), (0, -3_000))
+
+		frappe.db.set_value("PSAK ID Company Policy", COMPANY, "main_business_financing", 1)
+		statement = compute_cash_flows(COMPANY, "2031-07-01", "2031-07-31")
+		lines = _lines(statement)
+		# Interest is in operating profit, and the unpaid part is a change in other liabilities
+		self.assertEqual(lines["CF-OP-START"], -4_000)
+		self.assertEqual(lines["CF-OP-WC-OL"], 1_000)
+		self.assertEqual((lines["CF-SUB-OP"], lines["CF-FIN-INT"]), (-3_000, 0))
+		self.assertEqual(statement.cash_difference, 0)
