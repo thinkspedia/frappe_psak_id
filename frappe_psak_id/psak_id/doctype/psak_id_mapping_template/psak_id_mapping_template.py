@@ -5,20 +5,32 @@ import frappe
 from frappe import _
 from frappe.model.document import Document
 
-from frappe_psak_id.psak_id.report_lines import FINANCIAL_POSITION, OTHER_COMPREHENSIVE_INCOME, PROFIT_OR_LOSS
+from frappe_psak_id.psak_id.report_lines import (
+	CASH_FLOW,
+	FINANCIAL_POSITION,
+	OTHER_COMPREHENSIVE_INCOME,
+	PROFIT_OR_LOSS,
+)
 
 BALANCE_SHEET_ROOT_TYPES = ("Asset", "Liability", "Equity")
+CASH_FLOW_FIELDS = ("cash_flow_line", "cash_flow_line_decrease")
+CASH_LINE = "FP-CA-CASH"
 
 
 class PSAKIDMappingTemplate(Document):
 	def validate(self):
-		codes = {row.report_line for row in self.rows} | {row.oci_line for row in self.rows if row.oci_line}
+		codes = {
+			row.get(field)
+			for row in self.rows
+			for field in ("report_line", "oci_line", *CASH_FLOW_FIELDS)
+			if row.get(field)
+		}
 		lines = {
 			line.name: line
 			for line in frappe.get_all(
 				"PSAK ID Report Line",
 				filters={"name": ("in", list(codes))},
-				fields=["name", "line_type", "statement", "disabled", "category"],
+				fields=["name", "line_type", "statement", "disabled", "category", "source_line"],
 			)
 		}
 		account_types = set(frappe.get_meta("Account").get_options("account_type").split("\n")) - {""}
@@ -46,6 +58,7 @@ class PSAKIDMappingTemplate(Document):
 					).format(row.idx)
 				)
 			self._validate_oci_line(row, lines.get(row.oci_line))
+			self._validate_cash_flow_lines(row, lines)
 
 			key = (row.root_type or "", row.match_on, row.account_pattern.lower())
 			if key in seen:
@@ -95,3 +108,39 @@ class PSAKIDMappingTemplate(Document):
 			)
 		if oci_line.disabled:
 			frappe.throw(_("Row {0}: report line {1} is disabled.").format(row.idx, row.oci_line))
+
+	@staticmethod
+	def _validate_cash_flow_lines(row, lines):
+		"""The same checks the account mapping makes on its cash flow lines."""
+		if row.root_type not in BALANCE_SHEET_ROOT_TYPES or row.cash_flow_line_decrease == row.cash_flow_line:
+			row.cash_flow_line_decrease = None
+		if row.report_line == CASH_LINE and (row.cash_flow_line or row.cash_flow_line_decrease):
+			frappe.throw(
+				_(
+					"Row {0}: accounts of {1} are the cash the statement presents; leave the cash flow lines empty."
+				).format(row.idx, CASH_LINE)
+			)
+		if row.cash_flow_line_decrease and not row.cash_flow_line:
+			frappe.throw(
+				_("Row {0}: choose the Cash Flow Line before a separate line for decreases.").format(row.idx),
+				frappe.MandatoryError,
+			)
+		for field in CASH_FLOW_FIELDS:
+			code = row.get(field)
+			if not code:
+				continue
+			line = lines.get(code)
+			if (
+				not line
+				or line.line_type != "Line"
+				or line.statement != CASH_FLOW
+				or not line.category
+				or line.source_line
+			):
+				frappe.throw(
+					_(
+						"Row {0}: map to an operating, investing or financing line of the {1}; {2} is not one."
+					).format(row.idx, _(CASH_FLOW), code)
+				)
+			if line.disabled:
+				frappe.throw(_("Row {0}: report line {1} is disabled.").format(row.idx, code))
