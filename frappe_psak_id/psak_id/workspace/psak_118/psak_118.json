@@ -1,6 +1,6 @@
 {
  "charts": [],
- "content": "[{\"id\": \"h-cards\", \"type\": \"header\", \"data\": {\"text\": \"\\u003cspan class=\\\"h4\\\"\\u003e\\u003cb\\u003ePSAK 118\\u003c/b\\u003e\\u003c/span\\u003e\", \"col\": 12}}, {\"id\": \"nc-0\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"Awaiting Review\", \"col\": 3}}, {\"id\": \"nc-1\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"Awaiting CFO Approval\", \"col\": 3}}, {\"id\": \"nc-2\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"Unmapped Accounts\", \"col\": 3}}, {\"id\": \"nc-3\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"Final This Year\", \"col\": 3}}, {\"id\": \"sc-0\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"New Financial Statement\", \"col\": 4}}, {\"id\": \"sc-1\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Mapping Control\", \"col\": 4}}, {\"id\": \"sc-2\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"ERPNext Profit and Loss\", \"col\": 4}}, {\"id\": \"ql\", \"type\": \"quick_list\", \"data\": {\"quick_list_name\": \"Latest Financial Statements\", \"col\": 12}}, {\"id\": \"sp\", \"type\": \"spacer\", \"data\": {\"col\": 12}}, {\"id\": \"card-0\", \"type\": \"card\", \"data\": {\"card_name\": \"Reports\", \"col\": 4}}, {\"id\": \"card-1\", \"type\": \"card\", \"data\": {\"card_name\": \"Mapping\", \"col\": 4}}, {\"id\": \"card-2\", \"type\": \"card\", \"data\": {\"card_name\": \"Settings\", \"col\": 4}}]",
+ "content": "[{\"id\": \"h-cards\", \"type\": \"header\", \"data\": {\"text\": \"\\u003cspan class=\\\"h4\\\"\\u003e\\u003cb\\u003ePSAK 118\\u003c/b\\u003e\\u003c/span\\u003e\", \"col\": 12}}, {\"id\": \"nc-0\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"Awaiting Review\", \"col\": 3}}, {\"id\": \"nc-1\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"Awaiting CFO Approval\", \"col\": 3}}, {\"id\": \"nc-2\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"Unmapped Accounts\", \"col\": 3}}, {\"id\": \"nc-3\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"Final This Year\", \"col\": 3}}, {\"id\": \"sc-0\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"New Financial Statement\", \"col\": 3}}, {\"id\": \"sc-1\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Mapping Control\", \"col\": 3}}, {\"id\": \"sc-2\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"ERPNext Profit and Loss\", \"col\": 3}}, {\"id\": \"sc-3\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"ERPNext Balance Sheet\", \"col\": 3}}, {\"id\": \"ql\", \"type\": \"quick_list\", \"data\": {\"quick_list_name\": \"Latest Financial Statements\", \"col\": 12}}, {\"id\": \"sp\", \"type\": \"spacer\", \"data\": {\"col\": 12}}, {\"id\": \"card-0\", \"type\": \"card\", \"data\": {\"card_name\": \"Reports\", \"col\": 4}}, {\"id\": \"card-1\", \"type\": \"card\", \"data\": {\"card_name\": \"Mapping\", \"col\": 4}}, {\"id\": \"card-2\", \"type\": \"card\", \"data\": {\"card_name\": \"Settings\", \"col\": 4}}]",
  "creation": "2026-11-24 15:33:31.255883",
  "custom_blocks": [],
  "docstatus": 0,
@@ -17,7 +17,7 @@
    "hidden": 0,
    "is_query_report": 0,
    "label": "Reports",
-   "link_count": 2,
+   "link_count": 3,
    "link_type": "DocType",
    "onboard": 0,
    "type": "Card Break"
@@ -38,6 +38,16 @@
    "label": "PSAK 118 Profit or Loss",
    "link_count": 0,
    "link_to": "PSAK 118 Profit or Loss",
+   "link_type": "Report",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 1,
+   "label": "PSAK 118 Financial Position",
+   "link_count": 0,
+   "link_to": "PSAK 118 Financial Position",
    "link_type": "Report",
    "onboard": 0,
    "type": "Link"
@@ -121,7 +131,7 @@
    "type": "Link"
   }
  ],
- "modified": "2026-11-24 15:36:34.618639",
+ "modified": "2026-11-26 08:37:20.733081",
  "modified_by": "Administrator",
  "module": "PSAK ID",
  "name": "PSAK 118",
@@ -174,6 +184,14 @@
    "doc_view": "",
    "label": "ERPNext Profit and Loss",
    "link_to": "Profit and Loss Statement",
+   "report_ref_doctype": "GL Entry",
+   "type": "Report"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "",
+   "label": "ERPNext Balance Sheet",
+   "link_to": "Balance Sheet",
    "report_ref_doctype": "GL Entry",
    "type": "Report"
   }

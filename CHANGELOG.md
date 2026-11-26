@@ -15,6 +15,11 @@ All notable changes to PSAK ID are listed here. The project follows [Semantic Ve
 - PSAK ID Financial Statement: one statement is the package of the period's financial statements. Recompute also fills the statement of financial position on the end date (comparative: the prior fiscal year end, restated with this period's mappings in the first PSAK 118 year) and, when equity accounts are mapped to other comprehensive income, the other comprehensive income lines and total comprehensive income; each line names its statement. Submit for Review is also refused while a balance sheet account with a balance is on no line or the statement of financial position differs from ERPNext's Balance Sheet (Difference to ERPNext Balance Sheet).
 - PSAK ID Financial Statement exports cover the package. The PDF presents each statement on its own pages: the statement of financial position (as at the end date, with the prior fiscal year end), the statement of profit or loss, titled *and other comprehensive income* when it continues with other comprehensive income, then the notes (expenses by nature, other items breakdown, transition reconciliation) and the approval sheet; the running header reads *Financial Statements (continued)*. The Excel workbook has a Financial Position sheet and a Profit or Loss (and OCI) sheet whose subtotals are formulas, current and non-current subtotals adding the lines of their classification and total comprehensive income adding profit or loss. The structured data has a row per line of every statement and a `statement` column, the last one; the PSAK 201 amount stays limited to profit or loss.
 
+### Changed
+
+- Workspace "PSAK 118": the Reports card and the sidebar link to PSAK 118 Financial Position, and a shortcut opens ERPNext's Balance Sheet next to its Profit and Loss.
+- README: the statement of financial position, other comprehensive income, the version 1.1 mapping templates and the financial statement package.
+
 ## [1.0.3] - 2026-11-25
 
 ### Added

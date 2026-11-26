@@ -71,6 +71,22 @@
   },
   {
    "added": 0,
+   "child": 1,
+   "collapsible": 1,
+   "hidden": 0,
+   "icon": "scale",
+   "indent": 0,
+   "is_default_module": 0,
+   "keep_closed": 0,
+   "label": "Financial Position",
+   "link_to": "PSAK 118 Financial Position",
+   "link_type": "Report",
+   "open_in_new_tab": 0,
+   "show_arrow": 0,
+   "type": "Link"
+  },
+  {
+   "added": 0,
    "child": 0,
    "collapsible": 1,
    "hidden": 0,
@@ -197,7 +213,7 @@
    "type": "Link"
   }
  ],
- "modified": "2026-11-24 15:35:42.979232",
+ "modified": "2026-11-26 08:37:44.583922",
  "modified_by": "Administrator",
  "module": "PSAK ID",
  "name": "PSAK 118",
