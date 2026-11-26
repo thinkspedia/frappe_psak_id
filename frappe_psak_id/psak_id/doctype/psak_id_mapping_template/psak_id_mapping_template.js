@@ -116,13 +116,13 @@ function show_result(result, company) {
 			.join("");
 		return `<details class="mt-2"><summary>${title} (${items.length})</summary><ul>${rows}</ul></details>`;
 	};
-	let summary = __("{0} mappings created, {1} accounts skipped (already mapped), {2} not matched.", [
-		result.created.length,
-		result.skipped.length,
-		result.unmatched.length,
-	]);
+	let summary = __(
+		"{0} mappings created, {1} accounts skipped (already mapped), {2} not matched.",
+		[result.created.length, result.skipped.length, result.unmatched.length]
+	);
 	if (result.completed.length) {
-		summary += " " + __("{0} mappings completed with a cash flow line.", [result.completed.length]);
+		summary +=
+			" " + __("{0} mappings completed with a cash flow line.", [result.completed.length]);
 	}
 	const dialog = frappe.msgprint({
 		title: __("Template Applied"),
