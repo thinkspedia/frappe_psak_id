@@ -1,0 +1,95 @@
+<!-- Print of the Script Report: always DRAFT and unaudited. Table layout only, for wkhtmltopdf. -->
+{%
+	var lang = filters.language || "Both";
+	var bi = function (id, en) {
+		if (lang === "Indonesian") return id;
+		if (lang === "English") return en;
+		return id + " / " + en;
+	};
+	var months_id = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+	var months_en = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+	var end = (filters.to_date || "").split("-");
+	var day = parseInt(end[2], 10), month = parseInt(end[1], 10) - 1;
+	var summary = (report.raw_data && report.raw_data.report_summary) || [];
+	var currency = summary.length ? summary[0].currency : "";
+	var currency_id = currency === "IDR" ? "Rupiah" : currency;
+	var units = {
+		Full: ["Dinyatakan dalam " + currency_id, "Expressed in " + currency_id],
+		Thousands: ["Dinyatakan dalam ribuan " + currency_id + ", kecuali dinyatakan lain", "Expressed in thousands of " + currency_id + ", unless otherwise stated"],
+		Millions: ["Dinyatakan dalam jutaan " + currency_id + ", kecuali dinyatakan lain", "Expressed in millions of " + currency_id + ", unless otherwise stated"]
+	};
+	var amount_columns = ((report.raw_data && report.raw_data.columns) || []).filter(function (c) { return c.fieldname !== "line"; });
+	var unit_name = amount_columns.length ? amount_columns[0].unit : "Full";
+	var unit = units[unit_name] || units.Full;
+	var number_format = lang === "English" ? "#,###" : "#.###";
+	var amount = function (value) {
+		if (value === null || value === undefined) return "";
+		if (value === 0) return "-";
+		var text = format_number(Math.abs(value), number_format, 0);
+		return value < 0 ? "(" + text + ")" : text;
+	};
+%}
+<style>
+	.psak-statement { position: relative; font-size: 10pt; }
+	.psak-statement .psak-watermark {
+		position: fixed; top: 38%; left: 18%; z-index: 0;
+		font-size: 110pt; font-weight: bold; color: rgba(190, 0, 0, 0.1);
+		-webkit-transform: rotate(-30deg); transform: rotate(-30deg);
+	}
+	.psak-statement .psak-title { text-align: center; margin-bottom: 14px; line-height: 1.5; }
+	.psak-statement .psak-status { text-align: right; font-weight: bold; margin-bottom: 6px; }
+	.psak-statement table { width: 100%; border-collapse: collapse; }
+	.psak-statement thead { display: table-header-group; }
+	.psak-statement tr { page-break-inside: avoid; }
+	.psak-statement th { text-align: right; vertical-align: bottom; border-bottom: 1px solid #000; padding: 4px; }
+	.psak-statement th.psak-line { text-align: left; }
+	.psak-statement td { padding: 3px 4px; vertical-align: top; }
+	.psak-statement td.psak-amount { text-align: right; white-space: nowrap; }
+	.psak-statement td.psak-indent { padding-left: 18px; }
+	.psak-statement .psak-en { display: block; font-style: italic; color: #555; }
+	.psak-statement tr.psak-strong td { font-weight: bold; }
+	.psak-statement tr.psak-subtotal td.psak-amount { border-top: 1px solid #000; }
+	.psak-statement tr.psak-total td.psak-amount { border-bottom: 3px double #000; }
+	.psak-statement .psak-footnote { margin-top: 12px; font-size: 8.5pt; color: #555; }
+</style>
+<div class="psak-statement">
+	<div class="psak-watermark">DRAFT</div>
+	<div class="psak-status">{%= bi("Tidak diaudit", "Unaudited") %}</div>
+	<div class="psak-title">
+		<strong>{%= frappe.utils.escape_html(filters.company || "") %}</strong><br>
+		<strong>{%= bi("Laporan Arus Kas", "Statement of Cash Flows") %}</strong><br>
+		{%= bi(
+			"Untuk periode yang berakhir " + day + " " + months_id[month] + " " + end[0],
+			"For the period ended " + day + " " + months_en[month] + " " + end[0]
+		) %}<br>
+		<em>{%= bi(unit[0], unit[1]) %}</em>
+	</div>
+	<table>
+		<thead>
+			<tr>
+				<th class="psak-line"></th>
+				{% for (var c = 0; c < amount_columns.length; c++) { %}
+					<th>{%= frappe.utils.escape_html(amount_columns[c].label) %}</th>
+				{% } %}
+			</tr>
+		</thead>
+		<tbody>
+			{% for (var i = 0; i < original_data.length; i++) { var row = original_data[i]; %}
+				<tr class="{%= row.line_type !== 'Line' ? 'psak-strong' : '' %} {%= row.line_type === 'Subtotal' ? 'psak-subtotal' : '' %} {%= row.is_total ? 'psak-total' : '' %}">
+					<td class="{%= row.indented ? 'psak-indent' : '' %}">
+						{%= frappe.utils.escape_html(row.line || "") %}
+						{% if (row.label_alt) { %}<span class="psak-en">{%= frappe.utils.escape_html(row.label_alt) %}</span>{% } %}
+					</td>
+					{% for (var c = 0; c < amount_columns.length; c++) { %}
+						<td class="psak-amount">{%= row.line_type === "Heading" ? "" : amount(row[amount_columns[c].fieldname]) %}</td>
+					{% } %}
+				</tr>
+			{% } %}
+		</tbody>
+	</table>
+	{% if (unit_name !== "Full") { %}
+		<div class="psak-footnote">
+			{%= bi("Selisih penjumlahan dapat timbul karena pembulatan.", "Totals may differ from the sum of their parts because of rounding.") %}
+		</div>
+	{% } %}
+</div>

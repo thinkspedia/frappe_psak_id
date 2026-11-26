@@ -54,6 +54,8 @@ class Mapping(NamedTuple):
 	priority: int
 	condition: Condition | None
 	expense_nature: str | None = None
+	cash_flow_line: str | None = None
+	cash_flow_line_decrease: str | None = None
 
 
 class StatementError(frappe.ValidationError):
@@ -104,7 +106,7 @@ def compute_periods(
 		categories,
 	)
 	with_default_book = include_default_book(company, finance_book)
-	groups = _get_gl_groups(
+	groups = get_gl_groups(
 		company,
 		periods,
 		cost_center,
@@ -492,6 +494,7 @@ def get_lines(statement: str) -> dict:
 			"subtotal_formula",
 			"follows_operating",
 			"is_other_items",
+			"source_line",
 			"disabled",
 		],
 	)
@@ -523,6 +526,8 @@ def get_mappings(company: str, to_date, root_types: tuple) -> dict[str, list[Map
 			"party_type",
 			"accounting_dimension",
 			"expense_nature",
+			"cash_flow_line",
+			"cash_flow_line_decrease",
 		],
 		order_by="valid_from desc, priority asc",
 	)
@@ -541,6 +546,8 @@ def get_mappings(company: str, to_date, root_types: tuple) -> dict[str, list[Map
 				row.priority,
 				_condition(row, dimension_columns),
 				row.expense_nature or None,
+				row.cash_flow_line or None,
+				row.cash_flow_line_decrease or None,
 			)
 		)
 	return mappings
@@ -593,7 +600,7 @@ def gl_group_columns(gle, columns) -> list:
 	return group_columns
 
 
-def _get_gl_groups(company, periods, cost_center, finance_book, with_default_book, columns):
+def get_gl_groups(company, periods, cost_center, finance_book, with_default_book, columns):
 	gle = frappe.qb.DocType("GL Entry")
 	account = frappe.qb.DocType("Account")
 	group_columns = gl_group_columns(gle, columns)
