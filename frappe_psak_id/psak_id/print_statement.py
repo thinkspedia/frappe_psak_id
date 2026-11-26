@@ -277,7 +277,7 @@ def financial_position_rows(doc, show_headings) -> list[frappe._dict]:
 	lines = statement_lines(doc, FINANCIAL_POSITION)
 	classifications = line_classifications() if lines else {}
 	return _presented_rows(
-		lines,
+		_without_nil_lines(lines),
 		show_headings,
 		# Equity has no classification, stored empty
 		lambda line: (line.category, classifications.get(line.report_line) or None),
@@ -299,8 +299,27 @@ def profit_or_loss_rows(doc, show_headings) -> list[frappe._dict]:
 	oci_lines = statement_lines(doc, OTHER_COMPREHENSIVE_INCOME)
 	if oci_lines:
 		rows.append(_heading_row(OCI_HEADING))
-		rows += _presented_rows(oci_lines, show_headings, lambda line: None, {}, TOTAL_LINES)
+		rows += _presented_rows(
+			_without_nil_lines(oci_lines), show_headings, lambda line: None, {}, TOTAL_LINES
+		)
 	return rows
+
+
+def _without_nil_lines(lines) -> list:
+	"""The lines to present: a line or subtotal PSAK 118 does not require is left off when it is
+	nil in every column. The statement of financial position and other comprehensive income list
+	every minimum line item, most of them nil for a given company; the report still shows them."""
+	if not lines:
+		return lines
+	mandatory = set(frappe.get_all("PSAK ID Report Line", filters={"mandatory": 1}, pluck="name"))
+	return [
+		line
+		for line in lines
+		if line.line_type == "Heading"
+		or line.report_line in mandatory
+		or flt(line.amount, 2)
+		or flt(line.comparative_amount, 2)
+	]
 
 
 def line_classifications() -> dict:

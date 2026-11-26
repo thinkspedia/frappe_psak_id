@@ -1,11 +1,15 @@
+import datetime
+from unittest.mock import patch
+
 import frappe
 
-from frappe_psak_id.psak_id.mapping import apply_template, match_row, pattern_regex
+from frappe_psak_id.psak_id.mapping import apply_template, default_valid_from, match_row, pattern_regex
 from frappe_psak_id.psak_id.mapping_templates import (
 	PROFIT_OR_LOSS_TEMPLATE_VERSION,
 	STANDARD_TEMPLATE_VERSION,
 	STANDARD_TEMPLATES,
 )
+from frappe_psak_id.tests.test_financial_statement import make_policy
 from frappe_psak_id.tests.utils import IntegrationTestCase, get_account, make_account, make_company
 
 COMPANY = "_Test PSAK Template Company"
@@ -120,6 +124,16 @@ class TestApplyTemplate(IntegrationTestCase):
 			"interest_expense": make_account(COMPANY, "Interest Expense", "Indirect Expenses"),
 			"unknown": make_account(COMPANY, "Xyzzy", "Indirect Expenses"),
 		}
+
+	def test_mappings_start_after_the_last_final_statement_by_default(self):
+		make_policy(COMPANY, "2026-01-01")
+		with patch("frappe_psak_id.psak_id.mapping.final_until", return_value=None):
+			self.assertEqual(default_valid_from(COMPANY), datetime.date(2026, 1, 1))
+		# Mappings in force in a final period are refused (BR-09)
+		with patch("frappe_psak_id.psak_id.mapping.final_until", return_value=datetime.date(2026, 1, 31)):
+			self.assertEqual(default_valid_from(COMPANY), datetime.date(2026, 2, 1))
+		with patch("frappe_psak_id.psak_id.mapping.final_until", return_value=datetime.date(2025, 12, 31)):
+			self.assertEqual(default_valid_from(COMPANY), datetime.date(2026, 1, 1))
 
 	def mappings(self):
 		return {

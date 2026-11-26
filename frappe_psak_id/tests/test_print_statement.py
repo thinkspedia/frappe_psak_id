@@ -106,6 +106,10 @@ class TestPrintStatement(IntegrationTestCase):
 		position = {row.label_en: row for row in context.position.lines}
 		self.assertEqual(position["Cash and cash equivalents"].amounts, ["2.109", "1.200"])
 		self.assertTrue(position["Total assets"].total)
+		# Nil line items PSAK 118 does not require are left off, with the headings of nothing
+		self.assertNotIn("Property, plant and equipment", position)
+		self.assertNotIn("Non-current assets", position)
+		self.assertIn("Total equity", position)
 		self.assertEqual(
 			[(group.label_en, group.amounts) for group in context.natures.groups],
 			[("Employee Benefits", ["(300)", "-"]), ("Other", ["(25)", "-"])],

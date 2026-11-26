@@ -69,7 +69,12 @@ class TestExportStatement(IntegrationTestCase):
 			workbook.sheetnames,
 			["Posisi Keuangan", "Laba Rugi", "Beban per Sifat", "Rekonsiliasi Transisi", "Info"],
 		)
-		assert_sheet_adds_up(self, workbook["Posisi Keuangan"], statement_lines(doc, "Financial Position"))
+		position = workbook["Posisi Keuangan"]
+		assert_sheet_adds_up(self, position, statement_lines(doc, "Financial Position"))
+		labels = {position.cell(row, 2).value for row in range(1, position.max_row + 1)}
+		# Nil line items PSAK 118 does not require are left off; required totals stay
+		self.assertNotIn("Property, plant and equipment", labels)
+		self.assertLessEqual({"Total assets", "Total equity", "Total liabilities and equity"}, labels)
 
 		sheet = workbook["Laba Rugi"]
 		self.assertEqual(sheet["A1"].value, COMPANY)
@@ -160,11 +165,17 @@ class TestExportStatement(IntegrationTestCase):
 
 
 def assert_sheet_adds_up(test, sheet, lines, columns=((4, "amount"), (5, "comparative_amount"))):
-	"""Every line of a statement sheet gives the statement amount, subtotals as formulas."""
+	"""Every line of a statement sheet gives the statement amount, subtotals as formulas. A nil
+	line PSAK 118 does not require is left off the sheet."""
 	rows = {sheet.cell(row, 2).value: row for row in range(1, sheet.max_row + 1)}
+	mandatory = set(frappe.get_all("PSAK ID Report Line", filters={"mandatory": 1}, pluck="name"))
 	subtotals = 0
 	for line in lines:
 		if line.line_type == "Heading":
+			continue
+		if line.label_en not in rows:
+			test.assertNotIn(line.report_line, mandatory)
+			test.assertFalse(any(flt(line.get(field)) for _column, field in columns), line.report_line)
 			continue
 		row = rows[line.label_en]
 		for column, field in columns:

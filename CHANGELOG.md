@@ -19,6 +19,12 @@ All notable changes to PSAK ID are listed here. The project follows [Semantic Ve
 
 - Workspace "PSAK 118": the Reports card and the sidebar link to PSAK 118 Financial Position, and a shortcut opens ERPNext's Balance Sheet next to its Profit and Loss.
 - README: the statement of financial position, other comprehensive income, the version 1.1 mapping templates and the financial statement package.
+- PDF and Excel of the financial statement package: a financial position or other comprehensive income line item that PSAK 118 does not require is left off when it is nil in every column, with the heading of a section left empty; the reports still list every line. The last three rows of a statement move to the next page together with its final total and footnotes, so a page never holds the total alone.
+- Apply to Company of a mapping template starts the mappings on the day after the company's last final statement when that is after the adoption date, since mappings in force in a final period are refused.
+
+### Fixed
+
+- Mapping Control lists the difference of the statement of financial position to ERPNext's Balance Sheet (and of the restated comparative in the first PSAK 118 year) and sums it up, with a link to the Balance Sheet; the summary it had named the profit or loss difference "Difference to ERPNext" only.
 
 ## [1.0.3] - 2026-11-25
 

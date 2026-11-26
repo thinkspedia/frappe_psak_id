@@ -1,6 +1,7 @@
 import frappe
 
 from frappe_psak_id.psak_id.checks import (
+	BALANCE_SHEET_DIFFERENCE,
 	BLOCKING,
 	CONFLICTING_MAPPINGS,
 	CURRENT,
@@ -209,17 +210,32 @@ class TestMappingControl(IntegrationTestCase):
 		self.assertEqual([row.row_index for row in data], list(range(len(data))))
 		self.assertIn(self.salary, [row.subject for row in data])
 		self.assertIsNone(message)
-		blocking, warnings, difference, restatement = (item["value"] for item in summary)
-		self.assertEqual((blocking, warnings), (6, 1))
-		self.assertEqual((difference, restatement), (95_000, 7_000))
+		values = {item["label"]: item["value"] for item in summary}
+		self.assertEqual((values["Blocking Issues"], values["Warnings"]), (8, 1))
+		self.assertEqual(
+			(values["Difference to ERPNext Profit and Loss"], values["Restatement Difference"]),
+			(95_000, 7_000),
+		)
+		# The profit missing from the statement is missing from its retained earnings too
+		self.assertEqual(
+			(values["Difference to ERPNext Balance Sheet"], values["Restated Balance Sheet Difference"]),
+			(95_000, 7_000),
+		)
 
-	def test_clean_period_has_no_issues(self):
+	def test_balance_sheet_difference_lasts_until_the_accounts_are_mapped(self):
 		_columns, data, message, _chart, summary = execute(
 			{"company": COMPANY, "from_date": "2027-02-01", "to_date": "2027-02-28"}
 		)
-		self.assertEqual(data, [])
-		self.assertTrue(message)
-		self.assertEqual(summary[0]["indicator"], "Green")
+		# February's profit or loss is clean, but January's unmapped profit is still missing from
+		# retained earnings on 28 February
+		self.assertEqual(
+			[(row.check, row.period, row.amount) for row in data],
+			[(BALANCE_SHEET_DIFFERENCE, CURRENT, 95_000), (BALANCE_SHEET_DIFFERENCE, RESTATED, 7_000)],
+		)
+		self.assertEqual(data[0].from_date, "2027-01-01")
+		self.assertIsNone(message)
+		self.assertEqual(summary[2]["indicator"], "Green")
+		self.assertEqual(summary[3]["indicator"], "Red")
 
 	def test_balance_sheet_account_with_a_balance_needs_a_mapping(self):
 		self.assertEqual(balance_sheet_issues(COMPANY, "2027-02-28"), [])
@@ -252,5 +268,10 @@ class TestMappingControl(IntegrationTestCase):
 		)
 		(row,) = [row for row in data if row.check == UNMAPPED_BALANCE]
 		self.assertEqual((row.subject, row.amount, row.severity), (self.deposit, 40_000, BLOCKING))
+		# The deposit is missing from the statement of financial position as well
+		(difference,) = [
+			row for row in data if row.check == BALANCE_SHEET_DIFFERENCE and row.period == CURRENT
+		]
+		self.assertEqual(difference.amount, -40_000)
 		self.assertIsNone(message)
 		self.assertEqual(summary[0]["indicator"], "Red")

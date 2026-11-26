@@ -128,16 +128,8 @@ class TestStatementPackage(IntegrationTestCase):
 		)
 		frappe.db.set_value("PSAK ID Company Policy", COMPANY, "show_category_headings", 1)
 		headings = [row.label_en for row in doc.get_print_context().position.lines if row.kind == "Heading"]
-		self.assertEqual(
-			headings,
-			[
-				"Non-current Assets",
-				"Current Assets",
-				"Current Liabilities",
-				"Non-current Liabilities",
-				"Equity",
-			],
-		)
+		# The company has no liabilities: their nil lines and headings are left off
+		self.assertEqual(headings, ["Non-current Assets", "Current Assets", "Equity"])
 		html = frappe.get_print(doc.doctype, doc.name, print_format=PRINT_FORMAT, doc=doc)
 		self.assertLess(
 			html.index("Laporan Posisi Keuangan"),
