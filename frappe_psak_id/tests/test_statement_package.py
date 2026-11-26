@@ -1,10 +1,17 @@
+import csv
+import io
+
 import frappe
 from frappe.model.workflow import apply_workflow
+from openpyxl import load_workbook
 
 from frappe_psak_id.psak_id.doctype.psak_id_financial_statement.psak_id_financial_statement import (
 	StatementNotReady,
 	statement_lines,
 )
+from frappe_psak_id.psak_id.export_statement import export_excel, export_structured
+from frappe_psak_id.psak_id.print_statement import PRINT_FORMAT
+from frappe_psak_id.tests.test_export_statement import assert_sheet_adds_up, evaluate
 from frappe_psak_id.tests.test_financial_statement import make_mapping, make_policy, make_statement
 from frappe_psak_id.tests.utils import (
 	IntegrationTestCase,
@@ -103,3 +110,65 @@ class TestStatementPackage(IntegrationTestCase):
 			(doc.workflow_state, doc.blocking_issues, doc.erpnext_bs_difference), ("Under Review", 0, 0)
 		)
 		self.assertEqual(amounts(doc, "Financial Position")["FP-CA-FIN"], 70_000)
+
+	def test_exports_present_every_statement_of_the_package(self):
+		# A quarter: the test of the package itself has the statement of March
+		doc = make_statement(
+			COMPANY, "2036-01-01", "2036-03-31", "Quarterly", comparative="Same Period Last Year"
+		).insert()
+
+		context = doc.get_print_context()
+		self.assertEqual(context.title[0], "Laporan Laba Rugi dan Penghasilan Komprehensif Lain")
+		lines = {row.label_en: row for row in context.lines}
+		self.assertEqual(lines["Other Comprehensive Income"].kind, "Heading")
+		self.assertTrue(lines["Total comprehensive income"].total)
+		self.assertEqual(
+			context.position.columns,
+			[("31 Maret 2036", "31 March 2036"), ("31 Desember 2035", "31 December 2035")],
+		)
+		frappe.db.set_value("PSAK ID Company Policy", COMPANY, "show_category_headings", 1)
+		headings = [row.label_en for row in doc.get_print_context().position.lines if row.kind == "Heading"]
+		self.assertEqual(
+			headings,
+			[
+				"Non-current Assets",
+				"Current Assets",
+				"Current Liabilities",
+				"Non-current Liabilities",
+				"Equity",
+			],
+		)
+		html = frappe.get_print(doc.doctype, doc.name, print_format=PRINT_FORMAT, doc=doc)
+		self.assertLess(
+			html.index("Laporan Posisi Keuangan"),
+			html.index("Laporan Laba Rugi dan Penghasilan Komprehensif Lain"),
+		)
+
+		export_excel(doc.name)
+		workbook = load_workbook(io.BytesIO(frappe.local.response.filecontent))
+		self.assertEqual(workbook.sheetnames, ["Posisi Keuangan", "Laba Rugi dan PKL", "Info"])
+		sheet = workbook["Posisi Keuangan"]
+		self.assertEqual(sheet["A4"].value, "Pada 31 Maret 2036")
+		assert_sheet_adds_up(self, sheet, statement_lines(doc, "Financial Position"))
+		rows = {sheet.cell(row, 2).value: row for row in range(1, sheet.max_row + 1)}
+		# Current assets add up the current lines only (+CAT:Asset/Current)
+		self.assertEqual(evaluate(sheet, sheet.cell(rows["Total current assets"], 4).value), 1_100_000)
+
+		sheet = workbook["Laba Rugi dan PKL"]
+		assert_sheet_adds_up(
+			self,
+			sheet,
+			statement_lines(doc, "Profit or Loss") + statement_lines(doc, "Other Comprehensive Income"),
+		)
+		rows = {sheet.cell(row, 2).value: row for row in range(1, sheet.max_row + 1)}
+		# Total comprehensive income adds profit or loss and other comprehensive income on the sheet
+		total = sheet.cell(rows["Total comprehensive income"], 4).value
+		self.assertTrue(total.startswith("="))
+		self.assertEqual(evaluate(sheet, total), 250_000)
+
+		export_structured(doc.name, "csv")
+		rows = list(csv.DictReader(io.StringIO(frappe.local.response.filecontent.decode("utf-8"))))
+		self.assertEqual(
+			list(dict.fromkeys(row["statement"] for row in rows)),
+			["Financial Position", "Profit or Loss", "Other Comprehensive Income"],
+		)

@@ -1,13 +1,13 @@
 # Copyright (c) 2026, Thinkspedia and contributors
 # For license information, please see license.txt
 
-"""Excel and structured data exports of a PSAK ID Financial Statement (FR-10, BR-14).
+"""Excel and structured data exports of a PSAK ID Financial Statement (FR-10, FR-30, BR-14).
 
-The Excel workbook follows the Export Layout Standard: the same title block and wording as the
-PDF, amounts stored in full with the unit applied by the number format, and subtotals written as
+The Excel workbook follows the Export Layout Standard: one sheet per statement of the package, in
+the order of the PDF, with the same title block and wording, amounts stored in full with the unit applied by the number format, and subtotals written as
 formulas over the cells of the lines they add up, so the workbook still adds up when an auditor
-changes a line. The structured data is one row per line with fixed English column names: the
-contract later releases map to XBRL.
+changes a line. The structured data is one row per line of every statement with fixed English
+column names: the contract later releases map to XBRL.
 """
 
 import csv
@@ -19,13 +19,17 @@ from openpyxl import Workbook
 from openpyxl.styles import Alignment, Border, Font, Side
 from openpyxl.utils import get_column_letter
 
-from frappe_psak_id.psak_id.doctype.psak_id_financial_statement.psak_id_financial_statement import (
-	statement_lines,
+from frappe_psak_id.psak_id.print_statement import (
+	DOCTYPE,
+	FINANCIAL_POSITION_TITLE,
+	PROFIT_OR_LOSS_AND_OCI_TITLE,
+	file_name,
+	financial_position_rows,
+	get_print_context,
+	line_classifications,
+	profit_or_loss_rows,
 )
-from frappe_psak_id.psak_id.print_statement import DOCTYPE, file_name, get_print_context
-from frappe_psak_id.psak_id.report.psak_118_profit_or_loss.psak_118_profit_or_loss import CATEGORY_LABELS
-from frappe_psak_id.psak_id.report_lines import parse_subtotal_formula
-from frappe_psak_id.psak_id.statement import PROFIT_OR_LOSS_LINE
+from frappe_psak_id.psak_id.report_lines import PROFIT_OR_LOSS, parse_subtotal_formula
 
 # Amounts are stored in full; thousands and millions are shown by scaling in the number format
 NUMBER_FORMATS = {
@@ -49,6 +53,8 @@ STRUCTURED_COLUMNS = (
 	"company",
 	"statement_name",
 	"status",
+	# Last, so the columns of exports made before the package keep their place
+	"statement",
 )
 LABEL_WIDTH, NOTE_WIDTH, AMOUNT_WIDTH = 48, 10, 18
 A4 = 9  # openpyxl paper size code
@@ -57,19 +63,46 @@ BOLD = Font(bold=True)
 ITALIC = Font(italic=True)
 THIN = Side(style="thin")
 TOP_LINE = Border(top=THIN)
-PROFIT_OR_LOSS_LINES = Border(top=THIN, bottom=Side(style="double"))
+TOTAL_LINES = Border(top=THIN, bottom=Side(style="double"))
 
 
 @frappe.whitelist()
 def export_excel(name: str) -> None:
-	"""The statement as an Excel workbook: Profit or Loss, Expenses by Nature and Transition
-	Reconciliation when the statement has them, and an Info sheet."""
+	"""The statement as an Excel workbook: Financial Position, Profit or Loss (and other
+	comprehensive income), Expenses by Nature and Transition Reconciliation when the statement has
+	them, and an Info sheet."""
 	doc = _get_statement(name)
 	context = get_print_context(doc)
 	number_format = NUMBER_FORMATS.get(doc.unit, NUMBER_FORMATS["Full"])
+	show_headings = frappe.db.get_value("PSAK ID Company Policy", doc.company, "show_category_headings")
 
 	workbook = Workbook()
-	_profit_or_loss_sheet(workbook.active, doc, context, number_format)
+	sheet = workbook.active
+	if context.position:
+		_statement_sheet(
+			sheet,
+			doc,
+			context,
+			number_format,
+			name="Posisi Keuangan",
+			title=FINANCIAL_POSITION_TITLE,
+			period=context.position.period,
+			columns=context.position.columns,
+			rows=financial_position_rows(doc, show_headings),
+			classifications=line_classifications(),
+		)
+		sheet = workbook.create_sheet()
+	_statement_sheet(
+		sheet,
+		doc,
+		context,
+		number_format,
+		name="Laba Rugi dan PKL" if context.title == PROFIT_OR_LOSS_AND_OCI_TITLE else "Laba Rugi",
+		title=context.title,
+		period=context.period,
+		columns=context.columns,
+		rows=profit_or_loss_rows(doc, show_headings),
+	)
 	if doc.nature_lines:
 		_nature_sheet(workbook.create_sheet(), doc, context, number_format)
 	if doc.is_transition:
@@ -114,8 +147,8 @@ def export_structured(name: str, fmt: str = "xlsx") -> None:
 
 
 def get_structured_rows(doc) -> list[dict]:
-	"""Every line with an amount; the PSAK 201 amount only in the transition year, from the
-	transition reconciliation."""
+	"""Every line with an amount, of every statement in the package; the PSAK 201 amount only for
+	profit or loss in the transition year, from the transition reconciliation."""
 	psak201 = {}
 	for row in doc.transition_lines if doc.is_transition else ():
 		if row.report_line:
@@ -132,37 +165,48 @@ def get_structured_rows(doc) -> list[dict]:
 			"period_to": str(getdate(doc.to_date)),
 			"amount": flt(line.amount, 2),
 			"comparative_amount": flt(line.comparative_amount, 2) if has_comparative else None,
-			"psak201_amount": flt(psak201.get(line.report_line), 2) if doc.is_transition else None,
+			"psak201_amount": flt(psak201.get(line.report_line), 2)
+			if doc.is_transition and (line.statement or PROFIT_OR_LOSS) == PROFIT_OR_LOSS
+			else None,
 			"unit": doc.unit,
 			"currency": doc.currency,
 			"company": doc.company,
 			"statement_name": doc.name,
 			"status": doc.workflow_state,
+			# Lines saved before the package existed are all profit or loss
+			"statement": line.statement or PROFIT_OR_LOSS,
 		}
-		for line in statement_lines(doc)
+		for line in doc.lines
 		if line.line_type != "Heading"
 	]
 
 
-def subtotal_terms(doc, line_codes: set, formulas: dict, code: str) -> list[tuple[int, str]]:
-	"""The lines of the statement a subtotal adds up, with their signs.
+def subtotal_terms(
+	lines: list, line_codes: set, formulas: dict, code: str, classifications: dict | None = None
+) -> list[tuple[int, str]]:
+	"""The lines of a sheet a subtotal adds up, with their signs.
 
 	A subtotal left off the statement (hidden, BR-20) is replaced by its own terms, a category by
-	its lines, and a line not on the statement counts as zero.
+	its lines (of the classification it names, for assets and liabilities), and a line not on the
+	sheet counts as zero.
 	"""
+	classifications = classifications or {}
 	terms = []
 	for term in parse_subtotal_formula(formulas[code]):
 		if term.kind == "category":
 			terms.extend(
 				(term.sign, line.report_line)
-				for line in statement_lines(doc)
-				if line.line_type == "Line" and line.category == term.ref
+				for line in lines
+				if line.line_type == "Line"
+				and line.category == term.ref
+				and (not term.classification or classifications.get(line.report_line) == term.classification)
 			)
 		elif term.ref in line_codes:
 			terms.append((term.sign, term.ref))
 		elif formulas.get(term.ref):
 			terms.extend(
-				(term.sign * sign, ref) for sign, ref in subtotal_terms(doc, line_codes, formulas, term.ref)
+				(term.sign * sign, ref)
+				for sign, ref in subtotal_terms(lines, line_codes, formulas, term.ref, classifications)
 			)
 	return terms
 
@@ -179,15 +223,16 @@ def _respond(filename: str, content: bytes) -> None:
 	frappe.local.response.type = "binary"
 
 
-def _profit_or_loss_sheet(sheet, doc, context, number_format):
-	sheet.title = "Laba Rugi"
+def _statement_sheet(
+	sheet, doc, context, number_format, name, title, period, columns, rows, classifications=None
+):
+	"""One statement of the package; subtotals are formulas over the lines on the sheet."""
+	sheet.title = name
 	amount_fields = _amount_columns(doc)
-	width = 3 + len(amount_fields)
-	header = _title_block(sheet, context, ("Laporan Laba Rugi", "Statement of Profit or Loss"), width)
-	_header_row(sheet, header, ("Pos", "Line item", "Catatan / Notes"), context.columns)
+	header = _title_block(sheet, context, title, 3 + len(amount_fields), period)
+	_header_row(sheet, header, ("Pos", "Line item", "Catatan / Notes"), columns)
 	_layout(sheet, header, [LABEL_WIDTH, LABEL_WIDTH, NOTE_WIDTH] + [AMOUNT_WIDTH] * len(amount_fields))
 
-	show_headings = frappe.db.get_value("PSAK ID Company Policy", doc.company, "show_category_headings")
 	formulas = dict(
 		frappe.get_all(
 			"PSAK ID Report Line",
@@ -196,30 +241,23 @@ def _profit_or_loss_sheet(sheet, doc, context, number_format):
 			as_list=True,
 		)
 	)
-	lines = [line for line in statement_lines(doc) if line.line_type != "Heading"]
+	presented = [row for row in rows if row.kind != "Heading"]
+	lines = [row.line for row in presented]
 	line_codes = {line.report_line for line in lines}
-	row_of, rows, heading = {}, [], None
-	for line in statement_lines(doc):
-		if show_headings and line.line_type == "Line" and line.category != heading:
-			heading = line.category
-			rows.append(("Heading", CATEGORY_LABELS.get(heading, (heading, heading)), None))
-		rows.append((line.line_type, (line.label_id or line.label_en, line.label_en or line.label_id), line))
-
-	row_number = header
-	for kind, labels, line in rows:
-		row_number += 1
-		_labels(sheet, row_number, labels, indented=bool(show_headings and kind == "Line"))
-		if kind == "Heading" or line.line_type == "Heading":
+	row_of = {}
+	for row_number, row in enumerate(rows, start=header + 1):
+		_labels(sheet, row_number, (row.label_id, row.label_en), indented=row.indented)
+		if row.kind == "Heading":
 			sheet.cell(row_number, 1).font = BOLD
 			continue
-		row_of[line.report_line] = row_number
-		sheet.cell(row_number, 3, line.note_no or None)
+		row_of[row.line.report_line] = row_number
+		sheet.cell(row_number, 3, row.line.note_no or None)
 
 	amounts = {field: {line.report_line: flt(line.get(field)) for line in lines} for field in amount_fields}
-	for line in lines:
-		row_number = row_of[line.report_line]
+	for row in presented:
+		line, row_number = row.line, row_of[row.line.report_line]
 		terms = (
-			subtotal_terms(doc, line_codes, formulas, line.report_line)
+			subtotal_terms(lines, line_codes, formulas, line.report_line, classifications)
 			if line.line_type == "Subtotal" and formulas.get(line.report_line)
 			else None
 		)
@@ -228,7 +266,7 @@ def _profit_or_loss_sheet(sheet, doc, context, number_format):
 			cell.value = _formula_or_value(terms, flt(line.get(field)), amounts[field], row_of, 4 + index)
 			cell.number_format = number_format
 			if line.line_type == "Subtotal":
-				cell.border = PROFIT_OR_LOSS_LINES if line.report_line == PROFIT_OR_LOSS_LINE else TOP_LINE
+				cell.border = TOTAL_LINES if row.total else TOP_LINE
 		if line.line_type == "Subtotal":
 			for column in (1, 2):
 				sheet.cell(row_number, column).font = Font(bold=True, italic=column == 2)
@@ -298,7 +336,7 @@ def _nature_sheet(sheet, doc, context, number_format):
 		cell = sheet.cell(row_number, 3 + index, "=" + "+".join(f"{letter}{row}" for row in group_rows))
 		cell.number_format = number_format
 		cell.font = BOLD
-		cell.border = PROFIT_OR_LOSS_LINES
+		cell.border = TOTAL_LINES
 
 
 def _transition_sheet(sheet, doc, context, number_format):
@@ -348,7 +386,7 @@ def _transition_sheet(sheet, doc, context, number_format):
 		(
 			("Laba (rugi) disajikan kembali menurut PSAK 118", "Profit (loss) restated under PSAK 118"),
 			detail_rows,
-			PROFIT_OR_LOSS_LINES,
+			TOTAL_LINES,
 		),
 	)
 	for labels, rows, border in totals:
@@ -383,15 +421,16 @@ def _info_sheet(sheet, doc, context):
 	_layout(sheet, None, [24, 24, LABEL_WIDTH])
 
 
-def _title_block(sheet, context, title, width) -> int:
-	"""Company, title, period, unit and status, each centred across the table; returns the row
-	of the column headers."""
+def _title_block(sheet, context, title, width, period=None) -> int:
+	"""Company, title, period (or date), unit and status, each centred across the table; returns
+	the row of the column headers."""
+	period = period or context.period
 	lines = [
 		(context.company, BOLD),
 		(title[0], BOLD),
 		(title[1], Font(bold=True, italic=True)),
-		(context.period[0], None),
-		(context.period[1], ITALIC),
+		(period[0], None),
+		(period[1], ITALIC),
 		(context.unit[0], None),
 		(context.unit[1], ITALIC),
 		("Tidak diaudit / Unaudited", ITALIC),
