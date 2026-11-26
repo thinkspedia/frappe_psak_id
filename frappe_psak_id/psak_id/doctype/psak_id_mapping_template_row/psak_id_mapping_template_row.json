@@ -12,6 +12,8 @@
   "account_pattern",
   "report_line",
   "oci_line",
+  "cash_flow_line",
+  "cash_flow_line_decrease",
   "expense_nature",
   "is_final_tax"
  ],
@@ -76,6 +78,22 @@
    "fieldtype": "Link",
    "label": "OCI Line",
    "options": "PSAK ID Report Line"
+  },
+  {
+   "depends_on": "eval:doc.report_line!='FP-CA-CASH'",
+   "description": "The cash flow line the movements of the account are presented in. Income and expense rows: only for an item presented outside operating activities or not in cash.",
+   "fieldname": "cash_flow_line",
+   "fieldtype": "Link",
+   "label": "Cash Flow Line",
+   "options": "PSAK ID Report Line"
+  },
+  {
+   "depends_on": "eval:['Asset','Liability','Equity'].includes(doc.root_type) && doc.cash_flow_line",
+   "description": "Balance sheet rows: the line of decreases of the account, when they are presented apart.",
+   "fieldname": "cash_flow_line_decrease",
+   "fieldtype": "Link",
+   "label": "Cash Flow Line (Decrease)",
+   "options": "PSAK ID Report Line"
   }
  ],
  "grid_page_length": 50,
@@ -83,7 +101,7 @@
  "istable": 1,
  "link_display_mode": "Search",
  "links": [],
- "modified": "2026-11-25 06:19:21.966554",
+ "modified": "2026-11-26 22:48:34.514188",
  "modified_by": "Administrator",
  "module": "PSAK ID",
  "name": "PSAK ID Mapping Template Row",

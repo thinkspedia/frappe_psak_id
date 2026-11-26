@@ -5,6 +5,7 @@ import frappe
 
 from frappe_psak_id.psak_id.mapping import apply_template, default_valid_from, match_row, pattern_regex
 from frappe_psak_id.psak_id.mapping_templates import (
+	BALANCE_SHEET_TEMPLATE_VERSION,
 	PROFIT_OR_LOSS_TEMPLATE_VERSION,
 	STANDARD_TEMPLATE_VERSION,
 	STANDARD_TEMPLATES,
@@ -14,8 +15,11 @@ from frappe_psak_id.tests.utils import IntegrationTestCase, get_account, make_ac
 
 COMPANY = "_Test PSAK Template Company"
 BALANCE_SHEET_COMPANY = "_Test PSAK Template Balance Sheet Company"
+CASH_FLOW_COMPANY = "_Test PSAK Template Cash Flow Company"
 SERVICES = "Services (Standard)"
 SERVICES_1_1 = "Services (Standard 1.1)"
+SERVICES_1_2 = "Services (Standard 1.2)"
+BALANCE_SHEET_ROOT_TYPES = ("Asset", "Liability", "Equity")
 STAFF_USER = "psak-template-staff@example.com"
 
 
@@ -76,7 +80,11 @@ class TestMappingTemplate(IntegrationTestCase):
 			self.assertEqual(doc.template_version, template["template_version"])
 			self.assertEqual(len(doc.rows), len(template["rows"]))
 		industries = ["Investment Holding", "Manufacturing", "Property", "Services", "Trading"]
-		for version in (PROFIT_OR_LOSS_TEMPLATE_VERSION, STANDARD_TEMPLATE_VERSION):
+		for version in (
+			PROFIT_OR_LOSS_TEMPLATE_VERSION,
+			BALANCE_SHEET_TEMPLATE_VERSION,
+			STANDARD_TEMPLATE_VERSION,
+		):
 			self.assertEqual(
 				sorted(t["industry"] for t in STANDARD_TEMPLATES if t["template_version"] == version),
 				industries,
@@ -109,6 +117,57 @@ class TestMappingTemplate(IntegrationTestCase):
 			("*reserve*", "FP-EQ-OCI", {"root_type": "Equity", "oci_line": "OCI-NR-REV"}),
 		).insert()
 		self.assertEqual(len(template.rows), 2)
+
+	def test_cash_flow_lines_are_those_an_account_mapping_accepts(self):
+		for rows in (
+			# The cash itself has no cash flow line
+			[("Bank", "FP-CA-CASH", {"root_type": "Asset", "cash_flow_line": "CF-OP-WC-OA"})],
+			[
+				(
+					"*loan*",
+					"FP-CL-BORR",
+					{"root_type": "Liability", "cash_flow_line_decrease": "CF-FIN-BORR-OUT"},
+				)
+			],
+			# Lines of another statement, computed lines and lines outside the activities
+			[("*debtor*", "FP-CA-AR", {"root_type": "Asset", "cash_flow_line": "PL-OP-REV"})],
+			[("*debtor*", "FP-CA-AR", {"root_type": "Asset", "cash_flow_line": "CF-OP-START"})],
+			[("*debtor*", "FP-CA-AR", {"root_type": "Asset", "cash_flow_line": "CF-OPEN"})],
+			[("*debtor*", "FP-CA-AR", {"root_type": "Asset", "cash_flow_line": "CF-SUB-OP"})],
+		):
+			with self.assertRaises(frappe.ValidationError, msg=rows):
+				self.make_template(*rows).insert()
+
+		template = self.make_template(
+			(
+				"*loan*",
+				"FP-CL-BORR",
+				{
+					"root_type": "Liability",
+					"cash_flow_line": "CF-FIN-BORR-IN",
+					"cash_flow_line_decrease": "CF-FIN-BORR-OUT",
+				},
+			),
+			# Income and expense accounts have one line for their amount
+			(
+				"*interest expense*",
+				"PL-FIN-INT",
+				{"cash_flow_line": "CF-FIN-INT", "cash_flow_line_decrease": "CF-FIN-OTH"},
+			),
+		)
+		frappe.delete_doc("PSAK ID Mapping Template", template.template_name, force=True, ignore_missing=True)
+		template.insert()
+		self.assertEqual(template.rows[0].cash_flow_line_decrease, "CF-FIN-BORR-OUT")
+		self.assertIsNone(template.rows[1].cash_flow_line_decrease)
+
+	def test_standard_template_names_a_cash_flow_line_for_every_balance_sheet_row_but_cash(self):
+		for template in STANDARD_TEMPLATES:
+			for row in template["rows"]:
+				has_line = bool(row.get("cash_flow_line"))
+				if template["template_version"] != STANDARD_TEMPLATE_VERSION:
+					self.assertFalse(has_line, row)
+				elif row["root_type"] in BALANCE_SHEET_ROOT_TYPES:
+					self.assertEqual(has_line, row["report_line"] != "FP-CA-CASH", row)
 
 
 class TestApplyTemplate(IntegrationTestCase):
@@ -283,7 +342,77 @@ class TestApplyBalanceSheetTemplate(IntegrationTestCase):
 				self.assertEqual(mappings[account].report_line, line, account_name)
 		revaluation = mappings[get_account(BALANCE_SHEET_COMPANY, "Revaluation Surplus")]
 		self.assertEqual(revaluation.oci_line, "OCI-NR-REV")
-		self.assertEqual(revaluation.source_template_version, STANDARD_TEMPLATE_VERSION)
+		self.assertEqual(revaluation.source_template_version, BALANCE_SHEET_TEMPLATE_VERSION)
 		self.assertIsNone(mappings[get_account(BALANCE_SHEET_COMPANY, "Cash")].oci_line)
 		# The income and expense rows of version 1.0 are part of version 1.1
 		self.assertEqual(mappings[get_account(BALANCE_SHEET_COMPANY, "Salary")].report_line, "PL-OP-GA")
+
+
+class TestCompleteCashFlowLines(IntegrationTestCase):
+	@classmethod
+	def setUpClass(cls):
+		super().setUpClass()
+		make_company(CASH_FLOW_COMPANY, "_TPC")
+
+	def setUp(self):
+		frappe.db.delete("PSAK ID Account Mapping", {"company": CASH_FLOW_COMPANY})
+		apply_template(SERVICES_1_1, CASH_FLOW_COMPANY, "2027-01-01")
+
+	def mappings(self, account_name):
+		return frappe.get_all(
+			"PSAK ID Account Mapping",
+			filters={"account": get_account(CASH_FLOW_COMPANY, account_name)},
+			fields=["name", "report_line", "valid_from", "cash_flow_line", "cash_flow_line_decrease"],
+			order_by="valid_from",
+		)
+
+	def test_mapped_accounts_get_a_new_dated_mapping_with_the_cash_flow_lines(self):
+		# Without the option, mapped accounts are skipped as before
+		result = apply_template(SERVICES_1_2, CASH_FLOW_COMPANY, "2027-04-01")
+		self.assertEqual((result.created, result.completed), ([], []))
+
+		result = apply_template(SERVICES_1_2, CASH_FLOW_COMPANY, "2027-04-01", complete_cash_flow=1)
+		self.assertEqual(result.failed, [])
+		self.assertEqual(result.created, [])
+		self.assertTrue(result.completed)
+
+		debtors = self.mappings("Debtors")
+		self.assertEqual(
+			[m.valid_from for m in debtors], [datetime.date(2027, 1, 1), datetime.date(2027, 4, 1)]
+		)
+		# The mapping in force before keeps its classification; the new one copies its line
+		self.assertFalse(debtors[0].cash_flow_line)
+		self.assertEqual((debtors[1].report_line, debtors[1].cash_flow_line), ("FP-CA-AR", "CF-OP-WC-AR"))
+
+		depreciation = self.mappings("Accumulated Depreciation")[-1]
+		self.assertEqual(
+			(depreciation.cash_flow_line, depreciation.cash_flow_line_decrease),
+			("CF-INV-PPE-SELL", "CF-OP-DEP"),
+		)
+		# Cash, and income and expense accounts the template gives no line, keep their one mapping
+		self.assertEqual(len(self.mappings("Cash")), 1)
+		self.assertEqual(len(self.mappings("Salary")), 1)
+
+		# Applying again finds nothing left to complete
+		result = apply_template(SERVICES_1_2, CASH_FLOW_COMPANY, "2027-05-01", complete_cash_flow=1)
+		self.assertEqual((result.completed, result.failed), ([], []))
+
+	def test_a_mapping_starting_on_or_after_the_date_is_completed_in_place(self):
+		debtors = self.mappings("Debtors")[0]
+		frappe.db.set_value("PSAK ID Account Mapping", debtors.name, "valid_from", "2027-07-01")
+
+		apply_template(SERVICES_1_2, CASH_FLOW_COMPANY, "2027-04-01", complete_cash_flow=1)
+		self.assertEqual(
+			[(m.name, m.valid_from, m.cash_flow_line) for m in self.mappings("Debtors")],
+			[(debtors.name, datetime.date(2027, 7, 1), "CF-OP-WC-AR")],
+		)
+
+	def test_new_accounts_are_mapped_with_the_cash_flow_lines(self):
+		frappe.db.delete("PSAK ID Account Mapping", {"company": CASH_FLOW_COMPANY})
+		result = apply_template(SERVICES_1_2, CASH_FLOW_COMPANY, "2027-01-01")
+		self.assertEqual(result.failed, [])
+		loan = self.mappings("Secured Loans")[0]
+		self.assertEqual(
+			(loan.cash_flow_line, loan.cash_flow_line_decrease), ("CF-FIN-BORR-IN", "CF-FIN-BORR-OUT")
+		)
+		self.assertFalse(self.mappings("Cash")[0].cash_flow_line)

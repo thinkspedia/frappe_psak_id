@@ -8,15 +8,22 @@ interest, project costs before general rent and travel, and the catch-all "other
 Version 1.1 also maps balance sheet accounts: name rows first, for what an account type cannot
 tell (software is an intangible asset, employee advances are typed Payable, long-term loans are
 not current), then rows on ERPNext's account type (Cash, Receivable, Fixed Asset, ...). Version
-1.0 templates stay as they are, since mappings record the template version they came from.
+1.2 adds the cash flow lines: every balance sheet row but cash names the line its movements are
+presented in, and income and expense rows below operating profit name the line their cash flows
+belong to, so the movements of an account and of its counterpart land on the same activity.
+Earlier versions stay as they are, since mappings record the template version they came from.
 Accounts no row matches stay unmapped and show in the Mapping Control report; a template is a
 starting point the accountant reviews, not a classification the app decides on its own.
 """
 
 import frappe
 
-STANDARD_TEMPLATE_VERSION = "1.1"
+from frappe_psak_id.psak_id.report_lines import ensure_standard_report_lines
+
+STANDARD_TEMPLATE_VERSION = "1.2"
+BALANCE_SHEET_TEMPLATE_VERSION = "1.1"
 PROFIT_OR_LOSS_TEMPLATE_VERSION = "1.0"
+_CASH_FLOW_FIELDS = ("cash_flow_line", "cash_flow_line_decrease")
 
 INCOME, EXPENSE = "Income", "Expense"
 ASSET, LIABILITY, EQUITY = "Asset", "Liability", "Equity"
@@ -31,8 +38,19 @@ OTHER = "Other"
 
 
 def _rows(
-	root_type, patterns, report_line, expense_nature=None, is_final_tax=0, match_on="Name", oci_line=None
+	root_type,
+	patterns,
+	report_line,
+	expense_nature=None,
+	is_final_tax=0,
+	match_on="Name",
+	oci_line=None,
+	cash_flow=None,
+	added_in=PROFIT_OR_LOSS_TEMPLATE_VERSION,
 ) -> list[dict]:
+	"""Template rows of the patterns. ``cash_flow`` is the cash flow line, or a pair of the lines of
+	increases and decreases; ``added_in`` the first template version that has the rows."""
+	cash_flow_line, cash_flow_line_decrease = cash_flow if isinstance(cash_flow, tuple) else (cash_flow, None)
 	return [
 		{
 			"root_type": root_type,
@@ -42,13 +60,35 @@ def _rows(
 			"oci_line": oci_line,
 			"expense_nature": expense_nature,
 			"is_final_tax": is_final_tax,
+			"cash_flow_line": cash_flow_line,
+			"cash_flow_line_decrease": cash_flow_line_decrease,
+			"added_in": added_in,
 		}
 		for pattern in patterns
 	]
 
 
-def _types(root_type, account_types, report_line) -> list[dict]:
-	return _rows(root_type, account_types, report_line, match_on=ACCOUNT_TYPE)
+def _types(root_type, account_types, report_line, cash_flow=None) -> list[dict]:
+	return _rows(root_type, account_types, report_line, match_on=ACCOUNT_TYPE, cash_flow=cash_flow)
+
+
+# Cash flow lines of version 1.2 (PRD-002 Appendix C)
+DEPRECIATION_ADD_BACK = "CF-OP-DEP"
+RECEIVABLES, INVENTORIES = "CF-OP-WC-AR", "CF-OP-WC-INV"
+OTHER_ASSETS, PAYABLES, OTHER_LIABILITIES = "CF-OP-WC-OA", "CF-OP-WC-AP", "CF-OP-WC-OL"
+TAXES_PAID = "CF-OP-TAX"
+EXCHANGE_DIFFERENCES = "CF-OP-FX"
+PPE_PURCHASE, PPE_DISPOSAL = "CF-INV-PPE-BUY", "CF-INV-PPE-SELL"
+INTANGIBLES = "CF-INV-INTANG"
+INVESTMENTS = ("CF-INV-FIN-BUY", "CF-INV-FIN-SELL")
+INTEREST_RECEIVED, DIVIDENDS_RECEIVED, OTHER_INVESTING = "CF-INV-INT", "CF-INV-DIV", "CF-INV-OTH"
+BORROWINGS = ("CF-FIN-BORR-IN", "CF-FIN-BORR-OUT")
+LEASE_PAYMENTS, INTEREST_PAID, DIVIDENDS_PAID = "CF-FIN-LEASE", "CF-FIN-INT", "CF-FIN-DIV"
+SHARE_ISSUES, OTHER_FINANCING = "CF-FIN-EQ", "CF-FIN-OTH"
+# Increases of an asset are debits: a credit to accumulated depreciation is the depreciation added
+# back, a debit is the part of a disposal written off with the asset
+PPE = (PPE_PURCHASE, PPE_DISPOSAL)
+ACCUMULATED_DEPRECIATION = (PPE_DISPOSAL, DEPRECIATION_ADD_BACK)
 
 
 # PPh final is not income tax (PSAK 212): it follows the income it is levied on (BR-21)
@@ -58,6 +98,7 @@ FINAL_TAX = [
 		("*final*bunga*", "*bunga*final*", "*final*deposit*", "*final*interest*"),
 		"PL-INV-INC",
 		is_final_tax=1,
+		cash_flow=INTEREST_RECEIVED,
 	),
 	*_rows(
 		EXPENSE,
@@ -85,6 +126,7 @@ INCOME_TAX = [
 			"*tax expense*",
 		),
 		"PL-TAX",
+		cash_flow=TAXES_PAID,
 	),
 ]
 
@@ -93,6 +135,7 @@ FINANCING = [
 		EXPENSE,
 		("*interest*lease*", "*lease*interest*", "*bunga*sewa*", "*bunga*liabilitas sewa*"),
 		"PL-FIN-LEASE",
+		cash_flow=INTEREST_PAID,
 	),
 	*_rows(
 		EXPENSE,
@@ -104,13 +147,16 @@ FINANCING = [
 			"*bunga*provisi*",
 		),
 		"PL-FIN-OLIAB",
+		# Interest added to the liability, presented with its movements
+		cash_flow=OTHER_LIABILITIES,
 	),
 	*_rows(
 		EXPENSE,
 		("*interest expense*", "*beban bunga*", "*bunga pinjaman*", "*loan interest*", "*interest on loan*"),
 		"PL-FIN-INT",
+		cash_flow=INTEREST_PAID,
 	),
-	*_rows(EXPENSE, ("*loan*fee*", "*provisi pinjaman*"), "PL-FIN-OTH"),
+	*_rows(EXPENSE, ("*loan*fee*", "*provisi pinjaman*"), "PL-FIN-OTH", cash_flow=OTHER_FINANCING),
 ]
 
 INVESTING_INCOME = [
@@ -124,6 +170,8 @@ INVESTING_INCOME = [
 			"*equity method*",
 		),
 		"PL-INV-ASSOC",
+		# Not cash: offsets the increase of the investment
+		cash_flow=INVESTMENTS[0],
 	),
 	*_rows(
 		INCOME,
@@ -134,35 +182,30 @@ INVESTING_INCOME = [
 			"*pendapatan bunga*",
 			"*bunga deposito*",
 			"*jasa giro*",
-			"*dividend*",
-			"*dividen*",
-			"*gain*investment*",
-			"*laba*investasi*",
 		),
 		"PL-INV-INC",
+		cash_flow=INTEREST_RECEIVED,
 	),
+	*_rows(INCOME, ("*dividend*", "*dividen*"), "PL-INV-INC", cash_flow=DIVIDENDS_RECEIVED),
+	*_rows(INCOME, ("*gain*investment*", "*laba*investasi*"), "PL-INV-INC", cash_flow=INVESTMENTS[1]),
 ]
 
 # Exchange differences on trade receivables and payables, disposals of operating assets and
-# rounding are operating; review exchange differences on borrowings (Financing, BR-18)
-OTHER_OPERATING = _rows(
-	None,
-	(
-		"*exchange*",
-		"*selisih kurs*",
-		"*laba*kurs*",
-		"*rugi*kurs*",
-		"*forex*",
-		"*disposal*",
-		"*pelepasan aset*",
-		"*penjualan aset*",
-		"round off",
-		"*pembulatan*",
-		"write off",
+# rounding are operating; review exchange differences on borrowings (Financing, BR-18). The gain
+# or loss on a disposal is part of its proceeds, an investing cash flow.
+OTHER_OPERATING = [
+	*_rows(
+		None, ("*exchange*", "*selisih kurs*", "*laba*kurs*", "*rugi*kurs*", "*forex*"), "PL-OP-OTH", OTHER
 	),
-	"PL-OP-OTH",
-	OTHER,
-)
+	*_rows(
+		None,
+		("*disposal*", "*pelepasan aset*", "*penjualan aset*"),
+		"PL-OP-OTH",
+		OTHER,
+		cash_flow=PPE_DISPOSAL,
+	),
+	*_rows(None, ("round off", "*pembulatan*", "write off"), "PL-OP-OTH", OTHER),
+]
 
 SELLING = _rows(
 	EXPENSE,
@@ -442,11 +485,13 @@ PROPERTY_SPECIFIC = [
 		INCOME,
 		("*fair value*investment property*", "*nilai wajar*properti*"),
 		"PL-INV-INC",
+		cash_flow=OTHER_INVESTING,
 	),
 	*_rows(
 		EXPENSE,
 		("*fair value*investment property*", "*nilai wajar*properti*"),
 		"PL-INV-INC",
+		cash_flow=OTHER_INVESTING,
 	),
 	*_rows(
 		EXPENSE,
@@ -483,23 +528,31 @@ INVESTMENT_HOLDING_REVENUE = _rows(
 
 
 ASSETS = [
-	*_rows(ASSET, ("*right-of-use*", "*right of use*", "*hak guna*"), "FP-NCA-ROU"),
-	*_rows(ASSET, ("*goodwill*",), "FP-NCA-GW"),
+	# Additions are not cash (the lease liability is the counterpart, BR-35); depreciation is
+	# credited to the asset or its accumulated depreciation
+	*_rows(
+		ASSET,
+		("*right-of-use*", "*right of use*", "*hak guna*"),
+		"FP-NCA-ROU",
+		cash_flow=(PPE_PURCHASE, DEPRECIATION_ADD_BACK),
+	),
+	*_rows(ASSET, ("*goodwill*",), "FP-NCA-GW", cash_flow=OTHER_INVESTING),
 	# ERPNext's standard chart types Software as a fixed asset; PSAK 219 makes it intangible
 	*_rows(
 		ASSET,
-		(
-			"software",
-			"*perangkat lunak*",
-			"*intangible*",
-			"*tak berwujud*",
-			"*takberwujud*",
-			"*accumulated amorti*",
-			"*akumulasi amortisasi*",
-		),
+		("software", "*perangkat lunak*", "*intangible*", "*tak berwujud*", "*takberwujud*"),
 		"FP-NCA-INTANG",
+		cash_flow=(INTANGIBLES, DEPRECIATION_ADD_BACK),
 	),
-	*_rows(ASSET, ("*investment property*", "*properti investasi*"), "FP-NCA-INVPROP"),
+	*_rows(
+		ASSET,
+		("*accumulated amorti*", "*akumulasi amortisasi*"),
+		"FP-NCA-INTANG",
+		cash_flow=(INTANGIBLES, DEPRECIATION_ADD_BACK),
+	),
+	*_rows(
+		ASSET, ("*investment property*", "*properti investasi*"), "FP-NCA-INVPROP", cash_flow=OTHER_INVESTING
+	),
 	*_rows(
 		ASSET,
 		(
@@ -509,57 +562,68 @@ ASSETS = [
 			"*investasi*ventura*",
 		),
 		"FP-NCA-ASSOC",
+		cash_flow=INVESTMENTS,
 	),
-	*_rows(ASSET, ("*deferred tax*", "*pajak tangguhan*"), "FP-NCA-DTA"),
-	*_rows(ASSET, ("*held for sale*", "*dimiliki untuk dijual*"), "FP-CA-HFS"),
+	*_rows(ASSET, ("*deferred tax*", "*pajak tangguhan*"), "FP-NCA-DTA", cash_flow=TAXES_PAID),
+	*_rows(ASSET, ("*held for sale*", "*dimiliki untuk dijual*"), "FP-CA-HFS", cash_flow=OTHER_INVESTING),
+	# Prepaid income tax is part of the income tax paid; VAT is a working capital item
 	*_rows(
 		ASSET,
-		(
-			"*prepaid tax*",
-			"*pajak dibayar dimuka*",
-			"*uang muka pajak*",
-			"*input vat*",
-			"*input tax*",
-			"*ppn masukan*",
-			"*pph 22*",
-			"*pph 23*",
-			"*pph pasal 22*",
-			"*pph pasal 23*",
-		),
+		("*prepaid tax*", "*pajak dibayar dimuka*", "*uang muka pajak*"),
 		"FP-CA-TAX",
+		cash_flow=TAXES_PAID,
+	),
+	*_rows(ASSET, ("*input vat*", "*input tax*", "*ppn masukan*"), "FP-CA-TAX", cash_flow=OTHER_ASSETS),
+	*_rows(
+		ASSET,
+		("*pph 22*", "*pph 23*", "*pph pasal 22*", "*pph pasal 23*"),
+		"FP-CA-TAX",
+		cash_flow=TAXES_PAID,
 	),
 	# Employee Advances of the standard chart is typed Payable; the name decides
 	*_rows(
 		ASSET,
 		("*advance*", "*uang muka*", "*kasbon*", "*prepaid*", "*prepayment*", "*dibayar dimuka*"),
 		"FP-CA-PREP",
+		cash_flow=OTHER_ASSETS,
 	),
-	*_rows(ASSET, ("*long-term investment*", "*investasi jangka panjang*"), "FP-NCA-FIN"),
 	*_rows(
 		ASSET,
-		(
-			"earnest money",
-			"*deposit*",
-			"*deposito*",
-			"*jaminan*",
-			"*short-term investment*",
-			"*investasi jangka pendek*",
-		),
+		("*long-term investment*", "*investasi jangka panjang*"),
+		"FP-NCA-FIN",
+		cash_flow=INVESTMENTS,
+	),
+	*_rows(ASSET, ("earnest money",), "FP-CA-FIN", cash_flow=OTHER_ASSETS),
+	*_rows(
+		ASSET,
+		("*deposit*", "*deposito*"),
 		"FP-CA-FIN",
+		cash_flow=INVESTMENTS,
+	),
+	*_rows(ASSET, ("*jaminan*",), "FP-CA-FIN", cash_flow=OTHER_ASSETS),
+	*_rows(
+		ASSET,
+		("*short-term investment*", "*investasi jangka pendek*"),
+		"FP-CA-FIN",
+		cash_flow=INVESTMENTS,
 	),
 	*_types(ASSET, ("Cash", "Bank"), "FP-CA-CASH"),
-	*_types(ASSET, ("Receivable",), "FP-CA-AR"),
-	*_types(ASSET, ("Stock",), "FP-CA-INV"),
-	*_types(ASSET, ("Fixed Asset", "Accumulated Depreciation", "Capital Work in Progress"), "FP-NCA-PPE"),
-	*_types(ASSET, ("Tax",), "FP-CA-TAX"),
-	*_types(ASSET, ("Temporary",), "FP-CA-OTH"),
+	*_types(ASSET, ("Receivable",), "FP-CA-AR", cash_flow=RECEIVABLES),
+	*_types(ASSET, ("Stock",), "FP-CA-INV", cash_flow=INVENTORIES),
+	*_types(ASSET, ("Fixed Asset",), "FP-NCA-PPE", cash_flow=PPE),
+	*_types(ASSET, ("Accumulated Depreciation",), "FP-NCA-PPE", cash_flow=ACCUMULATED_DEPRECIATION),
+	*_types(ASSET, ("Capital Work in Progress",), "FP-NCA-PPE", cash_flow=PPE),
+	*_types(ASSET, ("Tax",), "FP-CA-TAX", cash_flow=OTHER_ASSETS),
+	*_types(ASSET, ("Temporary",), "FP-CA-OTH", cash_flow=OTHER_ASSETS),
 	*_rows(ASSET, ("kas", "kas *", "*kas kecil*", "*petty cash*"), "FP-CA-CASH"),
-	*_rows(ASSET, ("*piutang*", "*receivable*"), "FP-CA-AR"),
-	*_rows(ASSET, ("*persediaan*", "*inventor*"), "FP-CA-INV"),
+	*_rows(ASSET, ("*piutang*", "*receivable*"), "FP-CA-AR", cash_flow=RECEIVABLES),
+	*_rows(ASSET, ("*persediaan*", "*inventor*"), "FP-CA-INV", cash_flow=INVENTORIES),
+	*_rows(ASSET, ("*aset tetap*", "*fixed asset*"), "FP-NCA-PPE", cash_flow=PPE),
 	*_rows(
 		ASSET,
-		("*aset tetap*", "*fixed asset*", "*akumulasi penyusutan*", "*accumulated depreciation*"),
+		("*akumulasi penyusutan*", "*accumulated depreciation*"),
 		"FP-NCA-PPE",
+		cash_flow=ACCUMULATED_DEPRECIATION,
 	),
 ]
 
@@ -569,10 +633,11 @@ LIABILITIES = [
 		LIABILITY,
 		("*long-term lease*", "*non-current lease*", "*liabilitas sewa jangka panjang*"),
 		"FP-NCL-LEASE",
+		cash_flow=LEASE_PAYMENTS,
 	),
-	*_rows(LIABILITY, ("*lease liabilit*", "*liabilitas sewa*"), "FP-CL-LEASE"),
-	*_rows(LIABILITY, ("*deferred tax*", "*pajak tangguhan*"), "FP-NCL-DTL"),
-	*_rows(LIABILITY, ("*held for sale*", "*dimiliki untuk dijual*"), "FP-CL-HFS"),
+	*_rows(LIABILITY, ("*lease liabilit*", "*liabilitas sewa*"), "FP-CL-LEASE", cash_flow=LEASE_PAYMENTS),
+	*_rows(LIABILITY, ("*deferred tax*", "*pajak tangguhan*"), "FP-NCL-DTL", cash_flow=TAXES_PAID),
+	*_rows(LIABILITY, ("*held for sale*", "*dimiliki untuk dijual*"), "FP-CL-HFS", cash_flow=OTHER_INVESTING),
 	*_rows(
 		LIABILITY,
 		(
@@ -584,9 +649,15 @@ LIABILITIES = [
 			"*pesangon*",
 		),
 		"FP-NCL-EB",
+		cash_flow=OTHER_LIABILITIES,
 	),
-	*_rows(LIABILITY, ("*long-term provision*", "*provisi jangka panjang*"), "FP-NCL-PROV"),
-	*_rows(LIABILITY, ("*provision*", "*provisi*"), "FP-CL-PROV"),
+	*_rows(
+		LIABILITY,
+		("*long-term provision*", "*provisi jangka panjang*"),
+		"FP-NCL-PROV",
+		cash_flow=OTHER_LIABILITIES,
+	),
+	*_rows(LIABILITY, ("*provision*", "*provisi*"), "FP-CL-PROV", cash_flow=OTHER_LIABILITIES),
 	*_rows(
 		LIABILITY,
 		(
@@ -598,11 +669,13 @@ LIABILITIES = [
 			"*utang obligasi*",
 		),
 		"FP-NCL-BORR",
+		cash_flow=BORROWINGS,
 	),
 	*_rows(
 		LIABILITY,
 		("*loan*", "*borrow*", "*pinjaman*", "*overdraft*", "*cerukan*", "*utang bank*"),
 		"FP-CL-BORR",
+		cash_flow=BORROWINGS,
 	),
 	*_rows(
 		LIABILITY,
@@ -616,6 +689,21 @@ LIABILITIES = [
 			"*liabilitas kontrak*",
 		),
 		"FP-CL-CONTRACT",
+		cash_flow=OTHER_LIABILITIES,
+	),
+	# Income tax payable belongs with the income tax paid, other taxes with working capital
+	*_rows(
+		LIABILITY,
+		(
+			"*income tax payable*",
+			"*utang pph badan*",
+			"*utang pph 29*",
+			"*utang pph pasal 29*",
+			"*utang pajak penghasilan badan*",
+		),
+		"FP-CL-TAX",
+		cash_flow=TAXES_PAID,
+		added_in="1.2",
 	),
 	*_rows(
 		LIABILITY,
@@ -628,6 +716,35 @@ LIABILITIES = [
 			"*ppn keluaran*",
 		),
 		"FP-CL-TAX",
+		cash_flow=OTHER_LIABILITIES,
+	),
+	# Payables of investing and financing items, kept apart from trade payables (OQ-12): their
+	# settlement is the cash flow of the item
+	*_rows(
+		LIABILITY,
+		("*accrued interest*", "*bunga*masih harus dibayar*", "*utang bunga*"),
+		"FP-CL-ACCR",
+		cash_flow=INTEREST_PAID,
+		added_in="1.2",
+	),
+	*_rows(
+		LIABILITY,
+		("*dividend*payable*", "*utang dividen*"),
+		"FP-CL-AP",
+		cash_flow=DIVIDENDS_PAID,
+		added_in="1.2",
+	),
+	*_rows(
+		LIABILITY,
+		(
+			"*fixed asset*payable*",
+			"*asset purchase*payable*",
+			"*utang pembelian aset*",
+			"*utang aset tetap*",
+		),
+		"FP-CL-AP",
+		cash_flow=PPE_PURCHASE,
+		added_in="1.2",
 	),
 	*_rows(
 		LIABILITY,
@@ -641,38 +758,59 @@ LIABILITIES = [
 			"*utang gaji*",
 		),
 		"FP-CL-ACCR",
+		cash_flow=OTHER_LIABILITIES,
 	),
-	*_types(
-		LIABILITY,
-		("Payable", "Stock Received But Not Billed", "Asset Received But Not Billed"),
-		"FP-CL-AP",
-	),
-	*_types(LIABILITY, ("Tax",), "FP-CL-TAX"),
-	*_rows(LIABILITY, ("*utang usaha*", "*utang lain*", "*payable*"), "FP-CL-AP"),
+	*_types(LIABILITY, ("Payable", "Stock Received But Not Billed"), "FP-CL-AP", cash_flow=PAYABLES),
+	*_types(LIABILITY, ("Asset Received But Not Billed",), "FP-CL-AP", cash_flow=PPE_PURCHASE),
+	*_types(LIABILITY, ("Tax",), "FP-CL-TAX", cash_flow=OTHER_LIABILITIES),
+	*_rows(LIABILITY, ("*utang usaha*", "*utang lain*", "*payable*"), "FP-CL-AP", cash_flow=PAYABLES),
 ]
 
 # Equity has no account types to go by. Reserves of other comprehensive income also name the line
-# of the statement their movements are presented in (BR-38).
+# of the statement their movements are presented in (BR-38). Their movements are not cash: each
+# takes the cash flow line of the account it is booked against (the revalued asset, the deferred
+# tax, the employee benefit liability).
 EQUITY_ROWS = [
 	*_rows(
 		EQUITY,
 		("*revaluation*tax*", "*pajak*revaluasi*"),
 		"FP-EQ-OCI",
 		oci_line="OCI-NR-TAX",
+		cash_flow=TAXES_PAID,
 	),
-	*_rows(EQUITY, ("*revaluation*", "*revaluasi*"), "FP-EQ-OCI", oci_line="OCI-NR-REV"),
-	*_rows(EQUITY, ("*remeasurement*", "*pengukuran kembali*"), "FP-EQ-OCI", oci_line="OCI-NR-EB"),
-	*_rows(EQUITY, ("*translation*", "*penjabaran*"), "FP-EQ-OCI", oci_line="OCI-R-FX"),
-	*_rows(EQUITY, ("*treasury*", "*treasuri*"), "FP-EQ-TREAS"),
+	*_rows(
+		EQUITY,
+		("*revaluation*", "*revaluasi*"),
+		"FP-EQ-OCI",
+		oci_line="OCI-NR-REV",
+		cash_flow=PPE_PURCHASE,
+	),
+	*_rows(
+		EQUITY,
+		("*remeasurement*", "*pengukuran kembali*"),
+		"FP-EQ-OCI",
+		oci_line="OCI-NR-EB",
+		cash_flow=OTHER_LIABILITIES,
+	),
+	*_rows(
+		EQUITY,
+		("*translation*", "*penjabaran*"),
+		"FP-EQ-OCI",
+		oci_line="OCI-R-FX",
+		cash_flow=EXCHANGE_DIFFERENCES,
+	),
+	*_rows(EQUITY, ("*treasury*", "*treasuri*"), "FP-EQ-TREAS", cash_flow=OTHER_FINANCING),
 	*_rows(
 		EQUITY,
 		("*additional paid-in*", "*share premium*", "*agio*", "*tambahan modal disetor*"),
 		"FP-EQ-APIC",
+		cash_flow=SHARE_ISSUES,
 	),
 	*_rows(
 		EQUITY,
 		("*capital stock*", "*share capital*", "*modal saham*", "*modal disetor*"),
 		"FP-EQ-CAP",
+		cash_flow=SHARE_ISSUES,
 	),
 	*_rows(
 		EQUITY,
@@ -685,18 +823,20 @@ EQUITY_ROWS = [
 			"*laba tahun berjalan*",
 		),
 		"FP-EQ-RE",
+		cash_flow=DIVIDENDS_PAID,
 	),
 	*_rows(
 		EQUITY,
 		("opening balance*", "*saldo awal*", "*other equity*", "*ekuitas lain*"),
 		"FP-EQ-OTH",
+		cash_flow=OTHER_FINANCING,
 	),
 ]
 
 BALANCE_SHEET = [*ASSETS, *LIABILITIES, *EQUITY_ROWS]
 
 
-def _template(industry, specific, revenue, cost_of_sales, balance_sheet=True) -> dict:
+def _template(industry, specific, revenue, cost_of_sales, version=STANDARD_TEMPLATE_VERSION) -> dict:
 	profit_or_loss = [
 		*specific,
 		*FINAL_TAX,
@@ -710,19 +850,37 @@ def _template(industry, specific, revenue, cost_of_sales, balance_sheet=True) ->
 		*MISCELLANEOUS,
 		*revenue,
 	]
-	if not balance_sheet:
+	if version == PROFIT_OR_LOSS_TEMPLATE_VERSION:
 		return {
 			"template_name": f"{industry} (Standard)",
 			"industry": industry,
-			"template_version": PROFIT_OR_LOSS_TEMPLATE_VERSION,
-			"rows": profit_or_loss,
+			"template_version": version,
+			"rows": _rows_of_version(profit_or_loss, version),
 		}
 	return {
-		"template_name": f"{industry} (Standard {STANDARD_TEMPLATE_VERSION})",
+		"template_name": f"{industry} (Standard {version})",
 		"industry": industry,
-		"template_version": STANDARD_TEMPLATE_VERSION,
-		"rows": [*BALANCE_SHEET, *profit_or_loss],
+		"template_version": version,
+		"rows": _rows_of_version([*BALANCE_SHEET, *profit_or_loss], version),
 	}
+
+
+def _rows_of_version(rows: list[dict], version: str) -> list[dict]:
+	"""The rows a template version has, without the cash flow lines before version 1.2."""
+	with_cash_flow = _version_key(version) >= _version_key(STANDARD_TEMPLATE_VERSION)
+	return [
+		{
+			key: value
+			for key, value in row.items()
+			if key != "added_in" and (with_cash_flow or key not in _CASH_FLOW_FIELDS)
+		}
+		for row in rows
+		if _version_key(row["added_in"]) <= _version_key(version)
+	]
+
+
+def _version_key(version: str) -> tuple:
+	return tuple(int(part) for part in version.split("."))
 
 
 INDUSTRIES = (
@@ -748,15 +906,22 @@ INDUSTRIES = (
 	),
 )
 
-# The profit or loss only templates of 1.0 remain for the mappings made from them
-STANDARD_TEMPLATES = (
-	*(_template(*industry) for industry in INDUSTRIES),
-	*(_template(*industry, balance_sheet=False) for industry in INDUSTRIES),
+# The templates of earlier versions remain for the mappings made from them
+STANDARD_TEMPLATES = tuple(
+	_template(*industry, version=version)
+	for version in (
+		STANDARD_TEMPLATE_VERSION,
+		BALANCE_SHEET_TEMPLATE_VERSION,
+		PROFIT_OR_LOSS_TEMPLATE_VERSION,
+	)
+	for industry in INDUSTRIES
 )
 
 
 def ensure_standard_mapping_templates():
 	"""Insert standard templates that are missing; never overwrite a template the user changed."""
+	# An older patch may run this before the patch that adds the lines the templates map to
+	ensure_standard_report_lines()
 	for template in STANDARD_TEMPLATES:
 		if frappe.db.exists("PSAK ID Mapping Template", template["template_name"]):
 			continue

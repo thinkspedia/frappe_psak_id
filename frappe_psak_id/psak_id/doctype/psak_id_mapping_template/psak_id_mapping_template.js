@@ -18,6 +18,18 @@ frappe.ui.form.on("PSAK ID Mapping Template", {
 		frm.set_query("oci_line", "rows", () => ({
 			filters: { line_type: "Line", disabled: 0, statement: "Other Comprehensive Income" },
 		}));
+		// Opening cash, exchange effects and lines taken from another statement are computed
+		const cash_flow_query = () => ({
+			filters: {
+				statement: "Cash Flow",
+				line_type: "Line",
+				disabled: 0,
+				category: ["is", "set"],
+				source_line: ["is", "not set"],
+			},
+		});
+		frm.set_query("cash_flow_line", "rows", cash_flow_query);
+		frm.set_query("cash_flow_line_decrease", "rows", cash_flow_query);
 	},
 
 	refresh(frm) {
@@ -27,6 +39,7 @@ frappe.ui.form.on("PSAK ID Mapping Template", {
 });
 
 function apply_to_company(frm) {
+	const has_cash_flow_lines = frm.doc.rows.some((row) => row.cash_flow_line);
 	const dialog = new frappe.ui.Dialog({
 		title: __("Apply {0} to a Company", [frm.doc.name]),
 		fields: [
@@ -46,6 +59,16 @@ function apply_to_company(frm) {
 				reqd: 1,
 				description: __(
 					"Usually the PSAK 118 adoption date of the company, or the day after its last final statement."
+				),
+			},
+			{
+				fieldname: "complete_cash_flow",
+				label: __("Complete Cash Flow Lines"),
+				fieldtype: "Check",
+				default: has_cash_flow_lines ? 1 : 0,
+				hidden: has_cash_flow_lines ? 0 : 1,
+				description: __(
+					"Mappings without a cash flow line get the line of the template from Valid From, in a new dated mapping. Statements before that date do not change."
 				),
 			},
 			{
@@ -93,16 +116,24 @@ function show_result(result, company) {
 			.join("");
 		return `<details class="mt-2"><summary>${title} (${items.length})</summary><ul>${rows}</ul></details>`;
 	};
-	const summary = __(
+	let summary = __(
 		"{0} mappings created, {1} accounts skipped (already mapped), {2} not matched.",
 		[result.created.length, result.skipped.length, result.unmatched.length]
 	);
+	if (result.completed.length) {
+		summary +=
+			" " + __("{0} mappings completed with a cash flow line.", [result.completed.length]);
+	}
 	const dialog = frappe.msgprint({
 		title: __("Template Applied"),
 		indicator: result.failed.length ? "orange" : "green",
 		message:
 			`<p>${summary}</p>` +
 			list(__("Not matched: map these by hand"), result.unmatched) +
+			list(
+				__("Completed with a cash flow line"),
+				result.completed.map((item) => `${item.account}: ${item.cash_flow_line}`)
+			) +
 			list(__("Refused"), result.failed) +
 			list(__("Skipped"), result.skipped),
 		primary_action: {
