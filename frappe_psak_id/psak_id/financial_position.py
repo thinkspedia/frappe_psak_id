@@ -198,7 +198,7 @@ def get_account_balances(
 		.where(account.root_type.isin(BALANCE_SHEET_ROOT_TYPES))
 		.where(gle.posting_date <= getdate(to_date))
 		.where(gle.is_cancelled == 0)
-		.where(gle.finance_book.isin(_books(company, finance_book)) | gle.finance_book.isnull())
+		.where(gle.finance_book.isin(finance_books(company, finance_book)) | gle.finance_book.isnull())
 		.groupby(*group_columns, account.root_type)
 	)
 	if closing_from:
@@ -222,7 +222,7 @@ def profit_or_loss_before(company: str, date, finance_book: str | None = None) -
 		.where(account.root_type.isin(PROFIT_OR_LOSS_ROOT_TYPES))
 		.where(gle.posting_date < getdate(date))
 		.where(gle.is_cancelled == 0)
-		.where(gle.finance_book.isin(_books(company, finance_book)) | gle.finance_book.isnull())
+		.where(gle.finance_book.isin(finance_books(company, finance_book)) | gle.finance_book.isnull())
 		.run()
 	)
 	return flt(result[0][0], 2) if result else 0.0
@@ -244,7 +244,7 @@ def mapped_accounts(company: str, to_date) -> set:
 	)
 
 
-def _books(company: str, finance_book: str | None) -> list:
+def finance_books(company: str, finance_book: str | None) -> list:
 	books = [finance_book or ""]
 	if include_default_book(company, finance_book):
 		books.append(frappe.get_cached_value("Company", company, "default_finance_book") or "")
