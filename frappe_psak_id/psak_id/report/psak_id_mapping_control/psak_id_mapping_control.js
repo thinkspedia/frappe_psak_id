@@ -35,6 +35,20 @@ frappe.query_reports[PSAK_MAPPING_CONTROL] = {
 			fieldtype: "Link",
 			options: "Finance Book",
 		},
+		{
+			// The package the period is checked for: only quarterly and yearly packages have a
+			// statement of cash flows, so only there its issues block
+			fieldname: "periodicity",
+			label: __("Periodicity"),
+			fieldtype: "Select",
+			options: [
+				{ value: "Monthly", label: __("Monthly") },
+				{ value: "Quarterly", label: __("Quarterly") },
+				{ value: "Yearly", label: __("Yearly") },
+			],
+			default: "Monthly",
+			reqd: 1,
+		},
 	],
 
 	onload(report) {
@@ -48,7 +62,7 @@ frappe.query_reports[PSAK_MAPPING_CONTROL] = {
 	formatter(value, row, column, data, default_formatter) {
 		if (!data) return default_formatter(value, row, column, data);
 		if (column.fieldname === "severity_label") {
-			const color = data.severity === "Blocking" ? "red" : "orange";
+			const color = { Blocking: "red", Warning: "orange" }[data.severity] || "blue";
 			return `<span class="indicator-pill ${color}">${frappe.utils.escape_html(
 				value
 			)}</span>`;
@@ -73,6 +87,9 @@ frappe.query_reports[PSAK_MAPPING_CONTROL] = {
 			"Difference to ERPNext": __("Open Profit and Loss"),
 			"Restatement Difference": __("Open Profit and Loss"),
 			"Difference to ERPNext Balance Sheet": __("Open Balance Sheet"),
+			"No Cash Flow Line": __("Open Mappings"),
+			"Cash Difference": __("Open Cash Flows"),
+			"Non-cash Transaction": __("Open Voucher"),
 		}[data.check];
 	},
 
@@ -86,10 +103,24 @@ frappe.query_reports[PSAK_MAPPING_CONTROL] = {
 				break;
 			case "Disabled Line":
 			case "Conflicting Mappings":
+			case "No Cash Flow Line":
 				frappe.set_route("List", PSAK_MAPPING, { company, account: data.account });
 				break;
 			case "Other Items Above Threshold":
 				frappe.set_route("List", PSAK_MAPPING, { company, report_line: data.report_line });
+				break;
+			case "Cash Difference":
+				frappe.route_options = {
+					company,
+					from_date: data.from_date,
+					to_date: data.to_date,
+					comparative: 0,
+					finance_book: report.get_filter_value("finance_book") || "",
+				};
+				frappe.set_route("query-report", "PSAK 118 Cash Flows");
+				break;
+			case "Non-cash Transaction":
+				frappe.set_route("Form", data.voucher_type, data.voucher_no);
 				break;
 			default:
 				// A balance sheet difference spans the fiscal year up to the date it is on

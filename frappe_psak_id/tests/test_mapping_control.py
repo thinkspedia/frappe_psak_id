@@ -211,7 +211,11 @@ class TestMappingControl(IntegrationTestCase):
 		self.assertIn(self.salary, [row.subject for row in data])
 		self.assertIsNone(message)
 		values = {item["label"]: item["value"] for item in summary}
-		self.assertEqual((values["Blocking Issues"], values["Warnings"]), (8, 1))
+		self.assertEqual((values["Blocking Issues"], values["Warnings"]), (8, 2))
+		# Unmapped expenses leave operating cash flows short too: a warning, as a monthly package
+		# has no statement of cash flows
+		self.assertEqual(values["Cash Difference"], 95_000)
+		self.assertEqual([row.severity for row in data if row.check == "Cash Difference"], [WARNING])
 		self.assertEqual(
 			(values["Difference to ERPNext Profit and Loss"], values["Restatement Difference"]),
 			(95_000, 7_000),

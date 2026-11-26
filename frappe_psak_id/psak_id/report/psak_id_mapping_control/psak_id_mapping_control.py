@@ -4,24 +4,34 @@
 """Mapping Control: what has to be fixed before the PSAK 118 statement can be sent for review.
 
 One row per issue, each with the document to open to fix it. The checks themselves live in
-``psak_id/checks.py`` so the Financial Statement runs the same ones.
+``psak_id/checks.py`` so the Financial Statement runs the same ones. The periodicity is that of the
+package the period is checked for: the statement of cash flows is only part of a quarterly or
+yearly package, so only there its issues block (BR-42).
 """
 
 import frappe
 from frappe import _
 from frappe.utils import fmt_money, formatdate, getdate
 
+from frappe_psak_id.psak_id.cash_flow import NO_CASH_FLOW_LINE
 from frappe_psak_id.psak_id.checks import (
 	BALANCE_SHEET_DIFFERENCE,
 	BLOCKING,
+	CASH_DIFFERENCE,
+	CASH_FLOW_PERIODICITIES,
 	CONFLICTING_MAPPINGS,
 	CURRENT,
 	ERPNEXT_DIFFERENCE,
+	INFORMATION,
+	MONTHLY,
+	NON_CASH_TRANSACTION,
 	OTHER_ITEMS,
 	RESTATED,
 	UNMAPPED_BALANCE,
+	WARNING,
 	balance_sheet_difference_issues,
 	balance_sheet_issues,
+	cash_flow_issues,
 	run_checks,
 )
 from frappe_psak_id.psak_id.statement import (
@@ -42,6 +52,9 @@ def execute(filters: dict | None = None):
 	result.issues += balance_sheet_difference_issues(
 		filters.company, filters.to_date, filters.finance_book, restated=bool(result.restated)
 	)
+	result.issues += cash_flow_issues(
+		filters.company, filters.from_date, filters.to_date, filters.finance_book, filters.periodicity
+	)
 	currency = result.current.currency
 	labels = _line_labels()
 	data = [_row(issue, currency, labels, index) for index, issue in enumerate(result.issues)]
@@ -58,6 +71,8 @@ def _validate(filters):
 			frappe.throw(_("Choose the {0} to check.").format(label), frappe.MandatoryError)
 	if getdate(filters.from_date) > getdate(filters.to_date):
 		frappe.throw(_("The period starts after it ends."), StatementError)
+	if filters.periodicity not in CASH_FLOW_PERIODICITIES:
+		filters.periodicity = MONTHLY
 	check_read_access(filters.company)
 
 
@@ -66,7 +81,7 @@ def _columns(currency) -> list[dict]:
 		{"fieldname": "check_label", "label": _("Check"), "fieldtype": "Data", "width": 200},
 		{"fieldname": "severity_label", "label": _("Severity"), "fieldtype": "Data", "width": 100},
 		{"fieldname": "period_label", "label": _("Period"), "fieldtype": "Data", "width": 200},
-		{"fieldname": "subject", "label": _("Account or Line"), "fieldtype": "Data", "width": 240},
+		{"fieldname": "subject", "label": _("Account, Line or Voucher"), "fieldtype": "Data", "width": 240},
 		{
 			"fieldname": "amount",
 			"label": _("Amount"),
@@ -126,6 +141,30 @@ def _row(issue, currency, labels, index) -> frappe._dict:
 			"Map the balance sheet accounts listed above. Profit or loss accounts left unmapped since "
 			"the start of the fiscal year also leave their profit out of retained earnings."
 		)
+	elif issue.check == NO_CASH_FLOW_LINE and issue.balance_only:
+		label = _("No cash flow line")
+		detail = _(
+			"Has a balance but its mapping has no cash flow line, so its movements would be left out of "
+			"the statement of cash flows. Set the Cash Flow Line of the mapping."
+		)
+	elif issue.check == NO_CASH_FLOW_LINE:
+		label = _("No cash flow line")
+		detail = _(
+			"Its cash effect in the period is left out of the statement of cash flows. Set the Cash Flow "
+			"Line of its mapping."
+		)
+	elif issue.check == CASH_DIFFERENCE:
+		label = _("Cash difference")
+		detail = _(
+			"Closing cash of the statement of cash flows differs from the balance of the accounts mapped "
+			"to cash and cash equivalents. Set the missing cash flow lines listed above."
+		)
+	elif issue.check == NON_CASH_TRANSACTION:
+		label = _("Non-cash transaction")
+		detail = _(
+			"Left out of investing and financing cash flows and disclosed as a non-cash transaction. "
+			"Check that no cash was paid or received."
+		)
 	elif issue.check == ERPNEXT_DIFFERENCE:
 		label = _("Difference to ERPNext Profit and Loss")
 		detail = _(
@@ -146,17 +185,23 @@ def _row(issue, currency, labels, index) -> frappe._dict:
 		period=issue.period,
 		check_label=label,
 		severity=issue.severity,
-		severity_label=_("Blocking") if issue.severity == BLOCKING else _("Warning"),
+		severity_label=_severity_label(issue.severity),
 		period_label=period,
-		subject=issue.account or line or "",
+		subject=issue.account or issue.voucher_no or line or "",
 		amount=issue.amount,
 		currency=currency,
 		detail=detail,
 		account=issue.account,
 		report_line=issue.report_line,
+		voucher_type=issue.voucher_type,
+		voucher_no=issue.voucher_no,
 		from_date=str(issue.from_date),
 		to_date=str(issue.to_date),
 	)
+
+
+def _severity_label(severity: str) -> str:
+	return {BLOCKING: _("Blocking"), WARNING: _("Warning")}.get(severity, _("Information"))
 
 
 def _line_labels() -> dict:
@@ -170,7 +215,7 @@ def _line_labels() -> dict:
 
 def _summary(result, data) -> list[dict]:
 	blocking = sum(1 for row in data if row.severity == BLOCKING)
-	warnings = len(data) - blocking
+	warnings = sum(1 for row in data if row.severity == WARNING)
 	currency = result.current.currency
 	summary = [
 		{
@@ -221,11 +266,21 @@ def _summary(result, data) -> list[dict]:
 				"indicator": "Red" if result.restated.ledger_difference else "Green",
 			}
 		)
+	cash_difference = sum(row.amount for row in data if row.check == CASH_DIFFERENCE)
+	summary.append(
+		{
+			"label": _("Cash Difference"),
+			"value": cash_difference,
+			"datatype": "Currency",
+			"currency": currency,
+			"indicator": "Red" if cash_difference else "Green",
+		}
+	)
 	return summary
 
 
 def _message(data) -> str | None:
-	if not data:
+	if not any(row.severity != INFORMATION for row in data):
 		return _("No issues. The statement of this period can be sent for review.")
 	if not any(row.severity == BLOCKING for row in data):
 		return _("No blocking issues. Review the warnings before sending the statement for review.")
