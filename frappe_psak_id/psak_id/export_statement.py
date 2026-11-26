@@ -19,6 +19,9 @@ from openpyxl import Workbook
 from openpyxl.styles import Alignment, Border, Font, Side
 from openpyxl.utils import get_column_letter
 
+from frappe_psak_id.psak_id.doctype.psak_id_financial_statement.psak_id_financial_statement import (
+	statement_lines,
+)
 from frappe_psak_id.psak_id.print_statement import DOCTYPE, file_name, get_print_context
 from frappe_psak_id.psak_id.report.psak_118_profit_or_loss.psak_118_profit_or_loss import CATEGORY_LABELS
 from frappe_psak_id.psak_id.report_lines import parse_subtotal_formula
@@ -136,7 +139,7 @@ def get_structured_rows(doc) -> list[dict]:
 			"statement_name": doc.name,
 			"status": doc.workflow_state,
 		}
-		for line in doc.lines
+		for line in statement_lines(doc)
 		if line.line_type != "Heading"
 	]
 
@@ -152,7 +155,7 @@ def subtotal_terms(doc, line_codes: set, formulas: dict, code: str) -> list[tupl
 		if term.kind == "category":
 			terms.extend(
 				(term.sign, line.report_line)
-				for line in doc.lines
+				for line in statement_lines(doc)
 				if line.line_type == "Line" and line.category == term.ref
 			)
 		elif term.ref in line_codes:
@@ -193,10 +196,10 @@ def _profit_or_loss_sheet(sheet, doc, context, number_format):
 			as_list=True,
 		)
 	)
-	lines = [line for line in doc.lines if line.line_type != "Heading"]
+	lines = [line for line in statement_lines(doc) if line.line_type != "Heading"]
 	line_codes = {line.report_line for line in lines}
 	row_of, rows, heading = {}, [], None
-	for line in doc.lines:
+	for line in statement_lines(doc):
 		if show_headings and line.line_type == "Line" and line.category != heading:
 			heading = line.category
 			rows.append(("Heading", CATEGORY_LABELS.get(heading, (heading, heading)), None))

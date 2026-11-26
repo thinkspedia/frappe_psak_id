@@ -7,6 +7,7 @@
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
+  "statement",
   "report_line",
   "label_id",
   "label_en",
@@ -85,6 +86,14 @@
    "label": "Comparative Amount",
    "options": "currency",
    "read_only": 1
+  },
+  {
+   "default": "Profit or Loss",
+   "fieldname": "statement",
+   "fieldtype": "Select",
+   "label": "Statement",
+   "options": "Profit or Loss\nOther Comprehensive Income\nFinancial Position",
+   "read_only": 1
   }
  ],
  "grid_page_length": 50,
@@ -92,7 +101,7 @@
  "istable": 1,
  "link_display_mode": "Search",
  "links": [],
- "modified": "2026-11-24 08:18:20.499153",
+ "modified": "2026-11-25 09:18:17.782374",
  "modified_by": "Administrator",
  "module": "PSAK ID",
  "name": "PSAK ID Financial Statement Line",

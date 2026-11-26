@@ -6,7 +6,9 @@ from frappe_psak_id.psak_id.doctype.psak_id_financial_statement.psak_id_financia
 	period_is_closed,
 	reopen_statement,
 	set_return_reason,
+	statement_lines,
 )
+from frappe_psak_id.psak_id.financial_position import compute_financial_position
 from frappe_psak_id.tests.utils import (
 	IntegrationTestCase,
 	get_account,
@@ -92,6 +94,7 @@ class TestStatementLines(IntegrationTestCase):
 		cls.sales = get_account(TRANSITION_COMPANY, "Sales")
 		cls.salary = get_account(TRANSITION_COMPANY, "Salary")
 		frappe.db.delete("PSAK ID Account Mapping", {"company": TRANSITION_COMPANY})
+		make_mapping(TRANSITION_COMPANY, cash, "FP-CA-CASH")
 		make_mapping(TRANSITION_COMPANY, cls.sales, "PL-OP-REV")
 		make_mapping(TRANSITION_COMPANY, cls.salary, "PL-OP-GA", expense_nature="Employee Benefits")
 		for posting_date, account, amount in (
@@ -118,7 +121,11 @@ class TestStatementLines(IntegrationTestCase):
 		self.assertEqual(
 			(doc.blocking_issues, doc.erpnext_pl_difference, doc.restatement_difference), (0, 0, 0)
 		)
-		self.assertEqual(doc.lines[0].report_line, "PL-OP-REV")
+		statements = [row.statement for row in doc.lines]
+		# The package in PSAK order: financial position, then profit or loss
+		self.assertEqual(statements.index("Profit or Loss"), statements.count("Financial Position"))
+		self.assertEqual(statement_lines(doc)[0].report_line, "PL-OP-REV")
+		self.assertNotIn("Other Comprehensive Income", statements)
 
 		with self.assertRaises(frappe.DuplicateEntryError):
 			make_statement(
@@ -232,13 +239,21 @@ class TestStatementLines(IntegrationTestCase):
 		doc = make_statement(
 			TRANSITION_COMPANY, "2027-03-01", "2027-03-31", comparative="Restated Prior Year"
 		).insert()
-		self.assertEqual((doc.unmapped_count, doc.blocking_issues), (1, 2))
-		self.assertEqual(doc.erpnext_pl_difference, 40_000)
+		# The unmapped expense, the difference to ERPNext's Profit and Loss and to its Balance Sheet,
+		# whose retained earnings miss the expense; and the restated prior year end when another
+		# test left an unmapped account in that year
+		restated = compute_financial_position(TRANSITION_COMPANY, "2026-12-31", mapping_date="2027-03-31")
+		self.assertEqual(doc.unmapped_count, 1)
+		self.assertEqual(doc.blocking_issues, 3 + bool(restated.ledger_difference))
+		self.assertEqual((doc.erpnext_pl_difference, doc.erpnext_bs_difference), (40_000, 40_000))
+		self.assertIn("Balance Sheet", doc.check_messages)
 
 		with self.assertRaises(StatementNotReady):
 			apply_workflow(doc, "Submit for Review")
 
 		make_mapping(TRANSITION_COMPANY, travel, "PL-OP-GA", "2027-03-01", expense_nature="Other")
+		legacy = make_account(TRANSITION_COMPANY, "Statement Legacy", "Indirect Expenses")
+		make_mapping(TRANSITION_COMPANY, legacy, "PL-OP-GA", "2027-03-01", expense_nature="Other")
 		doc.reload()
 		doc.lines[0].note_no = "21"
 		doc.save()
@@ -262,6 +277,7 @@ class TestStatementWorkflow(IntegrationTestCase):
 		cls.sales = get_account(COMPANY, "Sales")
 		cls.sundry = make_account(COMPANY, "Statement Sundry", "Indirect Expenses")
 		frappe.db.delete("PSAK ID Account Mapping", {"company": COMPANY})
+		make_mapping(COMPANY, cls.cash, "FP-CA-CASH")
 		make_mapping(COMPANY, cls.sales, "PL-OP-REV")
 		make_mapping(COMPANY, cls.sundry, "PL-OP-OTH", expense_nature="Other")
 		for posting_date, account, amount in (

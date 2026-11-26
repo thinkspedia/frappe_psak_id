@@ -51,6 +51,14 @@ frappe.ui.form.on("PSAK ID Financial Statement", {
 			() => frappe.set_route("query-report", "PSAK 118 Profit or Loss", filters),
 			__("View")
 		);
+		const position_filters = { company: frm.doc.company, to_date: frm.doc.to_date };
+		if (frm.doc.finance_book) position_filters.finance_book = frm.doc.finance_book;
+		frm.add_custom_button(
+			__("PSAK 118 Financial Position"),
+			() =>
+				frappe.set_route("query-report", "PSAK 118 Financial Position", position_filters),
+			__("View")
+		);
 		const downloads = [
 			[__("PDF"), `${PRINT_METHODS}.download_pdf`, {}],
 			[__("Excel"), `${EXPORT_METHODS}.export_excel`, {}],

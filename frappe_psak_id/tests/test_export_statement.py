@@ -6,6 +6,9 @@ import frappe
 from frappe.utils import flt
 from openpyxl import load_workbook
 
+from frappe_psak_id.psak_id.doctype.psak_id_financial_statement.psak_id_financial_statement import (
+	statement_lines,
+)
 from frappe_psak_id.psak_id.export_statement import (
 	STRUCTURED_COLUMNS,
 	export_excel,
@@ -39,6 +42,7 @@ class TestExportStatement(IntegrationTestCase):
 		salary = get_account(COMPANY, "Salary")
 		rent = make_account(COMPANY, "Export Rent", "Indirect Expenses")
 		frappe.db.delete("PSAK ID Account Mapping", {"company": COMPANY})
+		make_mapping(COMPANY, cash, "FP-CA-CASH")
 		make_mapping(COMPANY, sales, "PL-OP-REV")
 		make_mapping(COMPANY, salary, "PL-OP-GA", expense_nature="Employee Benefits")
 		make_mapping(COMPANY, rent, "PL-OP-GA", expense_nature="Other")
@@ -72,7 +76,7 @@ class TestExportStatement(IntegrationTestCase):
 		self.assertIn("DRAFT", [sheet.cell(row, 1).value for row in range(1, 12)])
 		rows = {sheet.cell(row, 2).value: row for row in range(1, sheet.max_row + 1)}
 		subtotals = 0
-		for line in doc.lines:
+		for line in statement_lines(doc):
 			row = rows[line.label_en]
 			for column, field in ((4, "amount"), (5, "comparative_amount")):
 				cell = sheet.cell(row, column)
@@ -102,7 +106,7 @@ class TestExportStatement(IntegrationTestCase):
 
 	def test_structured_data_has_one_row_per_line(self):
 		doc = self.statement
-		lines = [line for line in doc.lines if line.line_type != "Heading"]
+		lines = [line for line in statement_lines(doc) if line.line_type != "Heading"]
 
 		export_structured(doc.name, "csv")
 		response = frappe.local.response
