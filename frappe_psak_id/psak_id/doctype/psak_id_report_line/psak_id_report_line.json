@@ -27,6 +27,7 @@
   "follows_operating",
   "reclassifiable",
   "column_break_rules",
+  "source_line",
   "psak201_line",
   "mandatory",
   "disabled",
@@ -50,7 +51,7 @@
    "fieldtype": "Select",
    "in_standard_filter": 1,
    "label": "Statement",
-   "options": "Profit or Loss\nFinancial Position\nOther Comprehensive Income",
+   "options": "Profit or Loss\nFinancial Position\nOther Comprehensive Income\nCash Flow",
    "reqd": 1
   },
   {
@@ -71,7 +72,7 @@
    "in_list_view": 1,
    "in_standard_filter": 1,
    "label": "Category",
-   "mandatory_depends_on": "eval:doc.line_type=='Line' && doc.statement!='Other Comprehensive Income'",
+   "mandatory_depends_on": "eval:doc.line_type=='Line' && !['Other Comprehensive Income','Cash Flow'].includes(doc.statement)",
    "options": "\nOperating\nInvesting\nFinancing\nIncome Tax\nDiscontinued Operations\nAsset\nLiability\nEquity"
   },
   {
@@ -211,6 +212,14 @@
    "fieldname": "reclassifiable",
    "fieldtype": "Check",
    "label": "May Be Reclassified to Profit or Loss"
+  },
+  {
+   "depends_on": "eval:doc.line_type=='Line'",
+   "description": "Take the amount of this line from a line or subtotal of another statement, for example the operating profit that starts the cash flow statement.",
+   "fieldname": "source_line",
+   "fieldtype": "Link",
+   "label": "Source Line",
+   "options": "PSAK ID Report Line"
   }
  ],
  "grid_page_length": 50,
@@ -218,7 +227,7 @@
  "is_tree": 1,
  "link_display_mode": "Search",
  "links": [],
- "modified": "2026-11-24 23:28:45.448265",
+ "modified": "2026-11-26 21:38:19.623200",
  "modified_by": "Administrator",
  "module": "PSAK ID",
  "name": "PSAK ID Report Line",

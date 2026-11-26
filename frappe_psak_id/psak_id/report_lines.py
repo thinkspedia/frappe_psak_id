@@ -12,6 +12,7 @@ from frappe import _
 PROFIT_OR_LOSS = "Profit or Loss"
 FINANCIAL_POSITION = "Financial Position"
 OTHER_COMPREHENSIVE_INCOME = "Other Comprehensive Income"
+CASH_FLOW = "Cash Flow"
 
 # The categories a line of each statement belongs to. Other comprehensive income lines have no
 # category; they are split by whether they may be reclassified to profit or loss.
@@ -19,8 +20,15 @@ STATEMENT_CATEGORIES = {
 	PROFIT_OR_LOSS: ("Operating", "Investing", "Financing", "Income Tax", "Discontinued Operations"),
 	FINANCIAL_POSITION: ("Asset", "Liability", "Equity"),
 	OTHER_COMPREHENSIVE_INCOME: (),
+	CASH_FLOW: ("Operating", "Investing", "Financing"),
 }
-CATEGORIES = tuple(category for categories in STATEMENT_CATEGORIES.values() for category in categories)
+CATEGORIES = tuple(
+	dict.fromkeys(category for categories in STATEMENT_CATEGORIES.values() for category in categories)
+)
+
+# Cash flow lines outside the three activities, such as the opening balance and the effect of
+# exchange rates on cash, have no category
+OPTIONAL_CATEGORY_STATEMENTS = frozenset({CASH_FLOW})
 CATEGORY_PREFIX = "CAT:"
 
 # Assets and liabilities are split into current and non-current; equity is not
@@ -156,6 +164,18 @@ def _oci_line(code, label_id, label_en, reclassifiable) -> dict:
 		"label_en": label_en,
 		"line_type": "Line",
 		"reclassifiable": reclassifiable,
+	}
+
+
+def _cf_line(code, label_id, label_en, category, is_other_items=0, source_line=None) -> dict:
+	return {
+		"line_code": code,
+		"label_id": label_id,
+		"label_en": label_en,
+		"line_type": "Line",
+		"category": category,
+		"is_other_items": is_other_items,
+		"source_line": source_line,
 	}
 
 
@@ -515,11 +535,116 @@ STANDARD_OTHER_COMPREHENSIVE_INCOME_LINES = (
 	),
 )
 
-# Profit or loss first: total comprehensive income refers to its profit or loss subtotal
+# Standard PSAK 118 statement of cash flows, indirect method (PRD-002 Appendix C). Inflows are
+# positive and outflows negative. Operating cash flows start from operating profit or loss.
+STANDARD_CASH_FLOW_LINES = (
+	_cf_line(
+		"CF-OP-START", "Laba (Rugi) Operasi", "Operating profit or loss", "Operating", source_line="PL-SUB-OP"
+	),
+	*(
+		_cf_line(code, label_id, label_en, "Operating", other)
+		for code, label_id, label_en, other in (
+			("CF-OP-DEP", "Penyusutan dan amortisasi", "Depreciation and amortisation", 0),
+			("CF-OP-IMP", "Rugi (pemulihan) penurunan nilai", "Impairment losses (reversals)", 0),
+			("CF-OP-FX", "Selisih kurs belum direalisasi", "Unrealised exchange differences", 0),
+			("CF-OP-ADJ", "Penyesuaian nonkas lain", "Other non-cash adjustments", 1),
+			(
+				"CF-OP-WC-AR",
+				"Perubahan piutang usaha dan piutang lain",
+				"Change in trade and other receivables",
+				0,
+			),
+			("CF-OP-WC-INV", "Perubahan persediaan", "Change in inventories", 0),
+			("CF-OP-WC-OA", "Perubahan aset lain", "Change in other assets", 0),
+			("CF-OP-WC-AP", "Perubahan utang usaha dan utang lain", "Change in trade and other payables", 0),
+			("CF-OP-WC-OL", "Perubahan liabilitas lain", "Change in other liabilities", 0),
+			("CF-OP-TAX", "Pajak penghasilan dibayar", "Income taxes paid", 0),
+		)
+	),
+	_subtotal(
+		"CF-SUB-OP",
+		"Arus kas neto dari aktivitas operasi",
+		"Net cash from operating activities",
+		"+CAT:Operating",
+		mandatory=1,
+	),
+	*(
+		_cf_line(code, label_id, label_en, "Investing", other)
+		for code, label_id, label_en, other in (
+			("CF-INV-PPE-BUY", "Perolehan aset tetap", "Purchase of property, plant and equipment", 0),
+			(
+				"CF-INV-PPE-SELL",
+				"Hasil pelepasan aset tetap",
+				"Proceeds from disposal of property, plant and equipment",
+				0,
+			),
+			("CF-INV-INTANG", "Perolehan aset takberwujud", "Purchase of intangible assets", 0),
+			("CF-INV-FIN-BUY", "Penempatan investasi", "Purchase of investments", 0),
+			("CF-INV-FIN-SELL", "Pencairan investasi", "Proceeds from investments", 0),
+			("CF-INV-INT", "Bunga diterima", "Interest received", 0),
+			("CF-INV-DIV", "Dividen diterima", "Dividends received", 0),
+			("CF-INV-OTH", "Arus kas investasi lain", "Other investing cash flows", 1),
+		)
+	),
+	_subtotal(
+		"CF-SUB-INV",
+		"Arus kas neto dari aktivitas investasi",
+		"Net cash from investing activities",
+		"+CAT:Investing",
+		mandatory=1,
+	),
+	*(
+		_cf_line(code, label_id, label_en, "Financing", other)
+		for code, label_id, label_en, other in (
+			("CF-FIN-BORR-IN", "Penerimaan pinjaman", "Proceeds from borrowings", 0),
+			("CF-FIN-BORR-OUT", "Pembayaran pinjaman", "Repayment of borrowings", 0),
+			("CF-FIN-LEASE", "Pembayaran pokok liabilitas sewa", "Payment of lease liabilities", 0),
+			("CF-FIN-INT", "Bunga dibayar", "Interest paid", 0),
+			("CF-FIN-DIV", "Dividen dibayar", "Dividends paid", 0),
+			("CF-FIN-EQ", "Penerimaan dari penerbitan saham", "Proceeds from issuing shares", 0),
+			("CF-FIN-OTH", "Arus kas pendanaan lain", "Other financing cash flows", 1),
+		)
+	),
+	_subtotal(
+		"CF-SUB-FIN",
+		"Arus kas neto dari aktivitas pendanaan",
+		"Net cash from financing activities",
+		"+CAT:Financing",
+		mandatory=1,
+	),
+	_subtotal(
+		"CF-SUB-NET",
+		"Kenaikan (penurunan) neto kas dan setara kas",
+		"Net increase (decrease) in cash and cash equivalents",
+		"+CF-SUB-OP +CF-SUB-INV +CF-SUB-FIN",
+	),
+	_cf_line(
+		"CF-FX",
+		"Efek perubahan kurs atas kas dan setara kas",
+		"Effect of exchange rate changes on cash and cash equivalents",
+		None,
+	),
+	_cf_line(
+		"CF-OPEN",
+		"Kas dan setara kas awal periode",
+		"Cash and cash equivalents at the beginning of the period",
+		None,
+	),
+	_subtotal(
+		"CF-SUB-CLOSE",
+		"Kas dan setara kas akhir periode",
+		"Cash and cash equivalents at the end of the period",
+		"+CF-SUB-NET +CF-FX +CF-OPEN",
+		mandatory=1,
+	),
+)
+
+# Profit or loss first: total comprehensive income and the cash flow starting line refer to it
 STANDARD_LINES = {
 	PROFIT_OR_LOSS: STANDARD_PROFIT_OR_LOSS_LINES,
 	FINANCIAL_POSITION: STANDARD_FINANCIAL_POSITION_LINES,
 	OTHER_COMPREHENSIVE_INCOME: STANDARD_OTHER_COMPREHENSIVE_INCOME_LINES,
+	CASH_FLOW: STANDARD_CASH_FLOW_LINES,
 }
 
 

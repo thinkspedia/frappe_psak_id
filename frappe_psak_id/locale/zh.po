@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PSAK ID VERSION\n"
 "Report-Msgid-Bugs-To: helpdesk@thinkspedia.com\n"
-"POT-Creation-Date: 2026-11-26 06:50+0000\n"
+"POT-Creation-Date: 2026-11-26 16:12+0000\n"
 "PO-Revision-Date: 2026-11-23 12:08+0000\n"
 "Last-Translator: helpdesk@thinkspedia.com\n"
 "Language: zh\n"
@@ -38,6 +38,10 @@ msgstr ""
 msgid "A final statement is not cancelled. Use Reopen: it keeps this version and creates a new one to correct."
 msgstr ""
 
+#: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.py:76
+msgid "A line cannot take its amount from itself."
+msgstr ""
+
 #. Description of the 'Report Line' (Link) field in DocType 'PSAK ID Account
 #. Mapping'
 #: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.json:69
@@ -48,11 +52,11 @@ msgstr ""
 msgid "A statement becomes final only when the CFO approves it."
 msgstr ""
 
-#: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.py:121
+#: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.py:142
 msgid "A subtotal cannot refer to itself."
 msgstr ""
 
-#: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.py:58
+#: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.py:62
 #, python-brace-format
 msgid "A {0} line belongs to one of these categories: {1}."
 msgstr ""
@@ -183,7 +187,7 @@ msgstr ""
 
 #. Description of the 'Other Items Line' (Check) field in DocType 'PSAK ID
 #. Report Line'
-#: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.json:139
+#: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.json:140
 msgid "An Other Items line above the company threshold must be explained before review."
 msgstr ""
 
@@ -246,7 +250,7 @@ msgstr ""
 #. Template Row'
 #. Option for the 'Category' (Select) field in DocType 'PSAK ID Report Line'
 #: frappe_psak_id/psak_id/doctype/psak_id_mapping_template_row/psak_id_mapping_template_row.json:26
-#: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.json:75
+#: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.json:76
 msgid "Asset"
 msgstr ""
 
@@ -312,6 +316,11 @@ msgstr ""
 msgid "By Nature"
 msgstr ""
 
+#. Option for the 'Statement' (Select) field in DocType 'PSAK ID Report Line'
+#: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.json:54
+msgid "Cash Flow"
+msgstr ""
+
 #: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.py:115
 msgid "Cash and cash equivalents"
 msgstr ""
@@ -324,7 +333,7 @@ msgstr ""
 #. Reconciliation Line'
 #: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.json:83
 #: frappe_psak_id/psak_id/doctype/psak_id_financial_statement_line/psak_id_financial_statement_line.json:48
-#: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.json:73
+#: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.json:74
 #: frappe_psak_id/psak_id/doctype/psak_id_transition_reconciliation_line/psak_id_transition_reconciliation_line.json:53
 msgid "Category"
 msgstr ""
@@ -360,7 +369,7 @@ msgstr ""
 msgid "Choose Excel or CSV."
 msgstr ""
 
-#: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.py:55
+#: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.py:59
 msgid "Choose the PSAK 118 category of this line."
 msgstr ""
 
@@ -396,7 +405,7 @@ msgstr ""
 msgid "Choose the {0} to check."
 msgstr ""
 
-#: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.py:64
+#: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.py:68
 #, python-brace-format
 msgid "Choose whether this {0} line is current or non-current."
 msgstr ""
@@ -405,7 +414,7 @@ msgstr ""
 #. ID Account Mapping'
 #. Label of the classification (Select) field in DocType 'PSAK ID Report Line'
 #: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.json:151
-#: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.json:204
+#: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.json:205
 msgid "Classification"
 msgstr ""
 
@@ -525,7 +534,7 @@ msgstr ""
 
 #. Option for the 'Classification' (Select) field in DocType 'PSAK ID Report
 #. Line'
-#: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.json:206
+#: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.json:207
 msgid "Current"
 msgstr ""
 
@@ -579,12 +588,12 @@ msgid "Difference to ERPNext Profit and Loss"
 msgstr ""
 
 #. Label of the disabled (Check) field in DocType 'PSAK ID Report Line'
-#: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.json:174
+#: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.json:175
 msgid "Disabled"
 msgstr ""
 
 #. Option for the 'Category' (Select) field in DocType 'PSAK ID Report Line'
-#: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.json:75
+#: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.json:76
 msgid "Discontinued Operations"
 msgstr ""
 
@@ -623,7 +632,7 @@ msgstr ""
 #. Template Row'
 #. Option for the 'Category' (Select) field in DocType 'PSAK ID Report Line'
 #: frappe_psak_id/psak_id/doctype/psak_id_mapping_template_row/psak_id_mapping_template_row.json:26
-#: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.json:75
+#: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.json:76
 msgid "Equity"
 msgstr ""
 
@@ -716,7 +725,7 @@ msgstr ""
 #. Option for the 'Statement' (Select) field in DocType 'PSAK ID Report Line'
 #. Label of a Sidebar Item
 #: frappe_psak_id/psak_id/doctype/psak_id_financial_statement_line/psak_id_financial_statement_line.json:95
-#: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.json:53
+#: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.json:54
 #: frappe_psak_id/psak_id/sidebar/psak_118/psak_118.json:81
 msgid "Financial Position"
 msgstr ""
@@ -729,7 +738,7 @@ msgid "Financial Statements"
 msgstr ""
 
 #. Option for the 'Category' (Select) field in DocType 'PSAK ID Report Line'
-#: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.json:75
+#: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.json:76
 msgid "Financing"
 msgstr ""
 
@@ -757,7 +766,7 @@ msgstr ""
 
 #. Label of the follows_operating (Check) field in DocType 'PSAK ID Report
 #. Line'
-#: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.json:150
+#: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.json:151
 msgid "Follows Operating for Main Business"
 msgstr ""
 
@@ -823,7 +832,7 @@ msgid "Has a balance but no mapping in force at the end of the period. Map it to
 msgstr ""
 
 #. Option for the 'Line Type' (Select) field in DocType 'PSAK ID Report Line'
-#: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.json:64
+#: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.json:65
 msgid "Heading"
 msgstr ""
 
@@ -857,7 +866,7 @@ msgid "Income"
 msgstr ""
 
 #. Option for the 'Category' (Select) field in DocType 'PSAK ID Report Line'
-#: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.json:75
+#: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.json:76
 msgid "Income Tax"
 msgstr ""
 
@@ -889,7 +898,7 @@ msgid "Inventory Write-downs (Reversals)"
 msgstr ""
 
 #. Option for the 'Category' (Select) field in DocType 'PSAK ID Report Line'
-#: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.json:75
+#: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.json:76
 msgid "Investing"
 msgstr ""
 
@@ -906,7 +915,7 @@ msgid "Investment income and expenses marked to follow Operating are shown in th
 msgstr ""
 
 #. Label of the is_group (Check) field in DocType 'PSAK ID Report Line'
-#: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.json:100
+#: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.json:101
 msgid "Is Group"
 msgstr ""
 
@@ -918,7 +927,7 @@ msgstr ""
 #. Reconciliation Line'
 #: frappe_psak_id/psak_id/doctype/psak_id_expense_nature_line/psak_id_expense_nature_line.json:47
 #: frappe_psak_id/psak_id/doctype/psak_id_financial_statement_line/psak_id_financial_statement_line.json:42
-#: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.json:120
+#: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.json:121
 #: frappe_psak_id/psak_id/doctype/psak_id_transition_reconciliation_line/psak_id_transition_reconciliation_line.json:45
 msgid "Label (English)"
 msgstr ""
@@ -931,14 +940,14 @@ msgstr ""
 #. Reconciliation Line'
 #: frappe_psak_id/psak_id/doctype/psak_id_expense_nature_line/psak_id_expense_nature_line.json:41
 #: frappe_psak_id/psak_id/doctype/psak_id_financial_statement_line/psak_id_financial_statement_line.json:36
-#: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.json:110
+#: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.json:111
 #: frappe_psak_id/psak_id/doctype/psak_id_transition_reconciliation_line/psak_id_transition_reconciliation_line.json:39
 msgid "Label (Indonesian)"
 msgstr ""
 
 #. Label of the section_labels (Section Break) field in DocType 'PSAK ID Report
 #. Line'
-#: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.json:105
+#: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.json:106
 msgid "Labels"
 msgstr ""
 
@@ -954,7 +963,7 @@ msgid "Leave empty to match income and expense accounts."
 msgstr ""
 
 #. Label of the lft (Int) field in DocType 'PSAK ID Report Line'
-#: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.json:180
+#: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.json:181
 msgid "Left"
 msgstr ""
 
@@ -973,19 +982,19 @@ msgstr ""
 #. Template Row'
 #. Option for the 'Category' (Select) field in DocType 'PSAK ID Report Line'
 #: frappe_psak_id/psak_id/doctype/psak_id_mapping_template_row/psak_id_mapping_template_row.json:26
-#: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.json:75
+#: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.json:76
 msgid "Liability"
 msgstr ""
 
 #. Option for the 'Line Type' (Select) field in DocType 'PSAK ID Report Line'
-#: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.json:64
+#: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.json:65
 #: frappe_psak_id/psak_id/report/psak_118_financial_position/psak_118_financial_position.py:72
 #: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.py:107
 msgid "Line"
 msgstr ""
 
 #. Label of the line_code (Data) field in DocType 'PSAK ID Report Line'
-#: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.json:43
+#: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.json:44
 msgid "Line Code"
 msgstr ""
 
@@ -998,19 +1007,19 @@ msgstr ""
 #. Line'
 #. Label of the line_type (Select) field in DocType 'PSAK ID Report Line'
 #: frappe_psak_id/psak_id/doctype/psak_id_financial_statement_line/psak_id_financial_statement_line.json:54
-#: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.json:63
+#: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.json:64
 msgid "Line Type"
 msgstr ""
 
 #. Description of the 'PSAK 201 Line' (Data) field in DocType 'PSAK ID Report
 #. Line'
-#: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.json:157
+#: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.json:158
 msgid "Line under the previous standard. Used for the transition reconciliation in the first PSAK 118 year."
 msgstr ""
 
 #. Description of the 'Line Type' (Select) field in DocType 'PSAK ID Report
 #. Line'
-#: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.json:58
+#: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.json:59
 msgid "Line: accounts are mapped to it. Subtotal: calculated from the formula. Heading: a title without amount."
 msgstr ""
 
@@ -1020,7 +1029,7 @@ msgid "Lines"
 msgstr ""
 
 #. Description of the 'Sequence' (Int) field in DocType 'PSAK ID Report Line'
-#: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.json:82
+#: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.json:83
 msgid "Lines are printed in ascending sequence."
 msgstr ""
 
@@ -1043,7 +1052,7 @@ msgid "Main Business: Investing"
 msgstr ""
 
 #. Label of the mandatory (Check) field in DocType 'PSAK ID Report Line'
-#: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.json:167
+#: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.json:168
 msgid "Mandatory"
 msgstr ""
 
@@ -1102,7 +1111,7 @@ msgid "Match On"
 msgstr ""
 
 #. Label of the reclassifiable (Check) field in DocType 'PSAK ID Report Line'
-#: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.json:213
+#: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.json:214
 msgid "May Be Reclassified to Profit or Loss"
 msgstr ""
 
@@ -1169,7 +1178,7 @@ msgstr ""
 
 #. Option for the 'Classification' (Select) field in DocType 'PSAK ID Report
 #. Line'
-#: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.json:206
+#: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.json:207
 msgid "Non-current"
 msgstr ""
 
@@ -1223,7 +1232,7 @@ msgid "OCI Line"
 msgstr ""
 
 #. Label of the old_parent (Link) field in DocType 'PSAK ID Report Line'
-#: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.json:196
+#: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.json:197
 msgid "Old Parent"
 msgstr ""
 
@@ -1237,7 +1246,7 @@ msgstr ""
 msgid "Only Draft or Reopened statements are recomputed. Send this one back to Draft first."
 msgstr ""
 
-#: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.py:93
+#: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.py:114
 msgid "Only Investing or Financing lines can follow Operating."
 msgstr ""
 
@@ -1253,7 +1262,7 @@ msgstr ""
 msgid "Only an Accounting Head or the CFO can reopen a final statement."
 msgstr ""
 
-#: frappe_psak_id/psak_id/report_lines.py:84
+#: frappe_psak_id/psak_id/report_lines.py:92
 #, python-brace-format
 msgid "Only assets and liabilities are split into {0} in the subtotal formula. Found: {1}"
 msgstr ""
@@ -1289,7 +1298,7 @@ msgid "Open Profit and Loss"
 msgstr ""
 
 #. Option for the 'Category' (Select) field in DocType 'PSAK ID Report Line'
-#: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.json:75
+#: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.json:76
 msgid "Operating"
 msgstr ""
 
@@ -1321,7 +1330,7 @@ msgstr ""
 #. Statement Line'
 #. Option for the 'Statement' (Select) field in DocType 'PSAK ID Report Line'
 #: frappe_psak_id/psak_id/doctype/psak_id_financial_statement_line/psak_id_financial_statement_line.json:95
-#: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.json:53
+#: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.json:54
 msgid "Other Comprehensive Income"
 msgstr ""
 
@@ -1338,7 +1347,7 @@ msgid "Other Items Breakdown"
 msgstr ""
 
 #. Label of the is_other_items (Check) field in DocType 'PSAK ID Report Line'
-#: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.json:142
+#: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.json:143
 msgid "Other Items Line"
 msgstr ""
 
@@ -1409,7 +1418,7 @@ msgstr ""
 #. Label of the psak201_line (Data) field in DocType 'PSAK ID Report Line'
 #. Label of the psak201_line (Data) field in DocType 'PSAK ID Transition
 #. Reconciliation Line'
-#: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.json:160
+#: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.json:161
 #: frappe_psak_id/psak_id/doctype/psak_id_transition_reconciliation_line/psak_id_transition_reconciliation_line.json:22
 msgid "PSAK 201 Line"
 msgstr ""
@@ -1419,7 +1428,7 @@ msgstr ""
 #: frappe_psak_id/psak_id/doctype/psak_id_company_policy/psak_id_company_policy.json:233
 #: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.json:421
 #: frappe_psak_id/psak_id/doctype/psak_id_mapping_template/psak_id_mapping_template.json:92
-#: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.json:249
+#: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.json:258
 msgid "PSAK ID - Accounting - Head"
 msgstr ""
 
@@ -1428,7 +1437,7 @@ msgstr ""
 #: frappe_psak_id/psak_id/doctype/psak_id_company_policy/psak_id_company_policy.json:243
 #: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.json:432
 #: frappe_psak_id/psak_id/doctype/psak_id_mapping_template/psak_id_mapping_template.json:102
-#: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.json:259
+#: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.json:268
 msgid "PSAK ID - Accounting - Staff"
 msgstr ""
 
@@ -1437,7 +1446,7 @@ msgstr ""
 #: frappe_psak_id/psak_id/doctype/psak_id_company_policy/psak_id_company_policy.json:259
 #: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.json:453
 #: frappe_psak_id/psak_id/doctype/psak_id_mapping_template/psak_id_mapping_template.json:118
-#: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.json:275
+#: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.json:284
 msgid "PSAK ID - Auditor"
 msgstr ""
 
@@ -1446,7 +1455,7 @@ msgstr ""
 #: frappe_psak_id/psak_id/doctype/psak_id_company_policy/psak_id_company_policy.json:251
 #: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.json:442
 #: frappe_psak_id/psak_id/doctype/psak_id_mapping_template/psak_id_mapping_template.json:110
-#: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.json:267
+#: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.json:276
 msgid "PSAK ID - CFO"
 msgstr ""
 
@@ -1491,7 +1500,7 @@ msgid "PSAK ID Mapping Template Row"
 msgstr ""
 
 #. Name of a DocType
-#: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.json:224
+#: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.json:233
 msgid "PSAK ID Report Line"
 msgstr ""
 
@@ -1502,7 +1511,7 @@ msgstr ""
 
 #. Label of the parent_psak_id_report_line (Link) field in DocType 'PSAK ID
 #. Report Line'
-#: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.json:93
+#: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.json:94
 msgid "Parent Line"
 msgstr ""
 
@@ -1548,7 +1557,7 @@ msgstr ""
 
 #. Label of the section_rules (Section Break) field in DocType 'PSAK ID Report
 #. Line'
-#: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.json:126
+#: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.json:127
 msgid "Presentation Rules"
 msgstr ""
 
@@ -1584,7 +1593,7 @@ msgstr ""
 #. Option for the 'Statement' (Select) field in DocType 'PSAK ID Report Line'
 #. Label of a Sidebar Item
 #: frappe_psak_id/psak_id/doctype/psak_id_financial_statement_line/psak_id_financial_statement_line.json:95
-#: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.json:53
+#: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.json:54
 #: frappe_psak_id/psak_id/sidebar/psak_118/psak_118.json:65
 msgid "Profit or Loss"
 msgstr ""
@@ -1726,7 +1735,7 @@ msgstr ""
 
 #. Description of the 'Mandatory' (Check) field in DocType 'PSAK ID Report
 #. Line'
-#: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.json:164
+#: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.json:165
 msgid "Required by PSAK 118. Cannot be disabled or deleted."
 msgstr ""
 
@@ -1782,7 +1791,7 @@ msgid "Reviewed On"
 msgstr ""
 
 #. Label of the rgt (Int) field in DocType 'PSAK ID Report Line'
-#: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.json:188
+#: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.json:189
 msgid "Right"
 msgstr ""
 
@@ -1896,13 +1905,13 @@ msgstr ""
 msgid "Sent back: {0}"
 msgstr ""
 
-#: frappe_psak_id/psak_id/report_lines.py:92
+#: frappe_psak_id/psak_id/report_lines.py:100
 #, python-brace-format
 msgid "Separate each line code in the subtotal formula with a space and a sign. Found: {0}"
 msgstr ""
 
 #. Label of the sequence (Int) field in DocType 'PSAK ID Report Line'
-#: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.json:86
+#: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.json:87
 msgid "Sequence"
 msgstr ""
 
@@ -1924,7 +1933,7 @@ msgid "Severity"
 msgstr ""
 
 #. Description of the 'Line Code' (Data) field in DocType 'PSAK ID Report Line'
-#: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.json:39
+#: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.json:40
 msgid "Short unique code, for example PL-OP-REV. Subtotal formulas refer to lines by this code."
 msgstr ""
 
@@ -1936,7 +1945,7 @@ msgstr ""
 
 #. Description of the 'Follows Operating for Main Business' (Check) field in
 #. DocType 'PSAK ID Report Line'
-#: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.json:147
+#: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.json:148
 msgid "Shown in Operating when the company's policy marks investing or customer financing as a main business activity."
 msgstr ""
 
@@ -1954,6 +1963,11 @@ msgstr ""
 msgid "Some entries match none of the account's conditional mappings. Add a mapping without a condition as the fallback."
 msgstr ""
 
+#. Label of the source_line (Link) field in DocType 'PSAK ID Report Line'
+#: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.json:221
+msgid "Source Line"
+msgstr ""
+
 #. Label of the source_template (Link) field in DocType 'PSAK ID Account
 #. Mapping'
 #: frappe_psak_id/psak_id/doctype/psak_id_account_mapping/psak_id_account_mapping.json:182
@@ -1966,7 +1980,7 @@ msgstr ""
 msgid "Source Template Version"
 msgstr ""
 
-#: frappe_psak_id/psak_id/report_lines.py:65
+#: frappe_psak_id/psak_id/report_lines.py:73
 #, python-brace-format
 msgid "Start each part of the subtotal formula with + or -, for example +PL-OP-REV. Found: {0}"
 msgstr ""
@@ -1975,7 +1989,7 @@ msgstr ""
 #. Statement Line'
 #. Label of the statement (Select) field in DocType 'PSAK ID Report Line'
 #: frappe_psak_id/psak_id/doctype/psak_id_financial_statement_line/psak_id_financial_statement_line.json:94
-#: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.json:52
+#: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.json:53
 msgid "Statement"
 msgstr ""
 
@@ -1994,13 +2008,13 @@ msgid "Structured Data (Excel)"
 msgstr ""
 
 #. Option for the 'Line Type' (Select) field in DocType 'PSAK ID Report Line'
-#: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.json:64
+#: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.json:65
 msgid "Subtotal"
 msgstr ""
 
 #. Label of the subtotal_formula (Small Text) field in DocType 'PSAK ID Report
 #. Line'
-#: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.json:133
+#: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.json:134
 msgid "Subtotal Formula"
 msgstr ""
 
@@ -2009,8 +2023,14 @@ msgstr ""
 #: frappe_psak_id/psak_id/doctype/psak_id_company_policy/psak_id_company_policy.json:222
 #: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.json:410
 #: frappe_psak_id/psak_id/doctype/psak_id_mapping_template/psak_id_mapping_template.json:80
-#: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.json:237
+#: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.json:246
 msgid "System Manager"
+msgstr ""
+
+#. Description of the 'Source Line' (Link) field in DocType 'PSAK ID Report
+#. Line'
+#: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.json:218
+msgid "Take the amount of this line from a line or subtotal of another statement, for example the operating profit that starts the cash flow statement."
 msgstr ""
 
 #: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:99
@@ -2035,7 +2055,7 @@ msgstr ""
 
 #. Description of the 'Subtotal Formula' (Small Text) field in DocType 'PSAK ID
 #. Report Line'
-#: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.json:130
+#: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.json:131
 msgid "Terms separated by spaces, each starting with + or -: a line code (+PL-OP-REV) or a whole category (+CAT:Operating)."
 msgstr ""
 
@@ -2135,8 +2155,13 @@ msgstr ""
 msgid "The restated statement of financial position on {0} differs from ERPNext's Balance Sheet by {1}. Map the prior year's accounts in Mapping Control."
 msgstr ""
 
-#: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.py:97
+#: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.py:118
 msgid "The share of profit of associates and joint ventures is always Investing, even when investing is a main business activity."
+msgstr ""
+
+#: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.py:82
+#, python-brace-format
+msgid "The source line {0} must belong to another statement than {1}."
 msgstr ""
 
 #: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.py:429
@@ -2162,16 +2187,16 @@ msgstr ""
 msgid "The statements of {0} are final up to {1}, and this mapping is in force then. Set Valid From after {1} to change the mapping from that date, or reopen the final statement."
 msgstr ""
 
-#: frappe_psak_id/psak_id/report_lines.py:57
+#: frappe_psak_id/psak_id/report_lines.py:65
 msgid "The subtotal formula is empty."
 msgstr ""
 
-#: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.py:130
+#: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.py:151
 #, python-brace-format
 msgid "The subtotal formula refers to {0}, which is not a {1} line or a subtotal of another statement."
 msgstr ""
 
-#: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.py:146
+#: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.py:167
 #, python-brace-format
 msgid "The subtotal formulas refer to each other in a loop: {0}."
 msgstr ""
@@ -2285,7 +2310,7 @@ msgstr ""
 msgid "Unit used by default on new statements and exports."
 msgstr ""
 
-#: frappe_psak_id/psak_id/report_lines.py:75
+#: frappe_psak_id/psak_id/report_lines.py:83
 #, python-brace-format
 msgid "Unknown category {0} in the subtotal formula. Use one of: {1}."
 msgstr ""
@@ -2444,7 +2469,8 @@ msgstr ""
 msgid "{0} is a group account. Map the accounts under it instead."
 msgstr ""
 
-#: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.py:135
+#: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.py:87
+#: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.py:156
 #, python-brace-format
 msgid "{0} is a heading and has no amount to add."
 msgstr ""
@@ -2469,27 +2495,27 @@ msgstr ""
 msgid "{0} is mapped to {1} but is not a cash or bank account. The statement of cash flows takes the cash balance from this line."
 msgstr ""
 
-#: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.py:115
+#: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.py:136
 #, python-brace-format
 msgid "{0} is not a category of the {1} statement."
 msgstr ""
 
-#: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.py:32
+#: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.py:34
 #, python-brace-format
 msgid "{0} is required by PSAK 118 and cannot be deleted."
 msgstr ""
 
-#: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.py:87
+#: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.py:108
 #, python-brace-format
 msgid "{0} is required by PSAK 118 and cannot be disabled."
 msgstr ""
 
-#: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.py:80
+#: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.py:101
 #, python-brace-format
 msgid "{0} is required by PSAK 118; its type and formula cannot be changed."
 msgstr ""
 
-#: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.py:163
+#: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.py:184
 #, python-brace-format
 msgid "{0} is used in the subtotal formula of {1}. Change those formulas first."
 msgstr ""
