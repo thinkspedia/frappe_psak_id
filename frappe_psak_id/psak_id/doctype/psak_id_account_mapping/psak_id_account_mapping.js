@@ -24,6 +24,17 @@ frappe.ui.form.on("PSAK ID Account Mapping", {
 		frm.set_query("oci_line", () => ({
 			filters: { line_type: "Line", disabled: 0, statement: "Other Comprehensive Income" },
 		}));
+		const cash_flow_query = () => ({
+			filters: {
+				statement: "Cash Flow",
+				line_type: "Line",
+				disabled: 0,
+				category: ["is", "set"],
+				source_line: ["is", "not set"],
+			},
+		});
+		frm.set_query("cash_flow_line", cash_flow_query);
+		frm.set_query("cash_flow_line_decrease", cash_flow_query);
 		frm.set_query("condition_value", () =>
 			frm.doc.condition_type === "Cost Center"
 				? { filters: { company: frm.doc.company, is_group: 0 } }

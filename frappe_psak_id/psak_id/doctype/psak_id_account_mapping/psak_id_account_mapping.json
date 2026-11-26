@@ -28,6 +28,10 @@
   "is_final_tax",
   "equity_component",
   "oci_line",
+  "section_cash_flow",
+  "cash_flow_line",
+  "column_break_cash_flow",
+  "cash_flow_line_decrease",
   "column_break_classification",
   "notes",
   "source_template",
@@ -205,13 +209,37 @@
    "fieldtype": "Link",
    "label": "OCI Line",
    "options": "PSAK ID Report Line"
+  },
+  {
+   "fieldname": "section_cash_flow",
+   "fieldtype": "Section Break",
+   "label": "Cash Flow"
+  },
+  {
+   "description": "Balance sheet accounts: the cash flow line their movements are presented in. Income and expense accounts: only for a non-cash item or one presented outside operating activities, such as depreciation or a gain on disposal.",
+   "fieldname": "cash_flow_line",
+   "fieldtype": "Link",
+   "label": "Cash Flow Line",
+   "options": "PSAK ID Report Line"
+  },
+  {
+   "fieldname": "column_break_cash_flow",
+   "fieldtype": "Column Break"
+  },
+  {
+   "depends_on": "eval:['Asset','Liability','Equity'].includes(doc.root_type) && doc.cash_flow_line",
+   "description": "Presents a decrease of the account separately, for example repayments of a loan whose drawdowns are on the Cash Flow Line. Leave empty to present the net movement on one line.",
+   "fieldname": "cash_flow_line_decrease",
+   "fieldtype": "Link",
+   "label": "Cash Flow Line (Decrease)",
+   "options": "PSAK ID Report Line"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "link_display_mode": "Search",
  "links": [],
- "modified": "2026-11-25 05:19:58.209523",
+ "modified": "2026-11-26 22:29:01.079054",
  "modified_by": "Administrator",
  "module": "PSAK ID",
  "name": "PSAK ID Account Mapping",

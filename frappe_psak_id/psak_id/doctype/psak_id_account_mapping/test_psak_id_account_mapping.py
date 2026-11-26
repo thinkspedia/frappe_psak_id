@@ -1,6 +1,8 @@
 # Copyright (c) 2026, Thinkspedia and Contributors
 # See license.txt
 
+from unittest.mock import patch
+
 import frappe
 
 from frappe_psak_id.tests.utils import IntegrationTestCase, get_account, make_account, make_company
@@ -17,6 +19,8 @@ IGNORE_TEST_RECORD_DEPENDENCIES = [
 	"DocType",
 ]
 test_ignore = IGNORE_TEST_RECORD_DEPENDENCIES
+
+MAPPING_MODULE = "frappe_psak_id.psak_id.doctype.psak_id_account_mapping.psak_id_account_mapping"
 
 
 class TestPSAKIDAccountMapping(IntegrationTestCase):
@@ -181,3 +185,47 @@ class TestPSAKIDAccountMapping(IntegrationTestCase):
 
 		cash = self._mapping("Cash", "FP-CA-CASH", oci_line="OCI-NR-REV").insert()
 		self.assertFalse(cash.oci_line)
+
+	def test_balance_sheet_account_takes_cash_flow_lines_for_increase_and_decrease(self):
+		capital = self._mapping(
+			"Capital Stock", "FP-EQ-CAP", cash_flow_line="CF-FIN-EQ", cash_flow_line_decrease="CF-FIN-OTH"
+		).insert()
+		self.assertEqual(
+			(capital.cash_flow_line, capital.cash_flow_line_decrease), ("CF-FIN-EQ", "CF-FIN-OTH")
+		)
+
+		debtors = self._mapping(
+			"Debtors", "FP-CA-AR", cash_flow_line="CF-OP-WC-AR", cash_flow_line_decrease="CF-OP-WC-AR"
+		).insert()
+		self.assertFalse(debtors.cash_flow_line_decrease)
+
+		with self.assertRaises(frappe.MandatoryError):
+			self._mapping("Retained Earnings", "FP-EQ-RE", cash_flow_line_decrease="CF-FIN-DIV").insert()
+
+	def test_income_or_expense_account_takes_only_one_cash_flow_line(self):
+		interest = self._mapping(
+			"Interest Expense",
+			"PL-FIN-INT",
+			cash_flow_line="CF-FIN-INT",
+			cash_flow_line_decrease="CF-FIN-OTH",
+		).insert()
+		self.assertEqual(interest.cash_flow_line, "CF-FIN-INT")
+		self.assertFalse(interest.cash_flow_line_decrease)
+
+	def test_cash_flow_line_is_a_mapped_activity_line(self):
+		for line in ("PL-OP-REV", "CF-SUB-OP", "CF-OP-START", "CF-OPEN", "CF-FX"):
+			with self.subTest(line), self.assertRaises(frappe.ValidationError):
+				self._mapping("Debtors", "FP-CA-AR", cash_flow_line=line).insert()
+
+	def test_cash_account_has_no_cash_flow_line(self):
+		with self.assertRaises(frappe.ValidationError):
+			self._mapping("Cash", "FP-CA-CASH", cash_flow_line="CF-OP-WC-OA").insert()
+
+	def test_cash_flow_line_is_locked_in_a_final_period(self):
+		debtors = self._mapping("Debtors", "FP-CA-AR").insert()
+		debtors.cash_flow_line = "CF-OP-WC-AR"
+		with (
+			patch(f"{MAPPING_MODULE}.get_final_until", return_value="2027-03-31"),
+			self.assertRaises(frappe.ValidationError),
+		):
+			debtors.save()

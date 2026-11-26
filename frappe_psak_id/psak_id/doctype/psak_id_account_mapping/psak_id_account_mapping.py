@@ -7,7 +7,12 @@ from frappe.model.document import Document
 from frappe.utils import formatdate, getdate
 
 from frappe_psak_id.psak_id.mapping import final_until as get_final_until
-from frappe_psak_id.psak_id.report_lines import FINANCIAL_POSITION, OTHER_COMPREHENSIVE_INCOME, PROFIT_OR_LOSS
+from frappe_psak_id.psak_id.report_lines import (
+	CASH_FLOW,
+	FINANCIAL_POSITION,
+	OTHER_COMPREHENSIVE_INCOME,
+	PROFIT_OR_LOSS,
+)
 
 # Condition types whose value is always a document of the same type
 _FIXED_CONDITION_DOCTYPES = {"Cost Center": "Cost Center", "Project": "Project"}
@@ -39,7 +44,10 @@ _CLASSIFICATION_FIELDS = (
 	"is_final_tax",
 	"equity_component",
 	"oci_line",
+	"cash_flow_line",
+	"cash_flow_line_decrease",
 )
+_CASH_FLOW_FIELDS = ("cash_flow_line", "cash_flow_line_decrease")
 
 
 class PSAKIDAccountMapping(Document):
@@ -47,6 +55,7 @@ class PSAKIDAccountMapping(Document):
 		self._validate_account()
 		self._validate_report_line()
 		self._validate_equity_fields()
+		self._validate_cash_flow_lines()
 		self._set_condition_doctype()
 		self._validate_condition_value()
 		self._validate_expense_nature()
@@ -147,6 +156,24 @@ class PSAKIDAccountMapping(Document):
 		if oci_line.disabled:
 			frappe.throw(_("Report line {0} is disabled.").format(self.oci_line))
 
+	def _validate_cash_flow_lines(self):
+		if self.root_type in ("Income", "Expense") or self.cash_flow_line_decrease == self.cash_flow_line:
+			self.cash_flow_line_decrease = None
+		if self.report_line == _CASH_LINE and (self.cash_flow_line or self.cash_flow_line_decrease):
+			frappe.throw(
+				_(
+					"{0} is mapped to {1}, the cash whose flows the statement presents. Leave its cash flow "
+					"lines empty."
+				).format(self.account, _CASH_LINE)
+			)
+		if self.cash_flow_line_decrease and not self.cash_flow_line:
+			frappe.throw(
+				_("Choose the Cash Flow Line before a separate line for decreases."), frappe.MandatoryError
+			)
+		for field in _CASH_FLOW_FIELDS:
+			if self.get(field):
+				_validate_cash_flow_line(self.get(field))
+
 	def _set_condition_doctype(self):
 		if not self.condition_type:
 			self.accounting_dimension = self.party_type = self.condition_value = None
@@ -244,11 +271,25 @@ class PSAKIDAccountMapping(Document):
 			)
 
 
+def _validate_cash_flow_line(name: str):
+	line = _get_line(name)
+	# Lines taken from another statement and those outside the three activities (opening cash,
+	# effect of exchange rates) are computed, not mapped
+	if line.line_type != "Line" or line.statement != CASH_FLOW or not line.category or line.source_line:
+		frappe.throw(
+			_("Map accounts to an operating, investing or financing line of the {0}; {1} is not one.").format(
+				_(CASH_FLOW), name
+			)
+		)
+	if line.disabled:
+		frappe.throw(_("Report line {0} is disabled.").format(name))
+
+
 def _get_line(name: str) -> frappe._dict:
 	line = frappe.db.get_value(
 		"PSAK ID Report Line",
 		name,
-		["line_type", "statement", "disabled", "category"],
+		["line_type", "statement", "disabled", "category", "source_line"],
 		as_dict=True,
 	)
 	if not line:
