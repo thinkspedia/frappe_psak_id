@@ -69,7 +69,7 @@ def default_valid_from(company: str):
 
 
 @frappe.whitelist()
-def apply_template(template: str, company: str, valid_from: str, complete_cash_flow=0) -> dict:
+def apply_template(template: str, company: str, valid_from: str, complete_cash_flow: bool = False) -> dict:
 	"""Map the company's unmapped accounts of the root types the template has rows for.
 
 	Returns the accounts mapped (``created``), already mapped (``skipped``), matched by no row
