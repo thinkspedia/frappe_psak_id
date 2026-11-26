@@ -174,4 +174,15 @@ def _message(statement) -> str | None:
 				"expense accounts are not mapped. The PSAK ID Mapping Control report lists them."
 			).format(fmt_money(statement.profit_or_loss_difference, currency=statement.currency))
 		)
+	vouchers = sorted({row.voucher_no for row in statement.non_cash})
+	if vouchers:
+		listed = ", ".join(escape_html(voucher) for voucher in vouchers[:UNMAPPED_LISTED])
+		if len(vouchers) > UNMAPPED_LISTED:
+			listed = _("{0} and {1} more").format(listed, len(vouchers) - UNMAPPED_LISTED)
+		messages.append(
+			_(
+				"{0} vouchers are non-cash transactions of investing or financing activities ({1}). They are "
+				"left out of the cash flows and disclosed as non-cash transactions."
+			).format(len(vouchers), listed)
+		)
 	return "<br>".join(messages) or None
