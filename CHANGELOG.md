@@ -21,6 +21,7 @@ All notable changes to PSAK ID are listed here. The project follows [Semantic Ve
 ### Fixed
 
 - PSAK ID Financial Statement: the check message for accounts without a cash flow line counts every account, not only balance sheet accounts, and says the line is set in PSAK ID Account Mapping (Mapping Control lists the accounts).
+- Apply to Company: Complete Cash Flow Lines also completes income and expense mappings outside operating profit that the template gives no cash flow line, such as a conditional mapping of a revenue account to income from investments. They get the default line of their profit or loss line: interest paid for interest expense on borrowings, other investing or other financing cash flows for the rest of their activity, income taxes paid for income tax expense. Lines in operating profit (after the company's main business activity) need none; discontinued operations have no default.
 - PSAK ID Financial Statement PDF: a category heading moves to the next page with the line below it, and a subtotal with the line above it, so neither stands alone at the bottom or the top of a page. The English lines of the notes' introductions wrap before the right margin instead of being cut off where the server has no italic font.
 
 ## [1.7.2] - 2026-11-26

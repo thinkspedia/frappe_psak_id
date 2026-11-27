@@ -68,7 +68,7 @@ function apply_to_company(frm) {
 				default: has_cash_flow_lines ? 1 : 0,
 				hidden: has_cash_flow_lines ? 0 : 1,
 				description: __(
-					"Mappings without a cash flow line get the line of the template from Valid From, in a new dated mapping. Statements before that date do not change."
+					"Mappings without a cash flow line get the line of the template from Valid From, in a new dated mapping; income and expenses outside operating profit that the template gives no line get the other cash flows of their activity. Statements before that date do not change."
 				),
 			},
 			{

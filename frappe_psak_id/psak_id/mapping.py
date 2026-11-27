@@ -9,7 +9,9 @@ accounts, so a profit or loss template leaves the balance sheet alone.
 
 Mappings made before the cash flow lines existed lack them. Applying a template with them can
 complete those mappings instead of skipping them: from the chosen date, the account keeps its
-lines and gains the cash flow lines of the template row that matches it.
+lines and gains the cash flow lines of the template row that matches it. An income or expense
+mapping outside operating profit that no row gives a line, such as a conditional mapping to
+income from investments, gets the default line of its activity.
 """
 
 import re
@@ -18,6 +20,7 @@ import frappe
 from frappe import _
 from frappe.utils import add_days, cint, getdate, strip_html
 
+from frappe_psak_id.psak_id.cash_flow import default_cash_flow_lines
 from frappe_psak_id.psak_id.statement import PROFIT_OR_LOSS_ROOT_TYPES, check_read_access
 
 # What each kind of row compares its pattern with
@@ -89,6 +92,7 @@ def apply_template(template: str, company: str, valid_from: str, complete_cash_f
 	categories = dict(frappe.get_all("PSAK ID Report Line", fields=["name", "category"], as_list=True))
 	mapped = set(frappe.get_all("PSAK ID Account Mapping", filters={"company": company}, pluck="account"))
 	missing_cash_flow = _mappings_without_cash_flow(company) if cint(complete_cash_flow) else {}
+	default_lines = default_cash_flow_lines(company) if missing_cash_flow else {}
 	accounts = frappe.get_all(
 		"Account",
 		filters={
@@ -105,9 +109,8 @@ def apply_template(template: str, company: str, valid_from: str, complete_cash_f
 	for account in accounts:
 		row = match_row(account, rows)
 		if account.name in mapped:
-			if row and row.cash_flow_line and account.name in missing_cash_flow:
-				_complete_cash_flow(missing_cash_flow[account.name], row, valid_from, result)
-			else:
+			missing = missing_cash_flow.get(account.name, [])
+			if not _complete_cash_flow(missing, row, default_lines, valid_from, result):
 				result.skipped.append(account.name)
 			continue
 		if not row:
@@ -146,7 +149,7 @@ def _create_mapping(account, row, template, company, valid_from, categories, res
 		)
 
 
-def _mappings_without_cash_flow(company: str) -> dict[str, list[str]]:
+def _mappings_without_cash_flow(company: str) -> dict[str, list]:
 	"""The latest mapping of each account, condition and priority of the company, by account, when
 	it has no cash flow line: the mappings in force from now on that the statement needs one on."""
 	latest = {}
@@ -160,6 +163,7 @@ def _mappings_without_cash_flow(company: str) -> dict[str, list[str]]:
 			"condition_type",
 			"condition_doctype",
 			"condition_value",
+			"report_line",
 			"cash_flow_line",
 		],
 		order_by="valid_from desc",
@@ -169,24 +173,33 @@ def _mappings_without_cash_flow(company: str) -> dict[str, list[str]]:
 	missing = {}
 	for row in latest.values():
 		if not row.cash_flow_line:
-			missing.setdefault(row.account, []).append(row.name)
+			missing.setdefault(row.account, []).append(row)
 	return missing
 
 
-def _complete_cash_flow(mapping_names: list[str], row, valid_from, result):
-	"""Give each mapping the template row's cash flow lines from ``valid_from``: a new mapping that
-	copies one in force before then, so the statements up to that date keep their classification
-	(BR-09), or the mapping itself when it starts on or after that date."""
-	for name in mapping_names:
-		current = frappe.get_doc("PSAK ID Account Mapping", name)
+def _complete_cash_flow(missing: list, row, default_lines: dict, valid_from, result) -> bool:
+	"""Give each mapping the template row's cash flow lines, or else the default line of its profit
+	or loss line, from ``valid_from``: a new mapping that copies one in force before then, so the
+	statements up to that date keep their classification (BR-09), or the mapping itself when it
+	starts on or after that date. Return whether any mapping had lines to get."""
+	handled = False
+	for entry in missing:
+		if row and row.cash_flow_line:
+			lines = (row.cash_flow_line, row.cash_flow_line_decrease)
+		elif entry.report_line in default_lines:
+			lines = (default_lines[entry.report_line], None)
+		else:
+			continue
+		handled = True
+		current = frappe.get_doc("PSAK ID Account Mapping", entry.name)
 		mapping = current if getdate(current.valid_from) >= valid_from else frappe.copy_doc(current)
 		mapping.valid_from = max(getdate(current.valid_from), valid_from)
-		mapping.cash_flow_line = row.cash_flow_line
-		mapping.cash_flow_line_decrease = row.cash_flow_line_decrease
+		mapping.cash_flow_line, mapping.cash_flow_line_decrease = lines
 		if _save(mapping, current.account, result):
 			result.completed.append(
-				{"account": current.account, "cash_flow_line": row.cash_flow_line, "mapping": mapping.name}
+				{"account": current.account, "cash_flow_line": lines[0], "mapping": mapping.name}
 			)
+	return handled
 
 
 def _save(mapping, account: str, result) -> bool:

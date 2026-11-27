@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PSAK ID VERSION\n"
 "Report-Msgid-Bugs-To: helpdesk@thinkspedia.com\n"
-"POT-Creation-Date: 2026-11-27 10:06+0000\n"
+"POT-Creation-Date: 2026-11-27 10:28+0000\n"
 "PO-Revision-Date: 2026-11-23 12:08+0000\n"
 "Last-Translator: helpdesk@thinkspedia.com\n"
 "Language: ja\n"
@@ -443,7 +443,7 @@ msgstr ""
 msgid "Choose the accounting dimension of the condition."
 msgstr ""
 
-#: frappe_psak_id/psak_id/mapping.py:85
+#: frappe_psak_id/psak_id/mapping.py:88
 msgid "Choose the date the mappings are valid from."
 msgstr ""
 
@@ -1220,7 +1220,7 @@ msgid "Mapping Templates"
 msgstr ""
 
 #: frappe_psak_id/psak_id/doctype/psak_id_mapping_template/psak_id_mapping_template.js:70
-msgid "Mappings without a cash flow line get the line of the template from Valid From, in a new dated mapping. Statements before that date do not change."
+msgid "Mappings without a cash flow line get the line of the template from Valid From, in a new dated mapping; income and expenses outside operating profit that the template gives no line get the other cash flows of their activity. Statements before that date do not change."
 msgstr ""
 
 #: frappe_psak_id/psak_id/report/psak_id_mapping_control/psak_id_mapping_control.py:128
@@ -2327,7 +2327,7 @@ msgstr ""
 msgid "The period is not closed"
 msgstr ""
 
-#: frappe_psak_id/psak_id/cash_flow.py:98
+#: frappe_psak_id/psak_id/cash_flow.py:101
 #: frappe_psak_id/psak_id/report/psak_118_cash_flows/psak_118_cash_flows.py:61
 #: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.py:76
 #: frappe_psak_id/psak_id/report/psak_id_mapping_control/psak_id_mapping_control.py:73

@@ -11,7 +11,13 @@ from frappe_psak_id.psak_id.mapping_templates import (
 	STANDARD_TEMPLATES,
 )
 from frappe_psak_id.tests.test_financial_statement import make_policy
-from frappe_psak_id.tests.utils import IntegrationTestCase, get_account, make_account, make_company
+from frappe_psak_id.tests.utils import (
+	IntegrationTestCase,
+	get_account,
+	make_account,
+	make_company,
+	make_cost_center,
+)
 
 COMPANY = "_Test PSAK Template Company"
 BALANCE_SHEET_COMPANY = "_Test PSAK Template Balance Sheet Company"
@@ -405,6 +411,33 @@ class TestCompleteCashFlowLines(IntegrationTestCase):
 		self.assertEqual(
 			[(m.name, m.valid_from, m.cash_flow_line) for m in self.mappings("Debtors")],
 			[(debtors.name, datetime.date(2027, 7, 1), "CF-OP-WC-AR")],
+		)
+
+	def test_income_outside_operating_profit_gets_the_default_line_of_its_activity(self):
+		sales = self.mappings("Sales")[0]
+		conditional = frappe.copy_doc(frappe.get_doc("PSAK ID Account Mapping", sales.name))
+		conditional.update(
+			{
+				"report_line": "PL-INV-INC",
+				"condition_type": "Cost Center",
+				"condition_doctype": "Cost Center",
+				"condition_value": make_cost_center(CASH_FLOW_COMPANY, "Investment Property"),
+				"priority": 5,
+			}
+		)
+		conditional.insert()
+
+		result = apply_template(SERVICES_1_2, CASH_FLOW_COMPANY, "2027-04-01", complete_cash_flow=1)
+		self.assertEqual(result.failed, [])
+		# The template's sales row has no cash flow line: revenue is part of operating profit and
+		# keeps its one mapping, the rent of the investment property moves to investing activities
+		self.assertEqual(
+			sorted((m.valid_from, m.report_line, m.cash_flow_line or "") for m in self.mappings("Sales")),
+			[
+				(datetime.date(2027, 1, 1), "PL-INV-INC", ""),
+				(datetime.date(2027, 1, 1), "PL-OP-REV", ""),
+				(datetime.date(2027, 4, 1), "PL-INV-INC", "CF-INV-OTH"),
+			],
 		)
 
 	def test_new_accounts_are_mapped_with_the_cash_flow_lines(self):
