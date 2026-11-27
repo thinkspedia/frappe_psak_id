@@ -18,6 +18,11 @@ All notable changes to PSAK ID are listed here. The project follows [Semantic Ve
 - PSAK ID Financial Statement exports: the PDF presents the statement of cash flows on its own page after profit or loss and other comprehensive income, from the start of the fiscal year to the end date, with category headings when the policy shows them and nil optional lines left off, and a Non-cash Transactions note listing each voucher and account with its debit or credit. The Excel workbook has an Arus Kas sheet with the same title block, its subtotals written as formulas over the lines on the sheet.
 - Workspace PSAK 118: the PSAK 118 Cash Flows report is linked in the Reports card and the sidebar.
 
+### Fixed
+
+- PSAK ID Financial Statement: the check message for accounts without a cash flow line counts every account, not only balance sheet accounts, and says the line is set in PSAK ID Account Mapping (Mapping Control lists the accounts).
+- PSAK ID Financial Statement PDF: a category heading moves to the next page with the line below it, and a subtotal with the line above it, so neither stands alone at the bottom or the top of a page. The English lines of the notes' introductions wrap before the right margin instead of being cut off where the server has no italic font.
+
 ## [1.7.2] - 2026-11-26
 
 ### Added

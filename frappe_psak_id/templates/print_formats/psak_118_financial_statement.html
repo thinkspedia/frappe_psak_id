@@ -81,10 +81,30 @@
 	<table>
 		{{ amount_header("", "", columns) }}
 		<tbody>
-			{#- The last rows move with the final total, so a page never holds the total alone #}
+			{#- A heading moves with the line below it and a subtotal with the line above it, so neither
+			stands alone at the bottom or the top of a page #}
+			{%- set ns = namespace(groups=[], group=[]) %}
 			{%- for row in rows[:-3] %}
+			{%- set ns.group = ns.group + [row] %}
+			{%- set next_row = loop.nextitem %}
+			{%- set joins_next = row.kind == "Heading" or (row.kind != "Subtotal" and next_row and next_row.kind == "Subtotal") %}
+			{%- if loop.last or not joins_next %}
+			{%- set ns.groups = ns.groups + [ns.group] %}
+			{%- set ns.group = [] %}
+			{%- endif %}
+			{%- endfor %}
+			{%- for group in ns.groups %}
+			{%- if group | length == 1 %}
+			{{ line_row(group[0]) }}
+			{%- else %}
+			{%- call keep_with_footnotes(amount_count + 2, "") %}
+			{%- for row in group %}
 			{{ line_row(row) }}
 			{%- endfor %}
+			{%- endcall %}
+			{%- endif %}
+			{%- endfor %}
+			{#- The last rows move with the final total, so a page never holds the total alone #}
 			{%- call keep_with_footnotes(amount_count + 2, statement_footnotes()) %}
 			{%- for row in rows[-3:] %}
 			{{ line_row(row) }}
@@ -156,6 +176,7 @@
 	}
 	.psak-statement td { vertical-align: top; padding: 1mm; }
 	.psak-statement td.psak-keep { padding: 0; }
+	.psak-statement td.psak-keep > table { margin: 0; }
 	.psak-statement .psak-label { text-align: start; }
 	.psak-statement .psak-note { text-align: center; width: 12%; }
 	.psak-statement .psak-amount {
@@ -170,6 +191,8 @@
 	.psak-statement tr.psak-subtotal td { font-weight: bold; }
 	.psak-statement tr.psak-subtotal td.psak-amount { border-top: 1px solid #000; }
 	.psak-statement tr.psak-total td.psak-amount { border-bottom: 3px double #000; }
+	/* Without an oblique DejaVu font the italic line is wider than its layout: wrap prose early */
+	.psak-statement p .psak-en { -webkit-padding-end: 4mm; padding-inline-end: 4mm; }
 	.psak-statement .psak-footnote { margin-top: 4mm; font-size: 8pt; color: #444; }
 	.psak-statement .psak-note-text { margin-top: 6mm; }
 	.psak-statement .psak-approval td { padding: 3mm 1mm; border-bottom: 1px solid #ccc; }

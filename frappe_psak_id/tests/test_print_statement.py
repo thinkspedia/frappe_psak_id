@@ -1,4 +1,5 @@
 import io
+import re
 import shutil
 from unittest.mock import patch
 
@@ -134,6 +135,14 @@ class TestPrintStatement(IntegrationTestCase):
 		):
 			self.assertIn(text, html)
 		self.assertNotIn("Disetujui secara elektronik", html)
+		# A page break never leaves a subtotal alone: it shares a kept cell with the line above it
+		kept_rows = [
+			re.findall(r'<tr class="([^"]*)"', cell)
+			for cell in re.findall(r'<td class="psak-keep"[^>]*><table><tbody>(.*?)</tbody>', html, re.S)
+		]
+		pairs = [rows for rows in kept_rows if not any("psak-total" in row for row in rows)]
+		self.assertTrue(pairs)
+		self.assertTrue(all(len(rows) > 1 and "psak-subtotal" in rows[-1] for rows in pairs))
 		# FR-30: financial position, profit or loss, then the notes in their order
 		order = [
 			html.index(text)

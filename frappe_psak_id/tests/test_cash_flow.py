@@ -430,7 +430,8 @@ class TestCashFlows(IntegrationTestCase):
 		doc = make_statement(COMPANY, "2032-01-01", "2032-03-31", "Quarterly").insert()
 		# The escrow payment is on no cash flow line, so the closing cash is 30,000 too high
 		self.assertEqual(doc.cash_difference, 30_000)
-		self.assertIn("have no cash flow line", doc.check_messages)
+		self.assertIn("accounts with a balance or movements have no cash flow line", doc.check_messages)
+		self.assertIn("in PSAK ID Account Mapping", doc.check_messages)
 		self.assertIn("closing cash of the statement of cash flows", doc.check_messages)
 		self.assertEqual(
 			sorted((row.voucher_no, row.account, row.amount) for row in doc.non_cash_transactions),
