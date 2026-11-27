@@ -12,21 +12,32 @@ should still get distinct priorities.
 The statement of financial position adds blocking checks: every balance sheet account with a
 balance on the reporting date has a mapping in force then (BR-30), and the statement balances and
 equals ERPNext's Balance Sheet (BR-31).
+
+The statement of cash flows is checked for the period it is presented in: from the start of the
+fiscal year in a quarterly or yearly package, which it is part of (BR-42), otherwise the period
+itself. Balance sheet accounts with a balance or movements, and income or expense accounts with an
+amount outside operating profit, need a cash flow line, and closing cash must equal the ledger's
+cash and cash equivalents (BR-36). Both block a quarterly or yearly package and are warnings
+otherwise. Non-cash transactions are listed for information (BR-35).
 """
 
 import frappe
 from frappe.utils import add_years, flt, getdate
 
+from frappe_psak_id.psak_id.cash_flow import CASH_LINE, NO_CASH_FLOW_LINE, compute_cash_flows
 from frappe_psak_id.psak_id.financial_position import (
+	BALANCE_SHEET_ROOT_TYPES,
 	compute_financial_position,
+	fiscal_year_start,
 	get_account_balances,
 	mapped_accounts,
 	prior_year_end,
 )
-from frappe_psak_id.psak_id.statement import compute_periods
+from frappe_psak_id.psak_id.statement import DISABLED_LINE, compute_periods, get_mappings
 
 BLOCKING = "Blocking"
 WARNING = "Warning"
+INFORMATION = "Information"
 
 CONFLICTING_MAPPINGS = "Conflicting Mappings"
 OTHER_ITEMS = "Other Items Above Threshold"
@@ -34,6 +45,12 @@ ERPNEXT_DIFFERENCE = "Difference to ERPNext"
 RESTATEMENT_DIFFERENCE = "Restatement Difference"
 UNMAPPED_BALANCE = "Unmapped Balance Sheet Account"
 BALANCE_SHEET_DIFFERENCE = "Difference to ERPNext Balance Sheet"
+CASH_DIFFERENCE = "Cash Difference"
+NON_CASH_TRANSACTION = "Non-cash Transaction"
+
+MONTHLY = "Monthly"
+# The packages with a statement of cash flows (BR-42)
+CASH_FLOW_PERIODICITIES = ("Quarterly", "Yearly")
 
 CURRENT = "Current"
 RESTATED = "Restated"
@@ -130,6 +147,57 @@ def financial_position_issues(position, period=CURRENT) -> list:
 	return issues
 
 
+def cash_flow_period(company: str, from_date, to_date, periodicity: str = MONTHLY) -> tuple:
+	"""The period a package of ``periodicity`` presents cash flows for: from the start of the fiscal
+	year in a quarterly or yearly package (BR-42)."""
+	if periodicity in CASH_FLOW_PERIODICITIES:
+		return fiscal_year_start(company, to_date), getdate(to_date)
+	return getdate(from_date), getdate(to_date)
+
+
+def cash_flow_issues(
+	company: str, from_date, to_date, finance_book: str | None = None, periodicity: str = MONTHLY
+) -> list:
+	"""Missing cash flow lines, the difference of closing cash to the ledger (BR-36) and the
+	non-cash transactions (BR-35) of the statement of cash flows of a package of ``periodicity``."""
+	from_date, to_date = cash_flow_period(company, from_date, to_date, periodicity)
+	statement = compute_cash_flows(company, from_date, to_date, finance_book)
+	severity = BLOCKING if periodicity in CASH_FLOW_PERIODICITIES else WARNING
+
+	issues = [
+		_issue(
+			row.reason,
+			severity,
+			statement,
+			CURRENT,
+			account=row.account,
+			report_line=row.report_line,
+			amount=row.amount,
+		)
+		for row in statement.unmapped
+		# Missing or disabled profit or loss and financial position lines are checked with their
+		# statements; a disabled cash flow line is named
+		if row.reason == NO_CASH_FLOW_LINE or (row.reason == DISABLED_LINE and row.report_line)
+	]
+	listed = {issue.account for issue in issues}
+	issues += [
+		_issue(
+			NO_CASH_FLOW_LINE,
+			severity,
+			statement,
+			CURRENT,
+			account=row.account,
+			amount=flt(row.balance if row.root_type == "Asset" else -row.balance, 2),
+			balance_only=True,
+		)
+		for row in _balances_without_cash_flow_line(company, to_date, finance_book)
+		if row.account not in listed
+	]
+	if statement.cash_difference:
+		issues.append(_issue(CASH_DIFFERENCE, severity, statement, CURRENT, amount=statement.cash_difference))
+	return issues + _non_cash_issues(statement)
+
+
 def is_transition_period(company: str, from_date, to_date) -> bool:
 	"""Whether the period lies in the first year PSAK 118 is applied (BR-11)."""
 	adoption_date = frappe.db.get_value("PSAK ID Company Policy", company, "adoption_date")
@@ -181,6 +249,41 @@ def _mapping_issues(statement, period) -> list:
 		for row in statement.conflicts
 	]
 	return issues
+
+
+def _balances_without_cash_flow_line(company: str, to_date, finance_book: str | None) -> list:
+	"""Balance sheet accounts with a balance on ``to_date`` and a mapping in force then without a
+	cash flow line: their next movements would be left out of the cash flows."""
+	mappings = get_mappings(company, to_date, BALANCE_SHEET_ROOT_TYPES)
+	missing = {
+		account
+		for account, candidates in mappings.items()
+		if any(mapping.report_line != CASH_LINE and not mapping.cash_flow_line for mapping in candidates)
+	}
+	return sorted(
+		(row for row in get_account_balances(company, to_date, finance_book) if row.account in missing),
+		key=lambda row: row.account,
+	)
+
+
+def _non_cash_issues(statement) -> list:
+	"""One issue per non-cash voucher, for the amount of its debits."""
+	debits = {}
+	for row in statement.non_cash:
+		key = (row.voucher_type, row.voucher_no)
+		debits[key] = flt(debits.get(key)) + max(flt(row.amount), 0)
+	return [
+		_issue(
+			NON_CASH_TRANSACTION,
+			INFORMATION,
+			statement,
+			CURRENT,
+			voucher_type=voucher_type,
+			voucher_no=voucher_no,
+			amount=flt(amount, 2),
+		)
+		for (voucher_type, voucher_no), amount in debits.items()
+	]
 
 
 def _other_items_issues(company: str, statement) -> list:

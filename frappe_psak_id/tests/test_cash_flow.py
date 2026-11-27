@@ -1,7 +1,18 @@
 import frappe
 
 from frappe_psak_id.psak_id.cash_flow import NO_CASH_FLOW_LINE, REVALUATION, compute_cash_flows
+from frappe_psak_id.psak_id.checks import (
+	BLOCKING,
+	CASH_DIFFERENCE,
+	INFORMATION,
+	NON_CASH_TRANSACTION,
+	WARNING,
+	cash_flow_issues,
+)
 from frappe_psak_id.psak_id.report.psak_118_cash_flows.psak_118_cash_flows import execute
+from frappe_psak_id.psak_id.report.psak_id_mapping_control.psak_id_mapping_control import (
+	execute as mapping_control,
+)
 from frappe_psak_id.psak_id.statement import NOT_MAPPED
 from frappe_psak_id.tests.utils import (
 	IntegrationTestCase,
@@ -281,3 +292,65 @@ class TestCashFlows(IntegrationTestCase):
 		self.assertEqual(lines["CF-OP-WC-OL"], 1_000)
 		self.assertEqual((lines["CF-SUB-OP"], lines["CF-FIN-INT"]), (-3_000, 0))
 		self.assertEqual(statement.cash_difference, 0)
+
+	def test_mapping_control_checks_cash_flow_lines_cash_and_non_cash_transactions(self):
+		a = self.accounts
+		# The first quarter is fully mapped and reconciles
+		self.assertEqual(cash_flow_issues(COMPANY, "2031-01-01", "2031-03-31", periodicity="Quarterly"), [])
+
+		idle = make_account(COMPANY, "Idle Deposit", "Current Assets")
+		deposit = make_account(COMPANY, "Escrow Deposit", "Current Assets")
+		for account in (idle, deposit):
+			frappe.get_doc(
+				{
+					"doctype": "PSAK ID Account Mapping",
+					"company": COMPANY,
+					"account": account,
+					"report_line": "FP-CA-OTH",
+					"valid_from": "2031-08-01",
+					"priority": 10,
+				}
+			).insert()
+		make_journal_entry(COMPANY, "2031-08-10", idle, 15_000, a.cash)
+		make_journal_entry(COMPANY, "2031-09-10", deposit, 40_000, a.cash)
+		lease = make_journal_entry(COMPANY, "2031-09-15", a.right_of_use, 60_000, a.lease)
+
+		def issues(periodicity):
+			return [
+				(issue.check, issue.severity, issue.account or issue.voucher_no, issue.amount)
+				for issue in cash_flow_issues(COMPANY, "2031-09-01", "2031-09-30", periodicity=periodicity)
+				if issue.account in (idle, deposit) or issue.check in (CASH_DIFFERENCE, NON_CASH_TRANSACTION)
+			]
+
+		self.assertEqual(
+			issues("Monthly"),
+			[
+				(NO_CASH_FLOW_LINE, WARNING, deposit, -40_000),
+				# No movement in September, but the next one would be left out
+				(NO_CASH_FLOW_LINE, WARNING, idle, 15_000),
+				(CASH_DIFFERENCE, WARNING, None, 40_000),
+				(NON_CASH_TRANSACTION, INFORMATION, lease.name, 60_000),
+			],
+		)
+		# A quarterly package presents cash flows from the start of the fiscal year, idle included
+		quarterly = cash_flow_issues(COMPANY, "2031-07-01", "2031-09-30", periodicity="Quarterly")
+		self.assertTrue(all(issue.from_date == frappe.utils.getdate("2031-01-01") for issue in quarterly))
+		self.assertEqual(
+			{issue.severity for issue in quarterly if issue.account in (idle, deposit)}, {BLOCKING}
+		)
+
+		_columns, data, message, _chart, summary = mapping_control(
+			{
+				"company": COMPANY,
+				"from_date": "2031-09-01",
+				"to_date": "2031-09-30",
+				"periodicity": "Quarterly",
+			}
+		)
+		rows = {row.subject: row for row in data}
+		self.assertEqual(rows[deposit].severity_label, "Blocking")
+		self.assertEqual(rows[lease.name].severity_label, "Information")
+		self.assertEqual(rows[lease.name].voucher_type, "Journal Entry")
+		self.assertIsNone(message)
+		self.assertEqual(summary[-1]["label"], "Cash Difference")
+		self.assertNotEqual(summary[-1]["value"], 0)
