@@ -81,6 +81,9 @@ NON_CASH_CATEGORIES = ("Investing", "Financing")
 REVALUATION = "Exchange Rate Revaluation"
 # Why an account's cash effect is not on the statement, besides the reasons of the other statements
 NO_CASH_FLOW_LINE = "No Cash Flow Line"
+# The line an income or expense account outside operating profit presents its cash effect on when
+# nothing names a better one, by the category of its profit or loss line
+DEFAULT_CASH_FLOW_LINES = {"Investing": "CF-INV-OTH", "Financing": "CF-FIN-OTH", "Income Tax": "CF-OP-TAX"}
 
 
 def compute_cash_flows(
@@ -161,11 +164,7 @@ def _context(company: str, from_date, to_date, finance_book: str | None, mapping
 	policy = get_policy(company)
 	lines = get_lines(CASH_FLOW)
 	profit_or_loss_lines = get_lines(PROFIT_OR_LOSS)
-	profit_or_loss_categories = {
-		code: effective_category(line, policy)
-		for code, line in profit_or_loss_lines.items()
-		if line.line_type == "Line"
-	}
+	profit_or_loss_categories = _profit_or_loss_categories(profit_or_loss_lines, policy)
 	return frappe._dict(
 		company=company,
 		from_date=from_date,
@@ -222,6 +221,37 @@ class _Flows:
 			for (account, reason, line_code), amount in sorted(self.unmapped.items(), key=lambda i: i[0][:2])
 			if flt(amount, 2)
 		]
+
+
+def default_cash_flow_lines(company: str) -> dict[str, str]:
+	"""The default cash flow line of each profit or loss line outside the company's operating
+	profit: the interest line that follows it when only one does (interest paid for interest
+	expense on borrowings), otherwise the other cash flows of its activity, or income taxes paid.
+	Lines in operating profit need none, and discontinued operations have no default."""
+	# A template may be applied before the policy exists: no main business activity applies yet
+	has_policy = frappe.db.exists("PSAK ID Company Policy", company)
+	profit_or_loss_lines = get_lines(PROFIT_OR_LOSS)
+	categories = _profit_or_loss_categories(
+		profit_or_loss_lines, get_policy(company) if has_policy else frappe._dict()
+	)
+	operating_profit = _operating_profit_lines(get_lines(CASH_FLOW), profit_or_loss_lines, categories)
+	following = {}
+	for cash_flow_line, line in INTEREST_AND_DIVIDEND_LINES.items():
+		following.setdefault(line, []).append(cash_flow_line)
+	return {
+		code: following[code][0] if len(following.get(code, [])) == 1 else DEFAULT_CASH_FLOW_LINES[category]
+		for code, category in categories.items()
+		if code not in operating_profit and category in DEFAULT_CASH_FLOW_LINES
+	}
+
+
+def _profit_or_loss_categories(profit_or_loss_lines: dict, policy) -> dict[str, str]:
+	"""The category of each profit or loss line once the company's main business activity applies."""
+	return {
+		code: effective_category(line, policy)
+		for code, line in profit_or_loss_lines.items()
+		if line.line_type == "Line"
+	}
 
 
 def _operating_profit_lines(cash_flow_lines: dict, lines: dict, categories: dict) -> set:
