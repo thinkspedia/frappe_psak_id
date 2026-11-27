@@ -4,6 +4,10 @@ All notable changes to PSAK ID are listed here. The project follows [Semantic Ve
 
 ## [Unreleased]
 
+### Added
+
+- PSAK ID Report Line: the statement of changes in equity. The standard lines of PRD-002 Appendix D are installed: the opening balance; profit or loss and other comprehensive income, taken from the statement of profit or loss and other comprehensive income, and their total; dividends, issues of shares, treasury shares, transfers between components of equity and other changes; and the closing balance. Each line is presented for every component of equity. The opening and closing balances and total comprehensive income are required. Lines of the statement of changes in equity have no category.
+
 ## [1.15.3] - 2026-11-27
 
 ### Added

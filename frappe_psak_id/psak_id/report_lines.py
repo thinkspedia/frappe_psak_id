@@ -13,14 +13,17 @@ PROFIT_OR_LOSS = "Profit or Loss"
 FINANCIAL_POSITION = "Financial Position"
 OTHER_COMPREHENSIVE_INCOME = "Other Comprehensive Income"
 CASH_FLOW = "Cash Flow"
+CHANGES_IN_EQUITY = "Changes in Equity"
 
 # The categories a line of each statement belongs to. Other comprehensive income lines have no
-# category; they are split by whether they may be reclassified to profit or loss.
+# category; they are split by whether they may be reclassified to profit or loss. Lines of the
+# statement of changes in equity are movements, presented for every component of equity.
 STATEMENT_CATEGORIES = {
 	PROFIT_OR_LOSS: ("Operating", "Investing", "Financing", "Income Tax", "Discontinued Operations"),
 	FINANCIAL_POSITION: ("Asset", "Liability", "Equity"),
 	OTHER_COMPREHENSIVE_INCOME: (),
 	CASH_FLOW: ("Operating", "Investing", "Financing"),
+	CHANGES_IN_EQUITY: (),
 }
 CATEGORIES = tuple(
 	dict.fromkeys(category for categories in STATEMENT_CATEGORIES.values() for category in categories)
@@ -639,12 +642,57 @@ STANDARD_CASH_FLOW_LINES = (
 	),
 )
 
-# Profit or loss first: total comprehensive income and the cash flow starting line refer to it
+
+def _eq_line(code, label_id, label_en, is_other_items=0, source_line=None, mandatory=0) -> dict:
+	return {
+		"line_code": code,
+		"label_id": label_id,
+		"label_en": label_en,
+		"line_type": "Line",
+		"is_other_items": is_other_items,
+		"source_line": source_line,
+		"mandatory": mandatory,
+	}
+
+
+# Standard PSAK 118 statement of changes in equity (PRD-002 Appendix D). Each line is presented
+# for every component of equity (the equity lines of the statement of financial position);
+# increases are positive and decreases negative.
+STANDARD_CHANGES_IN_EQUITY_LINES = (
+	_eq_line("EQ-OPEN", "Saldo awal", "Balance at the beginning of the period", mandatory=1),
+	_eq_line("EQ-PL", "Laba (rugi)", "Profit or loss", source_line="PL-SUB-PL"),
+	_eq_line(
+		"EQ-OCI", "Penghasilan komprehensif lain", "Other comprehensive income", source_line="OCI-SUB-OCI"
+	),
+	_subtotal(
+		"EQ-SUB-TCI",
+		"Jumlah penghasilan komprehensif",
+		"Total comprehensive income",
+		"+EQ-PL +EQ-OCI",
+		mandatory=1,
+	),
+	_eq_line("EQ-DIV", "Dividen", "Dividends"),
+	_eq_line("EQ-ISSUE", "Penerbitan saham", "Issue of shares"),
+	_eq_line("EQ-TREAS", "Saham treasuri", "Treasury shares"),
+	_eq_line("EQ-TRANSFER", "Transfer antar komponen ekuitas", "Transfers between components of equity"),
+	_eq_line("EQ-OTH", "Lainnya", "Other changes", is_other_items=1),
+	_subtotal(
+		"EQ-CLOSE",
+		"Saldo akhir",
+		"Balance at the end of the period",
+		"+EQ-OPEN +EQ-SUB-TCI +EQ-DIV +EQ-ISSUE +EQ-TREAS +EQ-TRANSFER +EQ-OTH",
+		mandatory=1,
+	),
+)
+
+# Profit or loss first: total comprehensive income, the cash flow starting line and the changes in
+# equity refer to it
 STANDARD_LINES = {
 	PROFIT_OR_LOSS: STANDARD_PROFIT_OR_LOSS_LINES,
 	FINANCIAL_POSITION: STANDARD_FINANCIAL_POSITION_LINES,
 	OTHER_COMPREHENSIVE_INCOME: STANDARD_OTHER_COMPREHENSIVE_INCOME_LINES,
 	CASH_FLOW: STANDARD_CASH_FLOW_LINES,
+	CHANGES_IN_EQUITY: STANDARD_CHANGES_IN_EQUITY_LINES,
 }
 
 

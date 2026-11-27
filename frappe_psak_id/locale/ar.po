@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PSAK ID VERSION\n"
 "Report-Msgid-Bugs-To: helpdesk@thinkspedia.com\n"
-"POT-Creation-Date: 2026-11-27 10:28+0000\n"
+"POT-Creation-Date: 2026-11-27 12:07+0000\n"
 "PO-Revision-Date: 2026-11-23 12:08+0000\n"
 "Last-Translator: helpdesk@thinkspedia.com\n"
 "Language: ar\n"
@@ -405,6 +405,11 @@ msgstr ""
 #: frappe_psak_id/psak_id/sidebar/psak_118/psak_118.json:224
 #: frappe_psak_id/psak_id/workspace/psak_118/psak_118.json:136
 msgid "Change History"
+msgstr ""
+
+#. Option for the 'Statement' (Select) field in DocType 'PSAK ID Report Line'
+#: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.json:54
+msgid "Changes in Equity"
 msgstr ""
 
 #: frappe_psak_id/psak_id/report/psak_id_mapping_control/psak_id_mapping_control.py:81
@@ -1404,7 +1409,7 @@ msgstr ""
 msgid "Only an Accounting Head or the CFO can reopen a final statement."
 msgstr ""
 
-#: frappe_psak_id/psak_id/report_lines.py:92
+#: frappe_psak_id/psak_id/report_lines.py:95
 #, python-brace-format
 msgid "Only assets and liabilities are split into {0} in the subtotal formula. Found: {1}"
 msgstr ""
@@ -2106,7 +2111,7 @@ msgstr ""
 msgid "Sent back: {0}"
 msgstr ""
 
-#: frappe_psak_id/psak_id/report_lines.py:100
+#: frappe_psak_id/psak_id/report_lines.py:103
 #, python-brace-format
 msgid "Separate each line code in the subtotal formula with a space and a sign. Found: {0}"
 msgstr ""
@@ -2181,7 +2186,7 @@ msgstr ""
 msgid "Source Template Version"
 msgstr ""
 
-#: frappe_psak_id/psak_id/report_lines.py:73
+#: frappe_psak_id/psak_id/report_lines.py:76
 #, python-brace-format
 msgid "Start each part of the subtotal formula with + or -, for example +PL-OP-REV. Found: {0}"
 msgstr ""
@@ -2405,7 +2410,7 @@ msgstr ""
 msgid "The statements of {0} are final up to {1}, and this mapping is in force then. Set Valid From after {1} to change the mapping from that date, or reopen the final statement."
 msgstr ""
 
-#: frappe_psak_id/psak_id/report_lines.py:65
+#: frappe_psak_id/psak_id/report_lines.py:68
 msgid "The subtotal formula is empty."
 msgstr ""
 
@@ -2532,7 +2537,7 @@ msgstr ""
 msgid "Unit used by default on new statements and exports."
 msgstr ""
 
-#: frappe_psak_id/psak_id/report_lines.py:83
+#: frappe_psak_id/psak_id/report_lines.py:86
 #, python-brace-format
 msgid "Unknown category {0} in the subtotal formula. Use one of: {1}."
 msgstr ""
