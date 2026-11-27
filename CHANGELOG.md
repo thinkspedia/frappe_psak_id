@@ -4,6 +4,8 @@ All notable changes to PSAK ID are listed here. The project follows [Semantic Ve
 
 ## [Unreleased]
 
+## [1.15.3] - 2026-11-27
+
 ### Added
 
 - PSAK ID Report Line: the statement of cash flows (indirect method). The standard lines of PRD-002 Appendix C are installed: operating cash flows start from operating profit or loss, followed by non-cash adjustments, working capital changes and income taxes paid; investing and financing cash flows; the net change, the effect of exchange rates and opening cash, ending in cash and cash equivalents at the end of the period. Net cash from operating, investing and financing activities and closing cash are required. A cash flow line belongs to operating, investing or financing, or to none for the lines outside the three activities.

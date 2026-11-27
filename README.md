@@ -26,7 +26,7 @@ PSAK ID adds the PSAK 118 presentation on top of ERPNext's General Ledger. It on
 
 ## Scope
 
-> Release 1 is out as version 1.0.0. Release 2 is in progress: the statement of financial position and other comprehensive income are in; the statement of cash flows, the statement of changes in equity and MPM follow. Release 3 is planned.
+> Release 1 is out as version 1.0.0. Release 2 is in progress: the statement of financial position, other comprehensive income and the statement of cash flows are in; the statement of changes in equity and MPM follow. Release 3 is planned.
 
 | Release | Scope |
 |---|---|
