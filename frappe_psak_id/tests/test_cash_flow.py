@@ -1,5 +1,8 @@
+import io
+
 import frappe
 from frappe.model.workflow import apply_workflow
+from openpyxl import load_workbook
 
 from frappe_psak_id.psak_id.cash_flow import NO_CASH_FLOW_LINE, REVALUATION, compute_cash_flows
 from frappe_psak_id.psak_id.checks import (
@@ -14,11 +17,14 @@ from frappe_psak_id.psak_id.doctype.psak_id_financial_statement.psak_id_financia
 	StatementNotReady,
 	statement_lines,
 )
+from frappe_psak_id.psak_id.export_statement import export_excel
+from frappe_psak_id.psak_id.print_statement import PRINT_FORMAT
 from frappe_psak_id.psak_id.report.psak_118_cash_flows.psak_118_cash_flows import execute
 from frappe_psak_id.psak_id.report.psak_id_mapping_control.psak_id_mapping_control import (
 	execute as mapping_control,
 )
 from frappe_psak_id.psak_id.statement import NOT_MAPPED
+from frappe_psak_id.tests.test_export_statement import assert_sheet_adds_up
 from frappe_psak_id.tests.test_financial_statement import make_statement
 from frappe_psak_id.tests.utils import (
 	IntegrationTestCase,
@@ -382,6 +388,26 @@ class TestCashFlows(IntegrationTestCase):
 			["Financial Position", "Profit or Loss", "Cash Flow"],
 		)
 		self.assertEqual((doc.cash_difference, doc.blocking_issues, doc.non_cash_transactions), (0, 0, []))
+		context = doc.get_print_context()
+		self.assertEqual(
+			context.cash_flows.columns,
+			[
+				("Januari \u2013 Maret 2031", "January \u2013 March 2031"),
+				("Januari \u2013 Maret 2030", "January \u2013 March 2030"),
+			],
+		)
+		closing = context.cash_flows.lines[-1]
+		self.assertEqual(
+			(closing.label_en, closing.total), ("Cash and cash equivalents at the end of the period", True)
+		)
+		self.assertEqual(closing.amounts, ["1.455.000", "600.000"])
+		html = frappe.get_print(doc.doctype, doc.name, print_format=PRINT_FORMAT, doc=doc)
+		self.assertLess(html.index("Laporan Laba Rugi"), html.index("Laporan Arus Kas"))
+
+		export_excel(doc.name)
+		workbook = load_workbook(io.BytesIO(frappe.local.response.filecontent))
+		self.assertEqual(workbook.sheetnames[:3], ["Posisi Keuangan", "Laba Rugi", "Arus Kas"])
+		assert_sheet_adds_up(self, workbook["Arus Kas"], statement_lines(doc, "Cash Flow"))
 		self.assertEqual(apply_workflow(doc, "Submit for Review").workflow_state, "Under Review")
 
 	def test_cash_flow_checks_block_the_review_of_a_quarterly_package(self):
@@ -418,3 +444,11 @@ class TestCashFlows(IntegrationTestCase):
 		doc.compute()
 		self.assertEqual(doc.cash_difference, 0)
 		self.assertEqual(statement_lines(doc, "Cash Flow")[0].report_line, "CF-OP-START")
+
+		context = doc.get_print_context()
+		self.assertEqual(
+			sorted((row.voucher, row.amount) for row in context.non_cash),
+			[(f"Journal Entry {lease.name}", "(45.000)"), (f"Journal Entry {lease.name}", "45.000")],
+		)
+		html = frappe.get_print(doc.doctype, doc.name, print_format=PRINT_FORMAT, doc=doc)
+		self.assertLess(html.index("Laporan Arus Kas"), html.index("Transaksi Nonkas"))

@@ -20,9 +20,11 @@ from openpyxl.styles import Alignment, Border, Font, Side
 from openpyxl.utils import get_column_letter
 
 from frappe_psak_id.psak_id.print_statement import (
+	CASH_FLOW_TITLE,
 	DOCTYPE,
 	FINANCIAL_POSITION_TITLE,
 	PROFIT_OR_LOSS_AND_OCI_TITLE,
+	cash_flow_rows,
 	file_name,
 	financial_position_rows,
 	get_print_context,
@@ -69,8 +71,8 @@ TOTAL_LINES = Border(top=THIN, bottom=Side(style="double"))
 @frappe.whitelist()
 def export_excel(name: str) -> None:
 	"""The statement as an Excel workbook: Financial Position, Profit or Loss (and other
-	comprehensive income), Expenses by Nature and Transition Reconciliation when the statement has
-	them, and an Info sheet."""
+	comprehensive income), Cash Flows, Expenses by Nature and Transition Reconciliation when the
+	statement has them, and an Info sheet."""
 	doc = _get_statement(name)
 	context = get_print_context(doc)
 	number_format = NUMBER_FORMATS.get(doc.unit, NUMBER_FORMATS["Full"])
@@ -103,6 +105,18 @@ def export_excel(name: str) -> None:
 		columns=context.columns,
 		rows=profit_or_loss_rows(doc, show_headings),
 	)
+	if context.cash_flows:
+		_statement_sheet(
+			workbook.create_sheet(),
+			doc,
+			context,
+			number_format,
+			name="Arus Kas",
+			title=CASH_FLOW_TITLE,
+			period=context.cash_flows.period,
+			columns=context.cash_flows.columns,
+			rows=cash_flow_rows(doc, show_headings),
+		)
 	if doc.nature_lines:
 		_nature_sheet(workbook.create_sheet(), doc, context, number_format)
 	if doc.is_transition:
