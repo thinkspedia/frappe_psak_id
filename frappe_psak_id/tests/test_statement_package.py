@@ -138,7 +138,7 @@ class TestStatementPackage(IntegrationTestCase):
 
 		export_excel(doc.name)
 		workbook = load_workbook(io.BytesIO(frappe.local.response.filecontent))
-		self.assertEqual(workbook.sheetnames, ["Posisi Keuangan", "Laba Rugi dan PKL", "Info"])
+		self.assertEqual(workbook.sheetnames, ["Posisi Keuangan", "Laba Rugi dan PKL", "Arus Kas", "Info"])
 		sheet = workbook["Posisi Keuangan"]
 		self.assertEqual(sheet["A4"].value, "Pada 31 Maret 2036")
 		assert_sheet_adds_up(self, sheet, statement_lines(doc, "Financial Position"))

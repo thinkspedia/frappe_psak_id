@@ -6,7 +6,7 @@
 The Print Format ``PSAK 118 Financial Statement`` renders the template
 ``templates/print_formats/psak_118_financial_statement.html`` from this context: each statement of
 the package on its own pages, the statement of financial position first, then profit or loss and
-other comprehensive income, then the notes. The PDF is bilingual by design, Indonesian with
+other comprehensive income, then cash flows, then the notes. The PDF is bilingual by design, Indonesian with
 English below, whatever the reader's interface language: the wording follows PSAK, so it is fixed
 here instead of translated. Amounts are scaled to the statement's unit and rounded for display
 only (BR-22).
@@ -16,11 +16,13 @@ import io
 
 import frappe
 from frappe import _
-from frappe.utils import flt, format_datetime, get_fullname, getdate, now_datetime
+from frappe.utils import add_years, flt, format_datetime, formatdate, get_fullname, getdate, now_datetime
 from frappe.utils.pdf import get_pdf
 from pypdf import PdfReader, PdfWriter
 
+from frappe_psak_id.psak_id.cash_flow import CLOSING_LINE as CLOSING_CASH_LINE
 from frappe_psak_id.psak_id.doctype.psak_id_financial_statement.psak_id_financial_statement import (
+	cash_flow_dates,
 	statement_lines,
 	strip_text,
 )
@@ -28,6 +30,9 @@ from frappe_psak_id.psak_id.financial_position import (
 	TOTAL_ASSETS_LINE,
 	TOTAL_LIABILITIES_AND_EQUITY_LINE,
 	prior_year_end,
+)
+from frappe_psak_id.psak_id.report.psak_118_cash_flows.psak_118_cash_flows import (
+	HEADING_LABELS as CASH_FLOW_HEADING_LABELS,
 )
 from frappe_psak_id.psak_id.report.psak_118_financial_position.psak_118_financial_position import (
 	HEADING_LABELS,
@@ -39,6 +44,7 @@ from frappe_psak_id.psak_id.report.psak_118_profit_or_loss.psak_118_profit_or_lo
 	UNITS,
 )
 from frappe_psak_id.psak_id.report_lines import (
+	CASH_FLOW,
 	FINANCIAL_POSITION,
 	OTHER_COMPREHENSIVE_INCOME,
 	PROFIT_OR_LOSS,
@@ -104,6 +110,7 @@ PROFIT_OR_LOSS_AND_OCI_TITLE = (
 	"Laporan Laba Rugi dan Penghasilan Komprehensif Lain",
 	"Statement of Profit or Loss and Other Comprehensive Income",
 )
+CASH_FLOW_TITLE = ("Laporan Arus Kas", "Statement of Cash Flows")
 # Closing amounts of each statement, double underlined
 FINANCIAL_POSITION_TOTALS = (TOTAL_ASSETS_LINE, TOTAL_LIABILITIES_AND_EQUITY_LINE)
 # Who signs each step of the workflow, in the words of the Approval Sheet (BR-15)
@@ -196,9 +203,11 @@ def get_print_context(doc) -> frappe._dict:
 		position=_position(doc, divisor, has_comparative, show_headings),
 		title=PROFIT_OR_LOSS_AND_OCI_TITLE if has_oci else PROFIT_OR_LOSS_TITLE,
 		lines=_format_rows(profit_or_loss_rows(doc, show_headings), divisor, has_comparative),
+		cash_flows=_cash_flows(doc, divisor, has_comparative, show_headings),
 		natures=_natures(doc, divisor, has_comparative),
 		transition=_transition(doc, divisor),
 		other_items=_other_items(doc, divisor, has_comparative),
+		non_cash=_non_cash(doc, divisor),
 		approvals=_approvals(doc),
 		document=doc.name,
 		version=_version(doc),
@@ -305,6 +314,18 @@ def profit_or_loss_rows(doc, show_headings) -> list[frappe._dict]:
 	return rows
 
 
+def cash_flow_rows(doc, show_headings) -> list[frappe._dict]:
+	"""The statement of cash flows as presented, lines under a heading per activity when the policy
+	shows headings. Empty for a monthly package or one saved before the statement of cash flows."""
+	return _presented_rows(
+		_without_nil_lines(statement_lines(doc, CASH_FLOW)),
+		show_headings,
+		lambda line: line.category,
+		CASH_FLOW_HEADING_LABELS,
+		(CLOSING_CASH_LINE,),
+	)
+
+
 def _without_nil_lines(lines) -> list:
 	"""The lines to present: a line or subtotal PSAK 118 does not require is left off when it is
 	nil in every column. The statement of financial position and other comprehensive income list
@@ -388,6 +409,24 @@ def position_columns(doc, has_comparative: bool) -> list[tuple[str, str]]:
 		label_id, label_en = _date_label(prior_year_end(doc.company, end))
 		columns.append(_restated_label(doc, label_id, label_en))
 	return columns
+
+
+def _cash_flows(doc, divisor: int, has_comparative: bool, show_headings) -> frappe._dict | None:
+	"""From the start of the fiscal year to the end date (BR-42), and the same period a year
+	earlier as comparative."""
+	rows = cash_flow_rows(doc, show_headings)
+	if not rows:
+		return None
+	start, end = cash_flow_dates(doc)
+	columns = [_period_label(start, end)]
+	if has_comparative:
+		prior = _period_label(getdate(add_years(start, -1)), getdate(add_years(end, -1)))
+		columns.append(_restated_label(doc, *prior))
+	return frappe._dict(
+		period=_period_phrase(end, doc.periodicity == "Annual"),
+		columns=columns,
+		lines=_format_rows(rows, divisor, has_comparative),
+	)
 
 
 def _date_label(day) -> tuple[str, str]:
@@ -486,6 +525,22 @@ def _other_items(doc, divisor: int, has_comparative: bool) -> frappe._dict | Non
 	]
 	# Text Editor content is sanitised by Frappe when the statement is saved
 	return frappe._dict(rows=rows, note=doc.other_items_note)
+
+
+def _non_cash(doc, divisor: int) -> list[frappe._dict] | None:
+	"""The investing and financing transactions left out of the cash flows (BR-35), each account of
+	a voucher with its debit, or its credit in parentheses."""
+	if not doc.non_cash_transactions:
+		return None
+	return [
+		frappe._dict(
+			date=formatdate(row.posting_date, "dd-MM-yyyy"),
+			voucher=f"{row.voucher_type} {row.voucher_no}",
+			account=row.account,
+			amount=format_amount(row.amount, divisor),
+		)
+		for row in doc.non_cash_transactions
+	]
 
 
 def _approvals(doc) -> list[frappe._dict]:

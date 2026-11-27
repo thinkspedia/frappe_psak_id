@@ -221,10 +221,10 @@ class PSAKIDFinancialStatement(Document):
 		As in the PSAK 118 Cash Flows report, the comparative is classified with this period's
 		mappings (FR-31): mappings in force before the cash flow lines existed have none.
 		"""
-		periodicity = CASH_FLOW_PERIODICITIES.get(self.periodicity)
-		if not periodicity:
+		dates = cash_flow_dates(self)
+		if not dates:
 			return None, None
-		from_date, to_date = cash_flow_period(self.company, self.from_date, self.to_date, periodicity)
+		from_date, to_date = dates
 		cash_flows = compute_cash_flows(self.company, from_date, to_date, self.finance_book)
 		if self.comparative == NO_COMPARATIVE:
 			return cash_flows, None
@@ -541,6 +541,15 @@ def statement_lines(doc, statement: str = PROFIT_OR_LOSS) -> list:
 	Lines saved before the package existed have no statement and are all profit or loss lines.
 	"""
 	return [line for line in doc.lines if (line.statement or PROFIT_OR_LOSS) == statement]
+
+
+def cash_flow_dates(doc) -> tuple | None:
+	"""The period the statement of cash flows of the package covers: from the start of the fiscal
+	year in a quarterly or annual package (BR-42); None for a monthly one."""
+	periodicity = CASH_FLOW_PERIODICITIES.get(doc.periodicity)
+	if not periodicity:
+		return None
+	return cash_flow_period(doc.company, doc.from_date, doc.to_date, periodicity)
 
 
 def strip_text(html) -> str:
