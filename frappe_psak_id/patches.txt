@@ -10,3 +10,4 @@ frappe_psak_id.patches.v1_1.add_financial_position_and_oci_lines
 frappe_psak_id.patches.v1_5.add_balance_sheet_mapping_templates
 frappe_psak_id.patches.v1_8.add_cash_flow_lines
 frappe_psak_id.patches.v1_10.add_cash_flow_mapping_templates
+frappe_psak_id.patches.v1_16.add_changes_in_equity_lines

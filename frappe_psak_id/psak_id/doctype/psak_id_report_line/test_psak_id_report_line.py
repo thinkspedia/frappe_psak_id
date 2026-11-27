@@ -24,6 +24,9 @@ MANDATORY = (
 	"CF-SUB-INV",
 	"CF-SUB-FIN",
 	"CF-SUB-CLOSE",
+	"EQ-OPEN",
+	"EQ-SUB-TCI",
+	"EQ-CLOSE",
 )
 
 
@@ -297,3 +300,24 @@ class TestPSAKIDReportLine(IntegrationTestCase):
 			source_line="PL-SUB-OP",
 		).insert()
 		self.assertIsNone(subtotal.source_line)
+
+	def test_changes_in_equity_take_comprehensive_income_from_profit_or_loss(self):
+		sources = dict(
+			frappe.get_all(
+				"PSAK ID Report Line",
+				filters={"statement": "Changes in Equity", "line_type": "Line"},
+				fields=["name", "source_line"],
+				as_list=True,
+			)
+		)
+		self.assertEqual((sources["EQ-PL"], sources["EQ-OCI"]), ("PL-SUB-PL", "OCI-SUB-OCI"))
+		self.assertEqual(
+			frappe.db.get_value("PSAK ID Report Line", "EQ-CLOSE", "subtotal_formula"),
+			"+EQ-OPEN +EQ-SUB-TCI +EQ-DIV +EQ-ISSUE +EQ-TREAS +EQ-TRANSFER +EQ-OTH",
+		)
+
+	def test_changes_in_equity_line_has_no_category(self):
+		line = self._line(
+			line_code="_T-EQ-LINE", statement="Changes in Equity", line_type="Line", category="Financing"
+		).insert()
+		self.assertFalse(line.category)

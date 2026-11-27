@@ -51,7 +51,7 @@
    "fieldtype": "Select",
    "in_standard_filter": 1,
    "label": "Statement",
-   "options": "Profit or Loss\nFinancial Position\nOther Comprehensive Income\nCash Flow",
+   "options": "Profit or Loss\nFinancial Position\nOther Comprehensive Income\nCash Flow\nChanges in Equity",
    "reqd": 1
   },
   {
@@ -72,7 +72,7 @@
    "in_list_view": 1,
    "in_standard_filter": 1,
    "label": "Category",
-   "mandatory_depends_on": "eval:doc.line_type=='Line' && !['Other Comprehensive Income','Cash Flow'].includes(doc.statement)",
+   "mandatory_depends_on": "eval:doc.line_type=='Line' && !['Other Comprehensive Income','Cash Flow','Changes in Equity'].includes(doc.statement)",
    "options": "\nOperating\nInvesting\nFinancing\nIncome Tax\nDiscontinued Operations\nAsset\nLiability\nEquity"
   },
   {
@@ -227,7 +227,7 @@
  "is_tree": 1,
  "link_display_mode": "Search",
  "links": [],
- "modified": "2026-11-26 21:38:19.623200",
+ "modified": "2026-11-27 17:30:17.554252",
  "modified_by": "Administrator",
  "module": "PSAK ID",
  "name": "PSAK ID Report Line",
