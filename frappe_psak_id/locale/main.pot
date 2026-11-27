@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PSAK ID VERSION\n"
 "Report-Msgid-Bugs-To: helpdesk@thinkspedia.com\n"
-"POT-Creation-Date: 2026-11-27 12:07+0000\n"
-"PO-Revision-Date: 2026-11-27 12:07+0000\n"
+"POT-Creation-Date: 2026-11-27 12:47+0000\n"
+"PO-Revision-Date: 2026-11-27 12:47+0000\n"
 "Last-Translator: helpdesk@thinkspedia.com\n"
 "Language-Team: helpdesk@thinkspedia.com\n"
 "MIME-Version: 1.0\n"
@@ -28,6 +28,7 @@ msgid "<span class=\"h4\"><b>PSAK 118</b></span>"
 msgstr ""
 
 #: frappe_psak_id/psak_id/report/psak_118_cash_flows/psak_118_cash_flows.js:146
+#: frappe_psak_id/psak_id/report/psak_118_changes_in_equity/psak_118_changes_in_equity.js:156
 #: frappe_psak_id/psak_id/report/psak_118_financial_position/psak_118_financial_position.js:138
 #: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.js:170
 msgid "A conditional mapping splits an account of this line by cost center or project. Open the General Ledger for one account."
@@ -462,6 +463,7 @@ msgid "Choose the party type of the condition."
 msgstr ""
 
 #: frappe_psak_id/psak_id/report/psak_118_cash_flows/psak_118_cash_flows.py:58
+#: frappe_psak_id/psak_id/report/psak_118_changes_in_equity/psak_118_changes_in_equity.py:58
 #: frappe_psak_id/psak_id/report/psak_118_financial_position/psak_118_financial_position.py:56
 #: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.py:74
 #, python-brace-format
@@ -500,6 +502,10 @@ msgstr ""
 msgid "Closing Cash (PSAK 118)"
 msgstr ""
 
+#: frappe_psak_id/psak_id/report/psak_118_changes_in_equity/psak_118_changes_in_equity.py:159
+msgid "Closing Equity (PSAK 118)"
+msgstr ""
+
 #: frappe_psak_id/psak_id/report/psak_id_mapping_control/psak_id_mapping_control.py:159
 msgid "Closing cash of the statement of cash flows differs from the balance of the accounts mapped to cash and cash equivalents. Set the missing cash flow lines listed above."
 msgstr ""
@@ -513,6 +519,8 @@ msgstr ""
 #: frappe_psak_id/psak_id/doctype/psak_id_mapping_template/psak_id_mapping_template.js:48
 #: frappe_psak_id/psak_id/report/psak_118_cash_flows/psak_118_cash_flows.js:10
 #: frappe_psak_id/psak_id/report/psak_118_cash_flows/psak_118_cash_flows.py:53
+#: frappe_psak_id/psak_id/report/psak_118_changes_in_equity/psak_118_changes_in_equity.js:10
+#: frappe_psak_id/psak_id/report/psak_118_changes_in_equity/psak_118_changes_in_equity.py:53
 #: frappe_psak_id/psak_id/report/psak_118_financial_position/psak_118_financial_position.js:10
 #: frappe_psak_id/psak_id/report/psak_118_financial_position/psak_118_financial_position.py:54
 #: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.js:10
@@ -523,6 +531,7 @@ msgid "Company"
 msgstr ""
 
 #: frappe_psak_id/psak_id/report/psak_118_cash_flows/psak_118_cash_flows.js:49
+#: frappe_psak_id/psak_id/report/psak_118_changes_in_equity/psak_118_changes_in_equity.js:49
 #: frappe_psak_id/psak_id/report/psak_118_financial_position/psak_118_financial_position.js:41
 #: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.js:73
 msgid "Company Default"
@@ -556,6 +565,7 @@ msgid "Compare with Prior Year End"
 msgstr ""
 
 #: frappe_psak_id/psak_id/report/psak_118_cash_flows/psak_118_cash_flows.js:34
+#: frappe_psak_id/psak_id/report/psak_118_changes_in_equity/psak_118_changes_in_equity.js:34
 msgid "Compare with Same Period Last Year"
 msgstr ""
 
@@ -565,6 +575,10 @@ msgstr ""
 
 #: frappe_psak_id/psak_id/doctype/psak_id_mapping_template/psak_id_mapping_template.js:134
 msgid "Completed with a cash flow line"
+msgstr ""
+
+#: frappe_psak_id/psak_id/report/psak_118_changes_in_equity/psak_118_changes_in_equity.py:167
+msgid "Comprehensive Income Difference"
 msgstr ""
 
 #. Label of the computed_on (Datetime) field in DocType 'PSAK ID Financial
@@ -720,6 +734,7 @@ msgid "Employee Benefits"
 msgstr ""
 
 #: frappe_psak_id/psak_id/report/psak_118_cash_flows/psak_118_cash_flows.js:62
+#: frappe_psak_id/psak_id/report/psak_118_changes_in_equity/psak_118_changes_in_equity.js:62
 #: frappe_psak_id/psak_id/report/psak_118_financial_position/psak_118_financial_position.js:54
 #: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.js:86
 msgid "English"
@@ -739,10 +754,18 @@ msgstr ""
 msgid "Equity Component"
 msgstr ""
 
+#: frappe_psak_id/psak_id/report/psak_118_changes_in_equity/psak_118_changes_in_equity.py:162
+msgid "Equity Difference"
+msgstr ""
+
 #. Description of the 'OCI Line' (Link) field in DocType 'PSAK ID Mapping
 #. Template Row'
 #: frappe_psak_id/psak_id/doctype/psak_id_mapping_template_row/psak_id_mapping_template_row.json:76
 msgid "Equity accounts only: the other comprehensive income line their movements are presented in."
+msgstr ""
+
+#: frappe_psak_id/psak_id/report/psak_118_changes_in_equity/psak_118_changes_in_equity.py:160
+msgid "Equity in the Statement of Financial Position"
 msgstr ""
 
 #: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:64
@@ -812,6 +835,7 @@ msgstr ""
 #. Statement'
 #: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.json:108
 #: frappe_psak_id/psak_id/report/psak_118_cash_flows/psak_118_cash_flows.js:40
+#: frappe_psak_id/psak_id/report/psak_118_changes_in_equity/psak_118_changes_in_equity.js:40
 #: frappe_psak_id/psak_id/report/psak_118_financial_position/psak_118_financial_position.js:32
 #: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.js:64
 #: frappe_psak_id/psak_id/report/psak_id_mapping_control/psak_id_mapping_control.js:34
@@ -890,6 +914,8 @@ msgstr ""
 #: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.json:91
 #: frappe_psak_id/psak_id/report/psak_118_cash_flows/psak_118_cash_flows.js:18
 #: frappe_psak_id/psak_id/report/psak_118_cash_flows/psak_118_cash_flows.py:54
+#: frappe_psak_id/psak_id/report/psak_118_changes_in_equity/psak_118_changes_in_equity.js:18
+#: frappe_psak_id/psak_id/report/psak_118_changes_in_equity/psak_118_changes_in_equity.py:54
 #: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.js:18
 #: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.py:70
 #: frappe_psak_id/psak_id/report/psak_id_mapping_control/psak_id_mapping_control.js:19
@@ -904,6 +930,7 @@ msgstr ""
 #: frappe_psak_id/psak_id/doctype/psak_id_company_policy/psak_id_company_policy.json:140
 #: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.json:125
 #: frappe_psak_id/psak_id/report/psak_118_cash_flows/psak_118_cash_flows.js:50
+#: frappe_psak_id/psak_id/report/psak_118_changes_in_equity/psak_118_changes_in_equity.js:50
 #: frappe_psak_id/psak_id/report/psak_118_financial_position/psak_118_financial_position.js:42
 #: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.js:74
 msgid "Full"
@@ -976,12 +1003,14 @@ msgid "Income Tax"
 msgstr ""
 
 #: frappe_psak_id/psak_id/report/psak_118_cash_flows/psak_118_cash_flows.js:61
+#: frappe_psak_id/psak_id/report/psak_118_changes_in_equity/psak_118_changes_in_equity.js:61
 #: frappe_psak_id/psak_id/report/psak_118_financial_position/psak_118_financial_position.js:53
 #: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.js:85
 msgid "Indonesian"
 msgstr ""
 
 #: frappe_psak_id/psak_id/report/psak_118_cash_flows/psak_118_cash_flows.js:60
+#: frappe_psak_id/psak_id/report/psak_118_changes_in_equity/psak_118_changes_in_equity.js:60
 #: frappe_psak_id/psak_id/report/psak_118_financial_position/psak_118_financial_position.js:52
 #: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.js:84
 msgid "Indonesian and English"
@@ -1108,6 +1137,7 @@ msgstr ""
 #. Option for the 'Line Type' (Select) field in DocType 'PSAK ID Report Line'
 #: frappe_psak_id/psak_id/doctype/psak_id_report_line/psak_id_report_line.json:65
 #: frappe_psak_id/psak_id/report/psak_118_cash_flows/psak_118_cash_flows.py:77
+#: frappe_psak_id/psak_id/report/psak_118_changes_in_equity/psak_118_changes_in_equity.py:85
 #: frappe_psak_id/psak_id/report/psak_118_financial_position/psak_118_financial_position.py:72
 #: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.py:107
 msgid "Line"
@@ -1119,6 +1149,7 @@ msgid "Line Code"
 msgstr ""
 
 #: frappe_psak_id/psak_id/report/psak_118_cash_flows/psak_118_cash_flows.js:57
+#: frappe_psak_id/psak_id/report/psak_118_changes_in_equity/psak_118_changes_in_equity.js:57
 #: frappe_psak_id/psak_id/report/psak_118_financial_position/psak_118_financial_position.js:49
 #: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.js:81
 msgid "Line Labels"
@@ -1252,6 +1283,7 @@ msgstr ""
 #: frappe_psak_id/psak_id/doctype/psak_id_company_policy/psak_id_company_policy.json:140
 #: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.json:125
 #: frappe_psak_id/psak_id/report/psak_118_cash_flows/psak_118_cash_flows.js:52
+#: frappe_psak_id/psak_id/report/psak_118_changes_in_equity/psak_118_changes_in_equity.js:52
 #: frappe_psak_id/psak_id/report/psak_118_financial_position/psak_118_financial_position.js:44
 #: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.js:76
 msgid "Millions"
@@ -1425,12 +1457,14 @@ msgid "Open Cash Flows"
 msgstr ""
 
 #: frappe_psak_id/psak_id/report/psak_118_cash_flows/psak_118_cash_flows.js:102
+#: frappe_psak_id/psak_id/report/psak_118_changes_in_equity/psak_118_changes_in_equity.js:109
 #: frappe_psak_id/psak_id/report/psak_118_financial_position/psak_118_financial_position.js:94
 #: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.js:126
 msgid "Open General Ledger"
 msgstr ""
 
 #: frappe_psak_id/psak_id/report/psak_118_cash_flows/psak_118_cash_flows.js:134
+#: frappe_psak_id/psak_id/report/psak_118_changes_in_equity/psak_118_changes_in_equity.js:144
 #: frappe_psak_id/psak_id/report/psak_118_financial_position/psak_118_financial_position.js:126
 #: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.js:158
 #, python-brace-format
@@ -1552,6 +1586,11 @@ msgstr ""
 #: frappe_psak_id/psak_id/report/psak_118_cash_flows/psak_118_cash_flows.json:22
 #: frappe_psak_id/psak_id/workspace/psak_118/psak_118.json:58
 msgid "PSAK 118 Cash Flows"
+msgstr ""
+
+#. Name of a report
+#: frappe_psak_id/psak_id/report/psak_118_changes_in_equity/psak_118_changes_in_equity.json:22
+msgid "PSAK 118 Changes in Equity"
 msgstr ""
 
 #. Name of a report
@@ -1790,6 +1829,11 @@ msgstr ""
 
 #: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.py:249
 msgid "Profit or Loss (PSAK 118)"
+msgstr ""
+
+#: frappe_psak_id/psak_id/report/psak_118_changes_in_equity/psak_118_changes_in_equity.py:197
+#, python-brace-format
+msgid "Profit or loss differs from ERPNext's profit or loss by {0}, because income or expense accounts are not mapped. The PSAK ID Mapping Control report lists them."
 msgstr ""
 
 #. Option for the 'Condition Type' (Select) field in DocType 'PSAK ID Account
@@ -2271,6 +2315,10 @@ msgstr ""
 msgid "The General Ledger also shows entries of these accounts that are on other lines, such as their increases when this line holds their decreases."
 msgstr ""
 
+#: frappe_psak_id/psak_id/report/psak_118_changes_in_equity/psak_118_changes_in_equity.js:183
+msgid "The General Ledger also shows entries of these accounts that are on other lines, such as their transfers to other components of equity."
+msgstr ""
+
 #: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.js:198
 msgid "The General Ledger also shows entries of these accounts that are on other lines."
 msgstr ""
@@ -2301,6 +2349,11 @@ msgstr ""
 #. Template Row'
 #: frappe_psak_id/psak_id/doctype/psak_id_mapping_template_row/psak_id_mapping_template_row.json:84
 msgid "The cash flow line the movements of the account are presented in. Income and expense rows: only for an item presented outside operating activities or not in cash."
+msgstr ""
+
+#: frappe_psak_id/psak_id/report/psak_118_changes_in_equity/psak_118_changes_in_equity.py:190
+#, python-brace-format
+msgid "The closing balance of {0} differs from the statement of financial position by {1}, because an account's Equity Component is not its report line."
 msgstr ""
 
 #: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.py:394
@@ -2335,7 +2388,9 @@ msgid "The period is not closed"
 msgstr ""
 
 #: frappe_psak_id/psak_id/cash_flow.py:101
+#: frappe_psak_id/psak_id/changes_in_equity.py:79
 #: frappe_psak_id/psak_id/report/psak_118_cash_flows/psak_118_cash_flows.py:61
+#: frappe_psak_id/psak_id/report/psak_118_changes_in_equity/psak_118_changes_in_equity.py:61
 #: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.py:76
 #: frappe_psak_id/psak_id/report/psak_id_mapping_control/psak_id_mapping_control.py:73
 #: frappe_psak_id/psak_id/statement.py:93
@@ -2437,6 +2492,7 @@ msgstr ""
 #: frappe_psak_id/psak_id/doctype/psak_id_company_policy/psak_id_company_policy.json:140
 #: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.json:125
 #: frappe_psak_id/psak_id/report/psak_118_cash_flows/psak_118_cash_flows.js:51
+#: frappe_psak_id/psak_id/report/psak_118_changes_in_equity/psak_118_changes_in_equity.js:51
 #: frappe_psak_id/psak_id/report/psak_118_financial_position/psak_118_financial_position.js:43
 #: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.js:75
 msgid "Thousands"
@@ -2476,6 +2532,8 @@ msgstr ""
 #: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.json:98
 #: frappe_psak_id/psak_id/report/psak_118_cash_flows/psak_118_cash_flows.js:26
 #: frappe_psak_id/psak_id/report/psak_118_cash_flows/psak_118_cash_flows.py:55
+#: frappe_psak_id/psak_id/report/psak_118_changes_in_equity/psak_118_changes_in_equity.js:26
+#: frappe_psak_id/psak_id/report/psak_118_changes_in_equity/psak_118_changes_in_equity.py:55
 #: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.js:26
 #: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.py:71
 #: frappe_psak_id/psak_id/report/psak_id_mapping_control/psak_id_mapping_control.js:27
@@ -2497,6 +2555,10 @@ msgstr ""
 
 #: frappe_psak_id/psak_id/report/psak_118_financial_position/psak_118_financial_position.py:145
 msgid "Total Assets in ERPNext Balance Sheet"
+msgstr ""
+
+#: frappe_psak_id/psak_id/report/psak_118_changes_in_equity/psak_118_changes_in_equity.py:90
+msgid "Total Equity"
 msgstr ""
 
 #: frappe_psak_id/psak_id/report/psak_118_financial_position/psak_118_financial_position.py:144
@@ -2528,6 +2590,7 @@ msgstr ""
 #. Label of the unit (Select) field in DocType 'PSAK ID Financial Statement'
 #: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.json:124
 #: frappe_psak_id/psak_id/report/psak_118_cash_flows/psak_118_cash_flows.js:46
+#: frappe_psak_id/psak_id/report/psak_118_changes_in_equity/psak_118_changes_in_equity.js:46
 #: frappe_psak_id/psak_id/report/psak_118_financial_position/psak_118_financial_position.js:38
 #: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.js:70
 msgid "Unit"
@@ -2687,6 +2750,7 @@ msgstr ""
 
 #: frappe_psak_id/psak_id/report/psak_118_cash_flows/psak_118_cash_flows.py:162
 #: frappe_psak_id/psak_id/report/psak_118_cash_flows/psak_118_cash_flows.py:181
+#: frappe_psak_id/psak_id/report/psak_118_changes_in_equity/psak_118_changes_in_equity.py:180
 #: frappe_psak_id/psak_id/report/psak_118_financial_position/psak_118_financial_position.py:160
 #: frappe_psak_id/psak_id/report/psak_118_profit_or_loss/psak_118_profit_or_loss.py:282
 #, python-brace-format
@@ -2706,6 +2770,11 @@ msgstr ""
 #: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:138
 #, python-brace-format
 msgid "{0} checks fail. The statement cannot be sent for review."
+msgstr ""
+
+#: frappe_psak_id/psak_id/report/psak_118_changes_in_equity/psak_118_changes_in_equity.py:183
+#, python-brace-format
+msgid "{0} equity accounts have no component of equity ({1}). They are left out of the statement. Map them in PSAK ID Account Mapping."
 msgstr ""
 
 #: frappe_psak_id/psak_id/statement.py:468
