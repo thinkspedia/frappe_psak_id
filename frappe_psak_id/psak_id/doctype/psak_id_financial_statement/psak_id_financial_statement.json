@@ -26,6 +26,7 @@
   "column_break_checks",
   "erpnext_pl_difference",
   "erpnext_bs_difference",
+  "cash_difference",
   "restatement_difference",
   "check_messages",
   "other_items_warnings",
@@ -33,6 +34,8 @@
   "lines",
   "section_nature",
   "nature_lines",
+  "section_non_cash",
+  "non_cash_transactions",
   "section_transition",
   "is_transition",
   "psak201_profit_or_loss",
@@ -385,6 +388,26 @@
    "no_copy": 1,
    "options": "currency",
    "read_only": 1
+  },
+  {
+   "fieldname": "cash_difference",
+   "fieldtype": "Currency",
+   "label": "Cash Difference",
+   "options": "currency",
+   "read_only": 1
+  },
+  {
+   "depends_on": "eval:(doc.non_cash_transactions || []).length",
+   "fieldname": "section_non_cash",
+   "fieldtype": "Section Break",
+   "label": "Non-cash Transactions"
+  },
+  {
+   "fieldname": "non_cash_transactions",
+   "fieldtype": "Table",
+   "label": "Non-cash Transactions",
+   "options": "PSAK ID Non-cash Transaction",
+   "read_only": 1
   }
  ],
  "grid_page_length": 50,
@@ -392,7 +415,7 @@
  "is_submittable": 1,
  "link_display_mode": "Search",
  "links": [],
- "modified": "2026-11-25 09:18:19.259092",
+ "modified": "2026-11-27 09:15:59.524909",
  "modified_by": "Administrator",
  "module": "PSAK ID",
  "name": "PSAK ID Financial Statement",

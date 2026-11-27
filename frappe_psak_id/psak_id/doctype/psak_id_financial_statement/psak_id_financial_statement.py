@@ -3,12 +3,13 @@
 
 """The PSAK 118 financial statements of one company and period, reviewed and made final as one
 package (BR-42): the statement of financial position, profit or loss and other comprehensive
-income.
+income and, in a quarterly or annual package, the statement of cash flows from the start of the
+fiscal year.
 
 Recompute fills the lines from the statement engines and records the checks of the Mapping
 Control. The workflow (fixture ``PSAK ID Financial Statement``) moves it from Draft through
 Under Review and Approval CFO to Final; this controller enforces what each step needs: the
-checks pass before review (BR-02, BR-06, BR-07, BR-19, BR-30, BR-31), the period is closed in ERPNext before
+checks pass before review (BR-02, BR-06, BR-07, BR-19, BR-30, BR-31, BR-36), the period is closed in ERPNext before
 the CFO approves (BR-13), and the approved values still match the ledger. A final statement keeps
 its values (BR-14) and is only reopened with a reason, which cancels it and creates an amendment
 (BR-08).
@@ -31,17 +32,21 @@ from frappe.utils import (
 )
 
 from frappe_psak_id.compat import accounting_period_filters
+from frappe_psak_id.psak_id.cash_flow import NO_CASH_FLOW_LINE, compute_cash_flows
 from frappe_psak_id.psak_id.checks import (
 	BLOCKING,
 	CURRENT,
 	OTHER_ITEMS,
 	RESTATED,
+	cash_flow_period,
+	cash_flow_statement_issues,
 	financial_position_issues,
 	is_transition_period,
 	run_checks,
 )
 from frappe_psak_id.psak_id.financial_position import compute_financial_position, prior_year_end
 from frappe_psak_id.psak_id.report_lines import (
+	CASH_FLOW,
 	FINANCIAL_POSITION,
 	OTHER_COMPREHENSIVE_INCOME,
 	PROFIT_OR_LOSS,
@@ -67,6 +72,8 @@ SAME_PERIOD_LAST_YEAR = "Same Period Last Year"
 RESTATED_PRIOR_YEAR = "Restated Prior Year"
 
 PERIOD_MONTHS = {"Monthly": 1, "Quarterly": 3, "Annual": 12}
+# The periodicity of the cash flow checks of each package that presents cash flows (BR-42)
+CASH_FLOW_PERIODICITIES = {"Quarterly": "Quarterly", "Annual": "Yearly"}
 REOPEN_ROLES = ("PSAK ID - Accounting - Head", "PSAK ID - CFO")
 UNMAPPED_CHECKS = (NOT_MAPPED, NO_MATCHING_CONDITION, DISABLED_LINE)
 
@@ -121,6 +128,7 @@ class PSAKIDFinancialStatement(Document):
 		current, comparative = result.current, self._comparative_statement(result)
 
 		position, prior_position = self._positions()
+		cash_flows, prior_cash_flows = self._cash_flows()
 
 		notes = {row.report_line: row.note_no for row in self.lines if row.note_no}
 		self.set("lines", [])
@@ -131,11 +139,16 @@ class PSAKIDFinancialStatement(Document):
 			comparative and comparative.has_other_comprehensive_income
 		):
 			self._append_lines(OTHER_COMPREHENSIVE_INCOME, current.oci_lines, comparative, notes, "oci_lines")
+		if cash_flows:
+			self._append_lines(CASH_FLOW, cash_flows.lines, prior_cash_flows, notes)
 
 		self._set_nature_lines(current, comparative)
 		self._set_transition_lines(result.restated)
+		self._set_non_cash_transactions(cash_flows)
 
 		issues = result.issues + financial_position_issues(position, CURRENT)
+		if cash_flows:
+			issues += cash_flow_statement_issues(cash_flows, CASH_FLOW_PERIODICITIES[self.periodicity])
 		# The restated comparative is classified with this period's mappings, so its gaps are this
 		# statement's to fix; it has no field, the message is built from this flag
 		self.flags.restated_position = None
@@ -146,6 +159,11 @@ class PSAKIDFinancialStatement(Document):
 		self.erpnext_pl_difference = current.ledger_difference
 		self.erpnext_bs_difference = position.ledger_difference
 		self.restatement_difference = result.restated.ledger_difference if result.restated else 0
+		self.cash_difference = cash_flows.cash_difference if cash_flows else 0
+		# Like the restated position, the count has no field: the message is built from this flag
+		self.flags.accounts_without_cash_flow_line = len(
+			{issue.account for issue in issues if issue.check == NO_CASH_FLOW_LINE}
+		)
 		self.blocking_issues = len([issue for issue in issues if issue.severity == BLOCKING])
 		self.other_items_warnings = "\n".join(
 			_("{0}: {1} is above the threshold of {2}.").format(
@@ -195,6 +213,46 @@ class PSAKIDFinancialStatement(Document):
 			mapping_date=mapping_date,
 		)
 		return position, prior
+
+	def _cash_flows(self):
+		"""The statement of cash flows of a quarterly or annual package, from the start of the fiscal
+		year to the end date (BR-42), and the same period of the prior year as its comparative.
+
+		As in the PSAK 118 Cash Flows report, the comparative is classified with this period's
+		mappings (FR-31): mappings in force before the cash flow lines existed have none.
+		"""
+		periodicity = CASH_FLOW_PERIODICITIES.get(self.periodicity)
+		if not periodicity:
+			return None, None
+		from_date, to_date = cash_flow_period(self.company, self.from_date, self.to_date, periodicity)
+		cash_flows = compute_cash_flows(self.company, from_date, to_date, self.finance_book)
+		if self.comparative == NO_COMPARATIVE:
+			return cash_flows, None
+		prior = compute_cash_flows(
+			self.company,
+			add_years(from_date, -1),
+			add_years(to_date, -1),
+			self.finance_book,
+			mapping_date=to_date,
+		)
+		return cash_flows, prior
+
+	def _set_non_cash_transactions(self, cash_flows):
+		"""The investing and financing transactions without cash, left out of the cash flows and
+		disclosed in the notes (BR-35)."""
+		self.set(
+			"non_cash_transactions",
+			[
+				{
+					"posting_date": row.posting_date,
+					"voucher_type": row.voucher_type,
+					"voucher_no": row.voucher_no,
+					"account": row.account,
+					"amount": row.amount,
+				}
+				for row in (cash_flows.non_cash if cash_flows else [])
+			],
+		)
 
 	def _set_nature_lines(self, current, comparative):
 		"""Operating expenses by nature per function line, for a statement presented by function or
@@ -322,6 +380,20 @@ class PSAKIDFinancialStatement(Document):
 					"The restated statement of financial position on {0} differs from ERPNext's Balance Sheet "
 					"by {1}. Map the prior year's accounts in Mapping Control."
 				).format(formatdate(restated.to_date), self._money(restated.ledger_difference))
+			)
+		if self.flags.accounts_without_cash_flow_line:
+			messages.append(
+				_(
+					"{0} balance sheet accounts with a balance or movements have no cash flow line. Set their "
+					"Cash Flow Line in Mapping Control."
+				).format(self.flags.accounts_without_cash_flow_line)
+			)
+		if flt(self.cash_difference):
+			messages.append(
+				_(
+					"The closing cash of the statement of cash flows differs from the cash and cash equivalents "
+					"in the ledger by {0}. Open Mapping Control to find the accounts."
+				).format(self._money(self.cash_difference))
 			)
 		if flt(self.restatement_difference):
 			messages.append(

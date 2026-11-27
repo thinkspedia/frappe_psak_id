@@ -162,6 +162,11 @@ def cash_flow_issues(
 	non-cash transactions (BR-35) of the statement of cash flows of a package of ``periodicity``."""
 	from_date, to_date = cash_flow_period(company, from_date, to_date, periodicity)
 	statement = compute_cash_flows(company, from_date, to_date, finance_book)
+	return cash_flow_statement_issues(statement, periodicity)
+
+
+def cash_flow_statement_issues(statement, periodicity: str = MONTHLY) -> list:
+	"""The checks of :func:`cash_flow_issues` for a statement of cash flows already computed."""
 	severity = BLOCKING if periodicity in CASH_FLOW_PERIODICITIES else WARNING
 
 	issues = [
@@ -190,7 +195,9 @@ def cash_flow_issues(
 			amount=flt(row.balance if row.root_type == "Asset" else -row.balance, 2),
 			balance_only=True,
 		)
-		for row in _balances_without_cash_flow_line(company, to_date, finance_book)
+		for row in _balances_without_cash_flow_line(
+			statement.company, statement.to_date, statement.finance_book
+		)
 		if row.account not in listed
 	]
 	if statement.cash_difference:

@@ -160,7 +160,8 @@ class TestStatementPackage(IntegrationTestCase):
 
 		export_structured(doc.name, "csv")
 		rows = list(csv.DictReader(io.StringIO(frappe.local.response.filecontent.decode("utf-8"))))
+		# A quarterly package also presents the cash flows (BR-42)
 		self.assertEqual(
 			list(dict.fromkeys(row["statement"] for row in rows)),
-			["Financial Position", "Profit or Loss", "Other Comprehensive Income"],
+			["Financial Position", "Profit or Loss", "Other Comprehensive Income", "Cash Flow"],
 		)

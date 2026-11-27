@@ -1,4 +1,5 @@
 import frappe
+from frappe.model.workflow import apply_workflow
 
 from frappe_psak_id.psak_id.cash_flow import NO_CASH_FLOW_LINE, REVALUATION, compute_cash_flows
 from frappe_psak_id.psak_id.checks import (
@@ -9,11 +10,16 @@ from frappe_psak_id.psak_id.checks import (
 	WARNING,
 	cash_flow_issues,
 )
+from frappe_psak_id.psak_id.doctype.psak_id_financial_statement.psak_id_financial_statement import (
+	StatementNotReady,
+	statement_lines,
+)
 from frappe_psak_id.psak_id.report.psak_118_cash_flows.psak_118_cash_flows import execute
 from frappe_psak_id.psak_id.report.psak_id_mapping_control.psak_id_mapping_control import (
 	execute as mapping_control,
 )
 from frappe_psak_id.psak_id.statement import NOT_MAPPED
+from frappe_psak_id.tests.test_financial_statement import make_statement
 from frappe_psak_id.tests.utils import (
 	IntegrationTestCase,
 	get_account,
@@ -354,3 +360,61 @@ class TestCashFlows(IntegrationTestCase):
 		self.assertIsNone(message)
 		self.assertEqual(summary[-1]["label"], "Cash Difference")
 		self.assertNotEqual(summary[-1]["value"], 0)
+
+	def test_quarterly_package_presents_cash_flows_from_the_fiscal_year_start(self):
+		monthly = make_statement(COMPANY, "2031-03-01", "2031-03-31").insert()
+		# BR-42: a monthly package has no statement of cash flows
+		self.assertNotIn("Cash Flow", {row.statement for row in monthly.lines})
+		self.assertEqual(monthly.cash_difference, 0)
+
+		doc = make_statement(
+			COMPANY, "2031-01-01", "2031-03-31", "Quarterly", comparative="Same Period Last Year"
+		).insert()
+		cash_flows = {row.report_line: row for row in statement_lines(doc, "Cash Flow")}
+		self.assertEqual(cash_flows["CF-OP-START"].amount, 170_000)
+		self.assertEqual(cash_flows["CF-SUB-CLOSE"].amount, 1_455_000)
+		# The first quarter of 2030: capital paid in, a building bought for cash
+		self.assertEqual(cash_flows["CF-FIN-EQ"].comparative_amount, 1_000_000)
+		self.assertEqual(cash_flows["CF-INV-PPE-BUY"].comparative_amount, -400_000)
+		self.assertEqual(cash_flows["CF-SUB-CLOSE"].comparative_amount, 600_000)
+		self.assertEqual(
+			list(dict.fromkeys(row.statement for row in doc.lines)),
+			["Financial Position", "Profit or Loss", "Cash Flow"],
+		)
+		self.assertEqual((doc.cash_difference, doc.blocking_issues, doc.non_cash_transactions), (0, 0, []))
+		self.assertEqual(apply_workflow(doc, "Submit for Review").workflow_state, "Under Review")
+
+	def test_cash_flow_checks_block_the_review_of_a_quarterly_package(self):
+		a = self.accounts
+		make_fiscal_year(2032)
+		escrow = make_account(COMPANY, "Package Escrow", "Current Assets")
+		mapping = frappe.get_doc(
+			{
+				"doctype": "PSAK ID Account Mapping",
+				"company": COMPANY,
+				"account": escrow,
+				"report_line": "FP-CA-OTH",
+				"valid_from": "2032-01-01",
+				"priority": 10,
+			}
+		).insert()
+		make_journal_entry(COMPANY, "2032-02-10", escrow, 30_000, a.cash)
+		lease = make_journal_entry(COMPANY, "2032-02-20", a.right_of_use, 45_000, a.lease)
+
+		doc = make_statement(COMPANY, "2032-01-01", "2032-03-31", "Quarterly").insert()
+		# The escrow payment is on no cash flow line, so the closing cash is 30,000 too high
+		self.assertEqual(doc.cash_difference, 30_000)
+		self.assertIn("have no cash flow line", doc.check_messages)
+		self.assertIn("closing cash of the statement of cash flows", doc.check_messages)
+		self.assertEqual(
+			sorted((row.voucher_no, row.account, row.amount) for row in doc.non_cash_transactions),
+			sorted([(lease.name, a.right_of_use, 45_000), (lease.name, a.lease, -45_000)]),
+		)
+		with self.assertRaises(StatementNotReady):
+			apply_workflow(doc, "Submit for Review")
+
+		mapping.db_set("cash_flow_line", "CF-OP-WC-OA")
+		doc.reload()
+		doc.compute()
+		self.assertEqual(doc.cash_difference, 0)
+		self.assertEqual(statement_lines(doc, "Cash Flow")[0].report_line, "CF-OP-START")
