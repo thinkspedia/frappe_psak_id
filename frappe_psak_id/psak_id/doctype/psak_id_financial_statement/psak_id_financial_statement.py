@@ -384,8 +384,8 @@ class PSAKIDFinancialStatement(Document):
 		if self.flags.accounts_without_cash_flow_line:
 			messages.append(
 				_(
-					"{0} balance sheet accounts with a balance or movements have no cash flow line. Set their "
-					"Cash Flow Line in Mapping Control."
+					"{0} accounts with a balance or movements have no cash flow line. Mapping Control lists "
+					"them; set the Cash Flow Line of their mappings in PSAK ID Account Mapping."
 				).format(self.flags.accounts_without_cash_flow_line)
 			)
 		if flt(self.cash_difference):

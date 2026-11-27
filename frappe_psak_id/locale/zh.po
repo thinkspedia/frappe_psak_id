@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PSAK ID VERSION\n"
 "Report-Msgid-Bugs-To: helpdesk@thinkspedia.com\n"
-"POT-Creation-Date: 2026-11-27 06:25+0000\n"
+"POT-Creation-Date: 2026-11-27 10:06+0000\n"
 "PO-Revision-Date: 2026-11-23 12:08+0000\n"
 "Last-Translator: helpdesk@thinkspedia.com\n"
 "Language: zh\n"
@@ -2658,6 +2658,11 @@ msgstr ""
 msgid "{0} accounts with a balance have no PSAK 118 line. Map them in Mapping Control."
 msgstr ""
 
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.py:387
+#, python-brace-format
+msgid "{0} accounts with a balance or movements have no cash flow line. Mapping Control lists them; set the Cash Flow Line of their mappings in PSAK ID Account Mapping."
+msgstr ""
+
 #: frappe_psak_id/psak_id/report/psak_118_cash_flows/psak_118_cash_flows.py:165
 #, python-brace-format
 msgid "{0} accounts with movements in the period have no cash flow line ({1}). They are left out of the statement, so the closing cash does not match the ledger yet. Set their Cash Flow Line in PSAK ID Account Mapping."
@@ -2689,11 +2694,6 @@ msgstr ""
 #: frappe_psak_id/psak_id/report/psak_118_financial_position/psak_118_financial_position.py:163
 #, python-brace-format
 msgid "{0} balance sheet accounts with a balance are not mapped to a PSAK 118 line ({1}). They are left out of the statement, so it does not match ERPNext's Balance Sheet yet. Map them in PSAK ID Account Mapping."
-msgstr ""
-
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.py:387
-#, python-brace-format
-msgid "{0} balance sheet accounts with a balance or movements have no cash flow line. Set their Cash Flow Line in Mapping Control."
 msgstr ""
 
 #: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:138
