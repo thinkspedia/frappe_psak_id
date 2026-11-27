@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PSAK ID VERSION\n"
 "Report-Msgid-Bugs-To: helpdesk@thinkspedia.com\n"
-"POT-Creation-Date: 2026-11-27 03:51+0000\n"
+"POT-Creation-Date: 2026-11-27 05:49+0000\n"
 "PO-Revision-Date: 2026-11-23 12:08+0000\n"
 "Last-Translator: helpdesk@thinkspedia.com\n"
 "Language: zh\n"
@@ -422,7 +422,7 @@ msgstr ""
 msgid "Checks pass. Other Items lines are above the threshold: explain them in Other Items Breakdown."
 msgstr ""
 
-#: frappe_psak_id/psak_id/export_statement.py:121
+#: frappe_psak_id/psak_id/export_statement.py:135
 msgid "Choose Excel or CSV."
 msgstr ""
 
@@ -904,12 +904,12 @@ msgstr ""
 msgid "Function Line"
 msgstr ""
 
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.py:639
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.py:648
 msgid "Give the reason for reopening the statement."
 msgstr ""
 
 #: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.py:485
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.py:622
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.py:631
 msgid "Give the reason for sending the statement back."
 msgstr ""
 
@@ -1379,7 +1379,7 @@ msgstr ""
 msgid "One policy per company. PSAK ID statements can only be prepared for companies that have a policy."
 msgstr ""
 
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.py:607
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.py:616
 msgid "Only Draft or Reopened statements are recomputed. Send this one back to Draft first."
 msgstr ""
 
@@ -1387,15 +1387,15 @@ msgstr ""
 msgid "Only Investing or Financing lines can follow Operating."
 msgstr ""
 
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.py:636
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.py:645
 msgid "Only a final statement can be reopened."
 msgstr ""
 
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.py:619
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.py:628
 msgid "Only a statement under review or awaiting approval is sent back."
 msgstr ""
 
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.py:633
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.py:642
 msgid "Only an Accounting Head or the CFO can reopen a final statement."
 msgstr ""
 
@@ -1863,7 +1863,7 @@ msgstr ""
 msgid "Reopened On"
 msgstr ""
 
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.py:646
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.py:655
 #, python-brace-format
 msgid "Reopened: {0}"
 msgstr ""

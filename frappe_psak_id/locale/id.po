@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PSAK ID VERSION\n"
 "Report-Msgid-Bugs-To: helpdesk@thinkspedia.com\n"
-"POT-Creation-Date: 2026-11-27 03:51+0000\n"
+"POT-Creation-Date: 2026-11-27 05:49+0000\n"
 "PO-Revision-Date: 2026-11-23 12:08+0000\n"
 "Last-Translator: helpdesk@thinkspedia.com\n"
 "Language: id\n"
@@ -422,7 +422,7 @@ msgstr "Pemeriksaan"
 msgid "Checks pass. Other Items lines are above the threshold: explain them in Other Items Breakdown."
 msgstr "Pemeriksaan lolos. Pos Lain-lain di atas ambang: jelaskan di Rincian Lain-lain."
 
-#: frappe_psak_id/psak_id/export_statement.py:121
+#: frappe_psak_id/psak_id/export_statement.py:135
 msgid "Choose Excel or CSV."
 msgstr "Pilih Excel atau CSV."
 
@@ -904,12 +904,12 @@ msgstr "Penuh"
 msgid "Function Line"
 msgstr "Pos Fungsi"
 
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.py:639
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.py:648
 msgid "Give the reason for reopening the statement."
 msgstr "Isi alasan membuka kembali laporan."
 
 #: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.py:485
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.py:622
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.py:631
 msgid "Give the reason for sending the statement back."
 msgstr "Isi alasan mengembalikan laporan."
 
@@ -1379,7 +1379,7 @@ msgstr "Induk Lama"
 msgid "One policy per company. PSAK ID statements can only be prepared for companies that have a policy."
 msgstr "Satu kebijakan per perusahaan. Laporan PSAK ID hanya bisa disusun untuk perusahaan yang punya kebijakan."
 
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.py:607
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.py:616
 msgid "Only Draft or Reopened statements are recomputed. Send this one back to Draft first."
 msgstr "Hanya laporan Draft atau Dibuka Kembali yang bisa dihitung ulang. Kembalikan laporan ini ke Draft dulu."
 
@@ -1387,15 +1387,15 @@ msgstr "Hanya laporan Draft atau Dibuka Kembali yang bisa dihitung ulang. Kembal
 msgid "Only Investing or Financing lines can follow Operating."
 msgstr "Hanya pos Investasi atau Pendanaan yang bisa ikut Operasi."
 
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.py:636
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.py:645
 msgid "Only a final statement can be reopened."
 msgstr "Hanya laporan Final yang bisa dibuka kembali."
 
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.py:619
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.py:628
 msgid "Only a statement under review or awaiting approval is sent back."
 msgstr "Hanya laporan yang sedang direview atau menunggu persetujuan yang bisa dikembalikan."
 
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.py:633
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.py:642
 msgid "Only an Accounting Head or the CFO can reopen a final statement."
 msgstr "Hanya Accounting Head atau CFO yang bisa membuka kembali laporan Final."
 
@@ -1863,7 +1863,7 @@ msgstr "Dibuka Kembali Oleh"
 msgid "Reopened On"
 msgstr "Dibuka Kembali Pada"
 
-#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.py:646
+#: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.py:655
 #, python-brace-format
 msgid "Reopened: {0}"
 msgstr "Dibuka kembali: {0}"
