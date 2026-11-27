@@ -87,6 +87,22 @@
   },
   {
    "added": 0,
+   "child": 1,
+   "collapsible": 1,
+   "hidden": 0,
+   "icon": "banknote",
+   "indent": 0,
+   "is_default_module": 0,
+   "keep_closed": 0,
+   "label": "Cash Flows",
+   "link_to": "PSAK 118 Cash Flows",
+   "link_type": "Report",
+   "open_in_new_tab": 0,
+   "show_arrow": 0,
+   "type": "Link"
+  },
+  {
+   "added": 0,
    "child": 0,
    "collapsible": 1,
    "hidden": 0,
@@ -213,7 +229,7 @@
    "type": "Link"
   }
  ],
- "modified": "2026-11-26 08:37:44.583922",
+ "modified": "2026-11-27 11:54:49.984519",
  "modified_by": "Administrator",
  "module": "PSAK ID",
  "name": "PSAK 118",

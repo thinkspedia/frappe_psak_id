@@ -34,15 +34,19 @@ class TestWorkspace(IntegrationTestCase):
 				self.assertTrue(frappe.db.exists(row.link_type, row.link_to), row.link_to)
 				if row.link_type == "Report":
 					reports.add(row.link_to)
-		self.assertLessEqual({"PSAK 118 Profit or Loss", "PSAK 118 Financial Position"}, reports)
+		self.assertLessEqual(
+			{"PSAK 118 Profit or Loss", "PSAK 118 Financial Position", "PSAK 118 Cash Flows"}, reports
+		)
 
 	def test_sidebar_links_exist(self):
 		if not frappe.db.exists("DocType", "Sidebar"):
 			self.skipTest("Frappe version without module sidebars")
 		sidebar = frappe.get_doc("Sidebar", {"module": "PSAK ID"})
 		links = [item for item in sidebar.items if item.type == "Link"]
-		self.assertEqual(len(links), 10)
-		self.assertIn("PSAK 118 Financial Position", [item.link_to for item in links])
+		self.assertEqual(len(links), 11)
+		self.assertLessEqual(
+			{"PSAK 118 Financial Position", "PSAK 118 Cash Flows"}, {item.link_to for item in links}
+		)
 		for item in links:
 			self.assertTrue(frappe.db.exists(item.link_type, item.link_to), item.link_to)
 

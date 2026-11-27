@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PSAK ID VERSION\n"
 "Report-Msgid-Bugs-To: helpdesk@thinkspedia.com\n"
-"POT-Creation-Date: 2026-11-27 05:49+0000\n"
+"POT-Creation-Date: 2026-11-27 06:25+0000\n"
 "PO-Revision-Date: 2026-11-23 12:08+0000\n"
 "Last-Translator: helpdesk@thinkspedia.com\n"
 "Language: zh\n"
@@ -81,8 +81,8 @@ msgstr ""
 
 #. Label of a Sidebar Item
 #. Label of a Link in the PSAK 118 Workspace
-#: frappe_psak_id/psak_id/sidebar/psak_118/psak_118.json:128
-#: frappe_psak_id/psak_id/workspace/psak_118/psak_118.json:77
+#: frappe_psak_id/psak_id/sidebar/psak_118/psak_118.json:144
+#: frappe_psak_id/psak_id/workspace/psak_118/psak_118.json:87
 msgid "Account Mapping"
 msgstr ""
 
@@ -284,12 +284,12 @@ msgid "Audit Required"
 msgstr ""
 
 #. Label of a number card in the PSAK 118 Workspace
-#: frappe_psak_id/psak_id/workspace/psak_118/psak_118.json:144
+#: frappe_psak_id/psak_id/workspace/psak_118/psak_118.json:154
 msgid "Awaiting CFO Approval"
 msgstr ""
 
 #. Label of a number card in the PSAK 118 Workspace
-#: frappe_psak_id/psak_id/workspace/psak_118/psak_118.json:140
+#: frappe_psak_id/psak_id/workspace/psak_118/psak_118.json:150
 msgid "Awaiting Review"
 msgstr ""
 
@@ -370,6 +370,11 @@ msgstr ""
 msgid "Cash Flow Line (Decrease)"
 msgstr ""
 
+#. Label of a Sidebar Item
+#: frappe_psak_id/psak_id/sidebar/psak_118/psak_118.json:97
+msgid "Cash Flows"
+msgstr ""
+
 #: frappe_psak_id/psak_id/report/psak_118_cash_flows/psak_118_cash_flows.py:147
 msgid "Cash and Cash Equivalents in the Ledger"
 msgstr ""
@@ -397,8 +402,8 @@ msgstr ""
 
 #. Label of a Sidebar Item
 #. Label of a Link in the PSAK 118 Workspace
-#: frappe_psak_id/psak_id/sidebar/psak_118/psak_118.json:208
-#: frappe_psak_id/psak_id/workspace/psak_118/psak_118.json:126
+#: frappe_psak_id/psak_id/sidebar/psak_118/psak_118.json:224
+#: frappe_psak_id/psak_id/workspace/psak_118/psak_118.json:136
 msgid "Change History"
 msgstr ""
 
@@ -519,8 +524,8 @@ msgstr ""
 
 #. Label of a Sidebar Item
 #. Label of a Link in the PSAK 118 Workspace
-#: frappe_psak_id/psak_id/sidebar/psak_118/psak_118.json:191
-#: frappe_psak_id/psak_id/workspace/psak_118/psak_118.json:116
+#: frappe_psak_id/psak_id/sidebar/psak_118/psak_118.json:207
+#: frappe_psak_id/psak_id/workspace/psak_118/psak_118.json:126
 msgid "Company Policy"
 msgstr ""
 
@@ -687,12 +692,12 @@ msgid "Download"
 msgstr ""
 
 #. Label of a shortcut in the PSAK 118 Workspace
-#: frappe_psak_id/psak_id/workspace/psak_118/psak_118.json:193
+#: frappe_psak_id/psak_id/workspace/psak_118/psak_118.json:203
 msgid "ERPNext Balance Sheet"
 msgstr "ERPNext 资产负债表"
 
 #. Label of a shortcut in the PSAK 118 Workspace
-#: frappe_psak_id/psak_id/workspace/psak_118/psak_118.json:185
+#: frappe_psak_id/psak_id/workspace/psak_118/psak_118.json:195
 msgid "ERPNext Profit and Loss"
 msgstr ""
 
@@ -779,7 +784,7 @@ msgid "Final Tax"
 msgstr ""
 
 #. Label of a number card in the PSAK 118 Workspace
-#: frappe_psak_id/psak_id/workspace/psak_118/psak_118.json:152
+#: frappe_psak_id/psak_id/workspace/psak_118/psak_118.json:162
 msgid "Final This Year"
 msgstr ""
 
@@ -1056,7 +1061,7 @@ msgid "Labels"
 msgstr ""
 
 #. Label of a quick_list in the PSAK 118 Workspace
-#: frappe_psak_id/psak_id/workspace/psak_118/psak_118.json:161
+#: frappe_psak_id/psak_id/workspace/psak_118/psak_118.json:171
 msgid "Latest Financial Statements"
 msgstr ""
 
@@ -1193,8 +1198,8 @@ msgstr ""
 
 #. Label of a Sidebar Item
 #. Label of a Card Break in the PSAK 118 Workspace
-#: frappe_psak_id/psak_id/sidebar/psak_118/psak_118.json:97
-#: frappe_psak_id/psak_id/workspace/psak_118/psak_118.json:58
+#: frappe_psak_id/psak_id/sidebar/psak_118/psak_118.json:113
+#: frappe_psak_id/psak_id/workspace/psak_118/psak_118.json:68
 msgid "Mapping"
 msgstr ""
 
@@ -1202,15 +1207,15 @@ msgstr ""
 #. Label of a Link in the PSAK 118 Workspace
 #. Label of a shortcut in the PSAK 118 Workspace
 #: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.js:45
-#: frappe_psak_id/psak_id/sidebar/psak_118/psak_118.json:112
-#: frappe_psak_id/psak_id/workspace/psak_118/psak_118.json:67
+#: frappe_psak_id/psak_id/sidebar/psak_118/psak_118.json:128
+#: frappe_psak_id/psak_id/workspace/psak_118/psak_118.json:77
 msgid "Mapping Control"
 msgstr ""
 
 #. Label of a Sidebar Item
 #. Label of a Link in the PSAK 118 Workspace
-#: frappe_psak_id/psak_id/sidebar/psak_118/psak_118.json:160
-#: frappe_psak_id/psak_id/workspace/psak_118/psak_118.json:97
+#: frappe_psak_id/psak_id/sidebar/psak_118/psak_118.json:176
+#: frappe_psak_id/psak_id/workspace/psak_118/psak_118.json:107
 msgid "Mapping Templates"
 msgstr ""
 
@@ -1277,7 +1282,7 @@ msgid "Net Profit in ERPNext Profit and Loss"
 msgstr ""
 
 #. Label of a shortcut in the PSAK 118 Workspace
-#: frappe_psak_id/psak_id/workspace/psak_118/psak_118.json:170
+#: frappe_psak_id/psak_id/workspace/psak_118/psak_118.json:180
 msgid "New Financial Statement"
 msgstr ""
 
@@ -1530,13 +1535,15 @@ msgstr ""
 
 #. Title of a Sidebar
 #. Name of a Workspace
-#: frappe_psak_id/psak_id/sidebar/psak_118/psak_118.json:222
+#: frappe_psak_id/psak_id/sidebar/psak_118/psak_118.json:238
 #: frappe_psak_id/psak_id/workspace/psak_118/psak_118.json:13
 msgid "PSAK 118"
 msgstr ""
 
 #. Name of a report
+#. Label of a Link in the PSAK 118 Workspace
 #: frappe_psak_id/psak_id/report/psak_118_cash_flows/psak_118_cash_flows.json:22
+#: frappe_psak_id/psak_id/workspace/psak_118/psak_118.json:58
 msgid "PSAK 118 Cash Flows"
 msgstr ""
 
@@ -1881,8 +1888,8 @@ msgstr ""
 
 #. Label of a Sidebar Item
 #. Label of a Link in the PSAK 118 Workspace
-#: frappe_psak_id/psak_id/sidebar/psak_118/psak_118.json:144
-#: frappe_psak_id/psak_id/workspace/psak_118/psak_118.json:87
+#: frappe_psak_id/psak_id/sidebar/psak_118/psak_118.json:160
+#: frappe_psak_id/psak_id/workspace/psak_118/psak_118.json:97
 msgid "Report Lines"
 msgstr ""
 
@@ -2117,8 +2124,8 @@ msgstr ""
 
 #. Label of a Sidebar Item
 #. Label of a Card Break in the PSAK 118 Workspace
-#: frappe_psak_id/psak_id/sidebar/psak_118/psak_118.json:176
-#: frappe_psak_id/psak_id/workspace/psak_118/psak_118.json:107
+#: frappe_psak_id/psak_id/sidebar/psak_118/psak_118.json:192
+#: frappe_psak_id/psak_id/workspace/psak_118/psak_118.json:117
 msgid "Settings"
 msgstr ""
 
@@ -2534,7 +2541,7 @@ msgstr ""
 #. Statement'
 #. Label of a number card in the PSAK 118 Workspace
 #: frappe_psak_id/psak_id/doctype/psak_id_financial_statement/psak_id_financial_statement.json:169
-#: frappe_psak_id/psak_id/workspace/psak_118/psak_118.json:148
+#: frappe_psak_id/psak_id/workspace/psak_118/psak_118.json:158
 msgid "Unmapped Accounts"
 msgstr ""
 

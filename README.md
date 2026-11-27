@@ -37,14 +37,15 @@ PSAK ID adds the PSAK 118 presentation on top of ERPNext's General Ledger. It on
 ## Features
 
 - **Company Policy**: one per company. It holds the PSAK 118 adoption date, the main business activities (which move investing or financing lines into Operating), expense presentation (by function, by nature or mixed), the Other Items threshold, the default unit and the letter head.
-- **Report Lines**: the standard PSAK 118 statement of profit or loss, other comprehensive income and statement of financial position.
+- **Report Lines**: the standard PSAK 118 statement of profit or loss, other comprehensive income, statement of financial position and statement of cash flows.
   - Lines carry Indonesian and English labels. Profit or loss lines fall into the categories Operating, Investing, Financing, Income Tax and Discontinued Operations; financial position lines are assets, liabilities (current or non-current) or equity; other comprehensive income lines will not or may be reclassified to profit or loss.
   - The three required subtotals are operating profit or loss, profit or loss before financing and income taxes, and profit or loss. Total assets, total equity, total liabilities and equity and total comprehensive income are required too.
   - Subtotals are formulas, which can add the current or non-current lines of a category or the subtotal of another statement. You can add lines; the required subtotals are protected.
 - **Account Mapping**: maps each account to a line from a start date. A mapping can be limited to a cost center, project, party or accounting dimension value, with a priority and an unconditional fallback.
   - Each operating expense also records its nature for the by-nature note.
   - Asset, liability and equity accounts go to a financial position line of their own category. Equity accounts name their equity component and, for reserves of other comprehensive income, the line their movements are presented in.
-- **Mapping Templates**: five standard templates (services, trading, manufacturing, property, investment holding) map a company's accounts in one step by name, number or account type pattern, and you can add your own. Version 1.1 of the standard templates (`<Industry> (Standard 1.1)`) also maps the balance sheet of ERPNext's standard chart.
+  - Each balance sheet account names the cash flow line of its movements, and optionally another line for decreases. Income and expense accounts name one only for a non-cash item or one presented outside operating activities, such as depreciation.
+- **Mapping Templates**: five standard templates (services, trading, manufacturing, property, investment holding) map a company's accounts in one step by name, number or account type pattern, and you can add your own. Version 1.1 of the standard templates (`<Industry> (Standard 1.1)`) also maps the balance sheet of ERPNext's standard chart. Version 1.2 (`<Industry> (Standard 1.2)`) adds the cash flow lines, and **Complete Cash Flow Lines** fills them into the mappings already in force.
 - **Mapping Control**: a report of what blocks a statement:
   - unmapped accounts, including balance sheet accounts with a balance;
   - entries that match no condition;
@@ -60,7 +61,11 @@ PSAK ID adds the PSAK 118 presentation on top of ERPNext's General Ledger. It on
 - **PSAK 118 Financial Position**: the statement of financial position on a date, with the prior fiscal year end as comparative.
   - Retained earnings include the profit or loss of the fiscal year so far, before or after a Period Closing Voucher.
   - The report checks that the statement balances and agrees with ERPNext's Balance Sheet, lists unmapped accounts and opens the General Ledger behind an amount.
-- **Financial Statement**: a submittable package of PSAK 118 financial statements for one company and period: the statement of financial position, the statement of profit or loss and other comprehensive income, and the notes.
+- **PSAK 118 Cash Flows**: the statement of cash flows by the indirect method for a period, with the same period of the prior year as comparative.
+  - Operating cash flows start from operating profit or loss. Balance sheet accounts present their movements on their cash flow line, gross when the mapping names a line for decreases.
+  - Non-cash transactions, such as a lease, are left out and listed; the revaluation of cash is the effect of exchange rates.
+  - The report checks closing cash against the ledger's cash and cash equivalents, lists accounts without a cash flow line and opens the General Ledger behind an amount.
+- **Financial Statement**: a submittable package of PSAK 118 financial statements for one company and period: the statement of financial position, the statement of profit or loss and other comprehensive income, the statement of cash flows (quarterly and annual packages) and the notes.
   - It holds the notes column, the expenses by nature (when presenting by function), the transition reconciliation from PSAK 201 in the first year and the Other Items breakdown.
   - A workflow takes it from Draft to Under Review, Approval CFO and Final.
   - Approval needs the period closed in ERPNext and an unchanged ledger.
@@ -91,9 +96,9 @@ Limit a user to their companies with a User Permission on Company.
 ## Getting started
 
 1. As the Accounting Head, create a **PSAK ID Company Policy** for the company: adoption date, main business activities, expense presentation, Other Items threshold, default unit and letter head.
-2. Open a **PSAK ID Mapping Template** close to the company's business and choose **Apply to Company**. Pick a version 1.1 template to map the balance sheet too. Then map the remaining accounts in **PSAK ID Account Mapping**.
+2. Open a **PSAK ID Mapping Template** close to the company's business and choose **Apply to Company**. Pick a version 1.2 template to map the balance sheet and the cash flow lines too. Then map the remaining accounts in **PSAK ID Account Mapping**.
 3. Run **PSAK ID Mapping Control** for the period and fix every blocking row.
-4. Check the figures in **PSAK 118 Profit or Loss** and **PSAK 118 Financial Position**.
+4. Check the figures in **PSAK 118 Profit or Loss**, **PSAK 118 Financial Position** and **PSAK 118 Cash Flows**.
 5. As staff or head, create a **PSAK ID Financial Statement** for the period, add note numbers and explain Other Items above the threshold. Then **Submit for Review**.
 6. Close the period in ERPNext (Accounting Period, or a Period Closing Voucher for an annual statement). Then the head sends the statement to the CFO, who approves it.
 
