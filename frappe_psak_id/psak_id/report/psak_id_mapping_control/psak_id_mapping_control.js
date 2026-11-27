@@ -36,8 +36,8 @@ frappe.query_reports[PSAK_MAPPING_CONTROL] = {
 			options: "Finance Book",
 		},
 		{
-			// The package the period is checked for: only quarterly and yearly packages have a
-			// statement of cash flows, so only there its issues block
+			// The package the period is checked for: only quarterly and yearly packages have the
+			// statements of cash flows and of changes in equity, so only there their issues block
 			fieldname: "periodicity",
 			label: __("Periodicity"),
 			fieldtype: "Select",
@@ -90,6 +90,11 @@ frappe.query_reports[PSAK_MAPPING_CONTROL] = {
 			"No Cash Flow Line": __("Open Mappings"),
 			"Cash Difference": __("Open Cash Flows"),
 			"Non-cash Transaction": __("Open Voucher"),
+			"Invalid Equity Component": __("Open Mappings"),
+			"Equity Difference": __("Open Changes in Equity"),
+			"Equity Component Difference": __("Open Changes in Equity"),
+			"Comprehensive Income Difference": __("Open Changes in Equity"),
+			"Other Changes in Equity Above Threshold": __("Open Changes in Equity"),
 		}[data.check];
 	},
 
@@ -102,6 +107,7 @@ frappe.query_reports[PSAK_MAPPING_CONTROL] = {
 				frappe.new_doc(PSAK_MAPPING, { company, account: data.account });
 				break;
 			case "Disabled Line":
+			case "Invalid Equity Component":
 			case "Conflicting Mappings":
 			case "No Cash Flow Line":
 				frappe.set_route("List", PSAK_MAPPING, { company, account: data.account });
@@ -110,6 +116,10 @@ frappe.query_reports[PSAK_MAPPING_CONTROL] = {
 				frappe.set_route("List", PSAK_MAPPING, { company, report_line: data.report_line });
 				break;
 			case "Cash Difference":
+			case "Equity Difference":
+			case "Equity Component Difference":
+			case "Comprehensive Income Difference":
+			case "Other Changes in Equity Above Threshold":
 				frappe.route_options = {
 					company,
 					from_date: data.from_date,
@@ -117,7 +127,12 @@ frappe.query_reports[PSAK_MAPPING_CONTROL] = {
 					comparative: 0,
 					finance_book: report.get_filter_value("finance_book") || "",
 				};
-				frappe.set_route("query-report", "PSAK 118 Cash Flows");
+				frappe.set_route(
+					"query-report",
+					data.check === "Cash Difference"
+						? "PSAK 118 Cash Flows"
+						: "PSAK 118 Changes in Equity"
+				);
 				break;
 			case "Non-cash Transaction":
 				frappe.set_route("Form", data.voucher_type, data.voucher_no);
