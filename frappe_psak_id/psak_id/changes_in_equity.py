@@ -6,7 +6,9 @@ The rows are the lines of the Changes in Equity statement:
 
 * The opening balance of each component is the balance of its accounts the day before the period.
   Retained earnings also take the profit or loss that no Period Closing Voucher has moved into
-  equity yet (BR-32), so the opening balance equals equity in the statement of financial position.
+  equity yet (BR-32): the ledger's for earlier fiscal years and, as in the statement of financial
+  position, PSAK 118 profit or loss from the start of the fiscal year, so a period that starts in
+  the middle of the year ends on equity in the statement of financial position.
 * Profit or loss of the period (``PL-SUB-PL``) is presented in retained earnings. Period Closing
   Vouchers are left out, since they only move that profit or loss into an equity account.
 * A voucher that only moves amounts between equity accounts is a transfer between components.
@@ -30,6 +32,7 @@ from frappe_psak_id.psak_id.financial_position import (
 	RETAINED_EARNINGS_LINE,
 	compute_financial_position,
 	finance_books,
+	fiscal_year_start,
 	get_account_balances,
 	profit_or_loss_before,
 )
@@ -60,6 +63,8 @@ OTHER_CHANGES_LINE = "EQ-OTH"
 CLOSING_LINE = "EQ-CLOSE"
 TOTAL_EQUITY_LINE = "FP-SUB-EQ"
 TREASURY_SHARES_COMPONENT = "FP-EQ-TREAS"
+# Why an equity account is left out when its component is not an enabled equity line
+INVALID_EQUITY_COMPONENT = "Invalid Equity Component"
 # The changes in equity line of an equity account's movements, by the cash flow line they are on
 CASH_FLOW_MOVEMENT_LINES = {"CF-FIN-DIV": "EQ-DIV", "CF-FIN-EQ": "EQ-ISSUE"}
 
@@ -97,6 +102,7 @@ def _context(company: str, from_date, to_date, finance_book: str | None, mapping
 		from_date=from_date,
 		to_date=to_date,
 		finance_book=finance_book,
+		mapping_date=mapping_date,
 		lines=get_lines(CHANGES_IN_EQUITY),
 		position_lines=get_lines(FINANCIAL_POSITION),
 		mappings=mappings,
@@ -144,6 +150,7 @@ class _Cells:
 		self.add(line_code, component, amount)
 
 	def leave_out(self, account: str, reason: str, line_code: str | None, amount):
+		"""Leave ``amount`` out; ``line_code`` is the disabled line or invalid component it is on."""
 		key = (account, reason, line_code)
 		self.unmapped[key] = flt(self.unmapped.get(key)) + flt(amount)
 
@@ -157,7 +164,7 @@ def _cell_key(line_code: str, component: str) -> str:
 
 def _component(context, group) -> tuple[str | None, frappe._dict | None, str | None]:
 	"""The component an equity GL group belongs to, its mapping's equity fields, and why it is left
-	out when it has no component."""
+	out when it has no valid component."""
 	candidates = context.mappings.get(group.account, [])
 	mapping = resolve_mapping(group, candidates)
 	if not mapping:
@@ -166,29 +173,39 @@ def _component(context, group) -> tuple[str | None, frappe._dict | None, str | N
 	component = fields.equity_component or fields.report_line
 	line = context.position_lines.get(component)
 	if not line or line.disabled or line.category != EQUITY:
-		return None, fields, DISABLED_LINE
+		return component, fields, INVALID_EQUITY_COMPONENT
 	return component, frappe._dict(fields, mapping=mapping), None
 
 
 def _add_opening_balances(context, cells: _Cells):
-	"""Equity on the day before the period: account balances with every Period Closing Voucher, and
-	the profit or loss that none has closed yet in retained earnings."""
+	"""Equity on the day before the period: account balances with the Period Closing Vouchers of
+	earlier fiscal years, and the profit or loss that none has closed yet in retained earnings."""
 	opening_date = add_days(context.from_date, -1)
+	year_start = fiscal_year_start(context.company, context.from_date)
 	for group in get_account_balances(
-		context.company, opening_date, context.finance_book, columns=context.columns
+		context.company, opening_date, context.finance_book, columns=context.columns, closing_from=year_start
 	):
 		if group.root_type != EQUITY:
 			continue
 		component, _fields, reason = _component(context, group)
 		if reason:
-			cells.leave_out(group.account, reason, OPENING_LINE, -flt(group.balance))
+			cells.leave_out(group.account, reason, component, -flt(group.balance))
 			continue
 		cells.add(OPENING_LINE, component, -flt(group.balance))
 	cells.add(
 		OPENING_LINE,
 		RETAINED_EARNINGS_LINE,
-		profit_or_loss_before(context.company, context.from_date, context.finance_book),
+		profit_or_loss_before(context.company, year_start, context.finance_book),
 	)
+	if context.from_date > year_start:
+		earlier = compute(
+			context.company,
+			year_start,
+			opening_date,
+			finance_book=context.finance_book,
+			mapping_date=context.mapping_date,
+		)
+		cells.add(OPENING_LINE, RETAINED_EARNINGS_LINE, earlier.profit_or_loss)
 
 
 def _add_movements(context, cells: _Cells):
@@ -199,7 +216,7 @@ def _add_movements(context, cells: _Cells):
 		component, fields, reason = _component(context, row)
 		amount = flt(row.credit) - flt(row.debit)
 		if reason:
-			cells.leave_out(row.account, reason, None, amount)
+			cells.leave_out(row.account, reason, component, amount)
 			continue
 		if (row.voucher_type, row.voucher_no) not in outside_equity:
 			cells.add_group(row, TRANSFER_LINE, component, amount)

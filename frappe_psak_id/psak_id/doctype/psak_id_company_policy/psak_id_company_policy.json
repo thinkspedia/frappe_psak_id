@@ -29,6 +29,8 @@
   "other_items_threshold_percent",
   "column_break_other_items",
   "other_items_threshold_amount",
+  "section_equity_other",
+  "equity_other_threshold",
   "section_audit",
   "audit_required",
   "audit_criteria"
@@ -198,13 +200,26 @@
    "fieldname": "audit_criteria",
    "fieldtype": "Small Text",
    "label": "Audit Criteria"
+  },
+  {
+   "description": "Other changes in equity of a component above the threshold are a warning in Mapping Control and must be explained in a quarterly or yearly package. Leave it empty to warn about every amount.",
+   "fieldname": "section_equity_other",
+   "fieldtype": "Section Break",
+   "label": "Other Changes in Equity Threshold"
+  },
+  {
+   "fieldname": "equity_other_threshold",
+   "fieldtype": "Currency",
+   "label": "Threshold (Amount)",
+   "non_negative": 1,
+   "options": "currency"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "link_display_mode": "Search",
  "links": [],
- "modified": "2026-11-23 20:47:40.605272",
+ "modified": "2026-11-27 18:32:37.279778",
  "modified_by": "Administrator",
  "module": "PSAK ID",
  "name": "PSAK ID Company Policy",

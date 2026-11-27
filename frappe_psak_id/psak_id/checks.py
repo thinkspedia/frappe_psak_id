@@ -19,12 +19,25 @@ itself. Balance sheet accounts with a balance or movements, and income or expens
 amount outside operating profit, need a cash flow line, and closing cash must equal the ledger's
 cash and cash equivalents (BR-36). Both block a quarterly or yearly package and are warnings
 otherwise. Non-cash transactions are listed for information (BR-35).
+
+The statement of changes in equity is checked for the same period. An equity account whose Equity
+Component is not an enabled equity line of the statement of financial position, or whose movement
+is on a disabled line, is left out of it and blocks. The closing balance of each component must
+equal its line in the statement of financial position (BR-37), which blocks a quarterly or yearly
+package and is a warning otherwise, and total comprehensive income must equal ``OCI-SUB-TCI``,
+which always blocks. Other changes of a component above the company's threshold are a warning that
+a quarterly or yearly package has to explain.
 """
 
 import frappe
 from frappe.utils import add_years, flt, getdate
 
 from frappe_psak_id.psak_id.cash_flow import CASH_LINE, NO_CASH_FLOW_LINE, compute_cash_flows
+from frappe_psak_id.psak_id.changes_in_equity import (
+	INVALID_EQUITY_COMPONENT,
+	OTHER_CHANGES_LINE,
+	compute_changes_in_equity,
+)
 from frappe_psak_id.psak_id.financial_position import (
 	BALANCE_SHEET_ROOT_TYPES,
 	compute_financial_position,
@@ -47,9 +60,13 @@ UNMAPPED_BALANCE = "Unmapped Balance Sheet Account"
 BALANCE_SHEET_DIFFERENCE = "Difference to ERPNext Balance Sheet"
 CASH_DIFFERENCE = "Cash Difference"
 NON_CASH_TRANSACTION = "Non-cash Transaction"
+EQUITY_DIFFERENCE = "Equity Difference"
+EQUITY_COMPONENT_DIFFERENCE = "Equity Component Difference"
+COMPREHENSIVE_INCOME_DIFFERENCE = "Comprehensive Income Difference"
+OTHER_CHANGES_IN_EQUITY = "Other Changes in Equity Above Threshold"
 
 MONTHLY = "Monthly"
-# The packages with a statement of cash flows (BR-42)
+# The packages with a statement of cash flows and a statement of changes in equity (BR-42)
 CASH_FLOW_PERIODICITIES = ("Quarterly", "Yearly")
 
 CURRENT = "Current"
@@ -203,6 +220,88 @@ def cash_flow_statement_issues(statement, periodicity: str = MONTHLY) -> list:
 	if statement.cash_difference:
 		issues.append(_issue(CASH_DIFFERENCE, severity, statement, CURRENT, amount=statement.cash_difference))
 	return issues + _non_cash_issues(statement)
+
+
+def changes_in_equity_issues(
+	company: str, from_date, to_date, finance_book: str | None = None, periodicity: str = MONTHLY
+) -> list:
+	"""Invalid equity components, differences to the statement of financial position and total
+	comprehensive income (BR-37) and other changes above the threshold of the statement of changes
+	in equity of a package of ``periodicity``, which covers the same period as its cash flows."""
+	from_date, to_date = cash_flow_period(company, from_date, to_date, periodicity)
+	statement = compute_changes_in_equity(company, from_date, to_date, finance_book)
+	return changes_in_equity_statement_issues(statement, periodicity)
+
+
+def changes_in_equity_statement_issues(statement, periodicity: str = MONTHLY) -> list:
+	"""The checks of :func:`changes_in_equity_issues` for a statement already computed."""
+	severity = BLOCKING if periodicity in CASH_FLOW_PERIODICITIES else WARNING
+
+	issues = [
+		_issue(
+			row.reason,
+			BLOCKING,
+			statement,
+			CURRENT,
+			account=row.account,
+			report_line=row.report_line,
+			amount=row.amount,
+		)
+		for row in statement.unmapped
+		# Unmapped equity accounts are checked with the statement of financial position (BR-30)
+		if row.reason in (INVALID_EQUITY_COMPONENT, DISABLED_LINE)
+	]
+	if statement.equity_difference:
+		issues.append(
+			_issue(EQUITY_DIFFERENCE, severity, statement, CURRENT, amount=statement.equity_difference)
+		)
+	issues += [
+		_issue(
+			EQUITY_COMPONENT_DIFFERENCE,
+			severity,
+			statement,
+			CURRENT,
+			report_line=row.component,
+			amount=row.difference,
+		)
+		for row in statement.component_differences
+	]
+	if statement.comprehensive_income_difference:
+		issues.append(
+			_issue(
+				COMPREHENSIVE_INCOME_DIFFERENCE,
+				BLOCKING,
+				statement,
+				CURRENT,
+				amount=statement.comprehensive_income_difference,
+			)
+		)
+	return issues + other_changes_in_equity_issues(statement)
+
+
+def other_changes_in_equity_issues(statement) -> list:
+	"""Other changes in equity of each component above the company's threshold; without a threshold
+	every amount is listed."""
+	threshold = flt(
+		frappe.db.get_value("PSAK ID Company Policy", statement.company, "equity_other_threshold"), 2
+	)
+	row = next((row for row in statement.rows if row.line_code == OTHER_CHANGES_LINE), None)
+	if not row:
+		return []
+	return [
+		_issue(
+			OTHER_CHANGES_IN_EQUITY,
+			WARNING,
+			statement,
+			CURRENT,
+			report_line=OTHER_CHANGES_LINE,
+			component=component,
+			amount=amount,
+			threshold=threshold,
+		)
+		for component, amount in row.amounts.items()
+		if abs(flt(amount, 2)) > threshold
+	]
 
 
 def is_transition_period(company: str, from_date, to_date) -> bool:

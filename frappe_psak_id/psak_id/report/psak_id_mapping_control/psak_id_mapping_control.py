@@ -5,8 +5,8 @@
 
 One row per issue, each with the document to open to fix it. The checks themselves live in
 ``psak_id/checks.py`` so the Financial Statement runs the same ones. The periodicity is that of the
-package the period is checked for: the statement of cash flows is only part of a quarterly or
-yearly package, so only there its issues block (BR-42).
+package the period is checked for: the statements of cash flows and of changes in equity are only
+part of a quarterly or yearly package, so only there their differences block (BR-42).
 """
 
 import frappe
@@ -14,17 +14,22 @@ from frappe import _
 from frappe.utils import fmt_money, formatdate, getdate
 
 from frappe_psak_id.psak_id.cash_flow import NO_CASH_FLOW_LINE
+from frappe_psak_id.psak_id.changes_in_equity import INVALID_EQUITY_COMPONENT
 from frappe_psak_id.psak_id.checks import (
 	BALANCE_SHEET_DIFFERENCE,
 	BLOCKING,
 	CASH_DIFFERENCE,
 	CASH_FLOW_PERIODICITIES,
+	COMPREHENSIVE_INCOME_DIFFERENCE,
 	CONFLICTING_MAPPINGS,
 	CURRENT,
+	EQUITY_COMPONENT_DIFFERENCE,
+	EQUITY_DIFFERENCE,
 	ERPNEXT_DIFFERENCE,
 	INFORMATION,
 	MONTHLY,
 	NON_CASH_TRANSACTION,
+	OTHER_CHANGES_IN_EQUITY,
 	OTHER_ITEMS,
 	RESTATED,
 	UNMAPPED_BALANCE,
@@ -32,6 +37,7 @@ from frappe_psak_id.psak_id.checks import (
 	balance_sheet_difference_issues,
 	balance_sheet_issues,
 	cash_flow_issues,
+	changes_in_equity_issues,
 	run_checks,
 )
 from frappe_psak_id.psak_id.statement import (
@@ -53,6 +59,9 @@ def execute(filters: dict | None = None):
 		filters.company, filters.to_date, filters.finance_book, restated=bool(result.restated)
 	)
 	result.issues += cash_flow_issues(
+		filters.company, filters.from_date, filters.to_date, filters.finance_book, filters.periodicity
+	)
+	result.issues += changes_in_equity_issues(
 		filters.company, filters.from_date, filters.to_date, filters.finance_book, filters.periodicity
 	)
 	currency = result.current.currency
@@ -96,6 +105,7 @@ def _columns(currency) -> list[dict]:
 
 def _row(issue, currency, labels, index) -> frappe._dict:
 	line = labels.get(issue.report_line, issue.report_line)
+	subject = issue.account or issue.voucher_no or line or ""
 	period = f"{formatdate(issue.from_date)} \u2013 {formatdate(issue.to_date)}"
 	if issue.period == RESTATED:
 		period = _("{0} (restated)").format(period)
@@ -165,6 +175,40 @@ def _row(issue, currency, labels, index) -> frappe._dict:
 			"Left out of investing and financing cash flows and disclosed as a non-cash transaction. "
 			"Check that no cash was paid or received."
 		)
+	elif issue.check == INVALID_EQUITY_COMPONENT:
+		label = _("Invalid equity component")
+		detail = _(
+			"Its Equity Component {0} is not an enabled equity line of the statement of financial "
+			"position, so it is left out of the statement of changes in equity. Set another Equity "
+			"Component in its mapping."
+		).format(line)
+	elif issue.check == EQUITY_DIFFERENCE:
+		label = _("Equity difference")
+		detail = _(
+			"Closing equity of the statement of changes in equity differs from equity in the "
+			"statement of financial position. Map the equity accounts listed above."
+		)
+	elif issue.check == EQUITY_COMPONENT_DIFFERENCE:
+		label = _("Equity component difference")
+		detail = _(
+			"The closing balance of this component differs from its line in the statement of "
+			"financial position, because an account's Equity Component is not its report line. Make "
+			"them the same, or map the account to the line of its component."
+		)
+	elif issue.check == COMPREHENSIVE_INCOME_DIFFERENCE:
+		label = _("Comprehensive income difference")
+		detail = _(
+			"Total comprehensive income of the statement of changes in equity differs from the "
+			"statement of profit or loss and other comprehensive income. Check that the OCI lines of "
+			"the equity accounts and the Equity Component of retained earnings are enabled."
+		)
+	elif issue.check == OTHER_CHANGES_IN_EQUITY:
+		label = _("Other changes in equity above threshold")
+		subject = f"{line} \u2013 {labels.get(issue.component, issue.component)}"
+		detail = _(
+			"Above the threshold of {0}. Explain it in a quarterly or yearly package, or set the cash "
+			"flow lines of the equity account's mapping so the change is on a specific line."
+		).format(fmt_money(issue.threshold, currency=currency))
 	elif issue.check == ERPNEXT_DIFFERENCE:
 		label = _("Difference to ERPNext Profit and Loss")
 		detail = _(
@@ -187,12 +231,13 @@ def _row(issue, currency, labels, index) -> frappe._dict:
 		severity=issue.severity,
 		severity_label=_severity_label(issue.severity),
 		period_label=period,
-		subject=issue.account or issue.voucher_no or line or "",
+		subject=subject,
 		amount=issue.amount,
 		currency=currency,
 		detail=detail,
 		account=issue.account,
 		report_line=issue.report_line,
+		component=issue.component,
 		voucher_type=issue.voucher_type,
 		voucher_no=issue.voucher_no,
 		from_date=str(issue.from_date),
@@ -266,16 +311,20 @@ def _summary(result, data) -> list[dict]:
 				"indicator": "Red" if result.restated.ledger_difference else "Green",
 			}
 		)
-	cash_difference = sum(row.amount for row in data if row.check == CASH_DIFFERENCE)
-	summary.append(
-		{
-			"label": _("Cash Difference"),
-			"value": cash_difference,
-			"datatype": "Currency",
-			"currency": currency,
-			"indicator": "Red" if cash_difference else "Green",
-		}
-	)
+	for check, label in (
+		(CASH_DIFFERENCE, _("Cash Difference")),
+		(EQUITY_DIFFERENCE, _("Equity Difference")),
+	):
+		difference = sum(row.amount for row in data if row.check == check)
+		summary.append(
+			{
+				"label": label,
+				"value": difference,
+				"datatype": "Currency",
+				"currency": currency,
+				"indicator": "Red" if difference else "Green",
+			}
+		)
 	return summary
 
 

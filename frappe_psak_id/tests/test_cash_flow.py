@@ -364,8 +364,8 @@ class TestCashFlows(IntegrationTestCase):
 		self.assertEqual(rows[lease.name].severity_label, "Information")
 		self.assertEqual(rows[lease.name].voucher_type, "Journal Entry")
 		self.assertIsNone(message)
-		self.assertEqual(summary[-1]["label"], "Cash Difference")
-		self.assertNotEqual(summary[-1]["value"], 0)
+		cash_difference = next(item for item in summary if item["label"] == "Cash Difference")
+		self.assertNotEqual(cash_difference["value"], 0)
 
 	def test_quarterly_package_presents_cash_flows_from_the_fiscal_year_start(self):
 		monthly = make_statement(COMPANY, "2031-03-01", "2031-03-31").insert()

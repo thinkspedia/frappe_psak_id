@@ -1,8 +1,20 @@
 import frappe
 
-from frappe_psak_id.psak_id.changes_in_equity import compute_changes_in_equity
+from frappe_psak_id.psak_id.changes_in_equity import INVALID_EQUITY_COMPONENT, compute_changes_in_equity
+from frappe_psak_id.psak_id.checks import (
+	BLOCKING,
+	COMPREHENSIVE_INCOME_DIFFERENCE,
+	EQUITY_COMPONENT_DIFFERENCE,
+	EQUITY_DIFFERENCE,
+	OTHER_CHANGES_IN_EQUITY,
+	WARNING,
+	changes_in_equity_issues,
+)
 from frappe_psak_id.psak_id.report.psak_118_changes_in_equity.psak_118_changes_in_equity import execute
-from frappe_psak_id.psak_id.statement import NOT_MAPPED
+from frappe_psak_id.psak_id.report.psak_id_mapping_control.psak_id_mapping_control import (
+	execute as mapping_control,
+)
+from frappe_psak_id.psak_id.statement import DISABLED_LINE, NOT_MAPPED
 from frappe_psak_id.tests.utils import (
 	IntegrationTestCase,
 	get_account,
@@ -65,6 +77,13 @@ def _cells(statement) -> dict:
 		for component, amount in row.amounts.items()
 		if amount
 	}
+
+
+def _issues(periodicity: str = "Quarterly") -> list:
+	return [
+		(issue.check, issue.severity, issue.report_line, issue.get("component"), issue.amount)
+		for issue in changes_in_equity_issues(COMPANY, "2031-02-01", "2031-03-31", periodicity=periodicity)
+	]
 
 
 def _totals(statement) -> dict:
@@ -199,6 +218,74 @@ class TestChangesInEquity(IntegrationTestCase):
 		issue = next(row for row in data if row.get("line_code") == "EQ-ISSUE" and row.block == 0)
 		ledger = issue.ledger[columns[1]["fieldname"]]
 		self.assertEqual(ledger["accounts"], [self.accounts.capital])
+
+	def _set_threshold(self, amount):
+		frappe.db.set_value("PSAK ID Company Policy", COMPANY, "equity_other_threshold", amount)
+		self.addCleanup(frappe.db.set_value, "PSAK ID Company Policy", COMPANY, "equity_other_threshold", 0)
+
+	def _disable_line(self, line_code: str):
+		frappe.db.set_value("PSAK ID Report Line", line_code, "disabled", 1)
+		self.addCleanup(frappe.db.set_value, "PSAK ID Report Line", line_code, "disabled", 0)
+
+	def test_other_changes_warn_without_a_threshold(self):
+		# A quarterly package presents the changes from the start of the fiscal year (BR-42)
+		self.assertEqual(_issues(), [(OTHER_CHANGES_IN_EQUITY, WARNING, "EQ-OTH", "FP-EQ-OTH", 5_000)])
+		self._set_threshold(5_000)
+		self.assertEqual(_issues(), [])
+
+	def test_component_difference_blocks_a_quarterly_package(self):
+		self._set_threshold(10_000)
+		mapping = frappe.db.get_value(
+			"PSAK ID Account Mapping", {"company": COMPANY, "account": self.accounts.opening}
+		)
+		frappe.db.set_value("PSAK ID Account Mapping", mapping, "equity_component", "FP-EQ-RE")
+		self.addCleanup(
+			frappe.db.set_value, "PSAK ID Account Mapping", mapping, "equity_component", "FP-EQ-OTH"
+		)
+
+		expected = [
+			(EQUITY_COMPONENT_DIFFERENCE, BLOCKING, "FP-EQ-RE", None, 5_000),
+			(EQUITY_COMPONENT_DIFFERENCE, BLOCKING, "FP-EQ-OTH", None, -5_000),
+		]
+		self.assertEqual(sorted(_issues()), sorted(expected))
+		self.assertEqual(
+			sorted(_issues("Monthly")),
+			sorted((check, WARNING, *rest) for check, _severity, *rest in expected),
+		)
+
+	def test_invalid_equity_component_is_left_out_and_blocks(self):
+		self._set_threshold(10_000)
+		self._disable_line("FP-EQ-TREAS")
+
+		statement = compute_changes_in_equity(COMPANY, "2031-01-01", "2031-03-31")
+		self.assertEqual(
+			[(row.account, row.reason, row.report_line) for row in statement.unmapped],
+			[(self.accounts.treasury, INVALID_EQUITY_COMPONENT, "FP-EQ-TREAS")],
+		)
+		self.assertIn((INVALID_EQUITY_COMPONENT, BLOCKING, "FP-EQ-TREAS", None, -20_000), _issues("Monthly"))
+
+	def test_disabled_other_comprehensive_income_line_blocks(self):
+		self._set_threshold(10_000)
+		self._disable_line("EQ-OCI")
+
+		issues = _issues("Monthly")
+		self.assertIn((DISABLED_LINE, BLOCKING, "EQ-OCI", None, 50_000), issues)
+		self.assertIn((COMPREHENSIVE_INCOME_DIFFERENCE, BLOCKING, None, None, -50_000), issues)
+		self.assertIn((EQUITY_DIFFERENCE, WARNING, None, None, -50_000), issues)
+
+	def test_mapping_control_lists_the_changes_in_equity_checks(self):
+		_columns, data, _message, _chart, summary = mapping_control(
+			{
+				"company": COMPANY,
+				"from_date": "2031-03-01",
+				"to_date": "2031-03-31",
+				"periodicity": "Quarterly",
+			}
+		)
+		row = next(row for row in data if row.check == OTHER_CHANGES_IN_EQUITY)
+		self.assertEqual((row.severity, row.amount, row.component), (WARNING, 5_000, "FP-EQ-OTH"))
+		self.assertTrue(row.subject.startswith("EQ-OTH") and "FP-EQ-OTH" in row.subject)
+		self.assertEqual(summary[-1]["value"], 0)
 
 
 class TestChangesInEquityWithClosing(IntegrationTestCase):
